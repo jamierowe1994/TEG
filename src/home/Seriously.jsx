@@ -18,6 +18,7 @@ const THINGS = [
     label: 'Health',
     video: '/media/health-full.mp4',
     poster: '/media/health-aerial.jpg',
+    videoPos: 'center 22%',
     cell: { col: 1, row: 1 },
     tile: '#4D1D81',
     tileText: '#ffffff',
@@ -61,8 +62,32 @@ const BLURRED = new Set([1, 6, 10, 13, 20]);
 
 export default function Seriously() {
   const ref = useRef(null);
+  const videoRefs = useRef({});
   const [activeKey, setActiveKey] = useState('health');
+  const [ended, setEnded] = useState({});
   const [open, setOpen] = useState(null);
+
+  // only the active film plays; the others hold their frame
+  React.useEffect(() => {
+    Object.entries(videoRefs.current).forEach(([key, v]) => {
+      if (!v) return;
+      if (key === activeKey && !ended[key]) v.play().catch(() => {});
+      else v.pause();
+    });
+  }, [activeKey, ended]);
+
+  const hoverThing = (t) => {
+    setActiveKey(t.key);
+    // hovering a finished film starts it from the top again
+    if (ended[t.key]) {
+      const v = videoRefs.current[t.key];
+      if (v) {
+        v.currentTime = 0;
+        v.play().catch(() => {});
+      }
+      setEnded((e) => ({ ...e, [t.key]: false }));
+    }
+  };
   const active = open !== null ? THINGS[open] : null;
 
   // the section runs 60vh past its content; the content pins, and the next
@@ -90,16 +115,32 @@ export default function Seriously() {
         {THINGS.map((t) => (
           <video
             key={t.key}
+            ref={(el) => (videoRefs.current[t.key] = el)}
             src={t.video}
             poster={t.poster}
-            autoPlay
             muted
-            loop
             playsInline
-            className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${
-              activeKey === t.key ? 'opacity-100' : 'opacity-0'
+            preload="auto"
+            onEnded={() => setEnded((e) => ({ ...e, [t.key]: true }))}
+            style={t.videoPos ? { objectPosition: t.videoPos } : undefined}
+            className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ${
+              activeKey === t.key && !ended[t.key] ? 'opacity-100' : 'opacity-0'
             }`}
           />
+        ))}
+
+        {/* when a film finishes, its word takes the whole wall */}
+        {THINGS.map((t) => (
+          <div
+            key={`word-${t.key}`}
+            className={`absolute inset-0 flex items-center justify-center pointer-events-none transition-opacity duration-1000 ${
+              activeKey === t.key && ended[t.key] ? 'opacity-100' : 'opacity-0'
+            }`}
+          >
+            <p className="font-black-display font-extrabold uppercase tracking-tight text-white text-[17vw] leading-none">
+              {t.label}
+            </p>
+          </div>
         ))}
 
         {/* the grid — hairlines, blur panes, diamond cutouts */}
@@ -134,7 +175,7 @@ export default function Seriously() {
         {THINGS.map((t, i) => (
           <button
             key={t.key}
-            onMouseEnter={() => setActiveKey(t.key)}
+            onMouseEnter={() => hoverThing(t)}
             onClick={() => setOpen(i)}
             style={{
               left: `${(t.cell.col / COLS) * 100}%`,

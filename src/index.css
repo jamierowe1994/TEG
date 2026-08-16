@@ -112,6 +112,22 @@
   text-transform: uppercase;
 }
 
+/* the footer's giant cropped wordmark */
+.footer-wordmark {
+  font-family: var(--font-black);
+  font-weight: 800;
+  letter-spacing: -0.045em;
+  line-height: 0.75;
+  white-space: nowrap;
+  text-align: center;
+  user-select: none;
+  background: linear-gradient(180deg, #e9eaee 25%, rgba(233, 234, 238, 0.22) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+
 /* MD carousel — hovered card pops, siblings ease back; corners stay round
    because the transform never sits on the clipping element */
 .md-card {

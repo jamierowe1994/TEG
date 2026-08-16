@@ -6,7 +6,8 @@ import WhoWeAre from '../home/WhoWeAre';
 import BrandsPeople from '../home/BrandsPeople';
 import Seriously from '../home/Seriously';
 import BrandCarousel from '../home/BrandCarousel';
-import Outro from '../home/Outro';
+import FinalCta from '../home/FinalCta';
+import SiteFooter from '../home/SiteFooter';
 import useLenis from '../lib/useLenis';
 
 // Homepage structure (James's brief):
@@ -39,7 +40,8 @@ export default function Home() {
         <Seriously />
       </div>
       <BrandCarousel />
-      <Outro />
+      <FinalCta />
+      <SiteFooter />
     </motion.div>
   );
 }
