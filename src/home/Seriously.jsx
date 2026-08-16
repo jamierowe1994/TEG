@@ -18,7 +18,7 @@ const THINGS = [
     label: 'Health',
     video: '/media/health-full.mp4',
     poster: '/media/health-aerial.jpg',
-    videoPos: 'center 22%',
+    videoPos: 'center 32%',
     cell: { col: 0, row: 2 },
     tile: '#4D1D81',
     tileText: '#ffffff',
