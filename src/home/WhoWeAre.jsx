@@ -13,7 +13,7 @@ const PARAGRAPHS = [
 const TOTAL_WORDS = PARAGRAPHS.reduce((n, p) => n + p.split(' ').length, 0);
 
 function FillWord({ word, index, progress }) {
-  const start = 0.04 + (index / TOTAL_WORDS) * 0.52;
+  const start = 0.08 + (index / TOTAL_WORDS) * 0.6;
   const opacity = useTransform(progress, [start, start + 0.04], [0.13, 1]);
   return (
     <motion.span style={{ opacity }}>
@@ -34,15 +34,15 @@ export default function WhoWeAre() {
   const riseY = useTransform(approach, [0, 1], ['24vh', '0vh']);
   // …holds while it fills, then pans down with the scroll at the end to
   // close the gap into the next section
-  const blockY = useTransform(scrollYProgress, [0.05, 1], ['0vh', '6vh']);
+  const blockY = useTransform(scrollYProgress, [0.5, 1], ['0vh', '4vh']);
   // the invitation appears once the words have finished filling
-  const ctaOpacity = useTransform(scrollYProgress, [0.6, 0.72], [0, 1]);
-  const ctaY = useTransform(scrollYProgress, [0.6, 0.72], [24, 0]);
+  const ctaOpacity = useTransform(scrollYProgress, [0.7, 0.8], [0, 1]);
+  const ctaY = useTransform(scrollYProgress, [0.7, 0.8], [24, 0]);
 
   let wordIndex = 0;
 
   return (
-    <section ref={ref} className="relative h-[112vh]">
+    <section ref={ref} className="relative h-[185vh]">
       <div className="sticky top-0 h-screen flex items-start pt-[9vh] md:pt-[11vh] px-6 md:px-16 overflow-hidden">
         <motion.div style={{ y: riseY }} className="w-full">
         <motion.div style={{ y: blockY }} className="max-w-[1250px] mx-auto space-y-6 md:space-y-8">
