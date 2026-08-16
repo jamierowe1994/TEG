@@ -18,6 +18,13 @@ const MD_OVERRIDES = {
   'the-lettings-experts': '/media/tle-sue.jpg',
 };
 
+// hover films — plays once on hover, then fades back to the face.
+// More MDs join as James finds their clips.
+const MD_VIDEOS = {
+  'the-mortgage-experts': '/media/md-gareth.mp4',
+  'the-recruitment-experts': '/media/md-james.mp4',
+};
+
 const CARDS = EXPERIENCE_BRANDS.map((b) => ({
   key: b.id,
   brand: b.name,
@@ -25,14 +32,34 @@ const CARDS = EXPERIENCE_BRANDS.map((b) => ({
   md: b.md?.name,
   photo: MD_OVERRIDES[b.id] || b.md?.photo || b.cardPhoto,
   logo: b.whiteLogo,
+  video: MD_VIDEOS[b.id],
   isRecruitment: b.id === 'the-recruitment-experts',
   url: b.url,
   blurb: b.description,
 }));
 
 function Card({ c, index }) {
+  const vref = React.useRef(null);
+  const [vEnded, setVEnded] = React.useState(false);
+  const [hovering, setHovering] = React.useState(false);
+  const enter = () => {
+    setHovering(true);
+    const v = vref.current;
+    if (v) {
+      setVEnded(false);
+      v.currentTime = 0;
+      v.play().catch(() => {});
+    }
+  };
+  const leave = () => {
+    setHovering(false);
+    const v = vref.current;
+    if (v) v.pause();
+  };
   return (
     <motion.div
+      onMouseEnter={enter}
+      onMouseLeave={leave}
       initial={{ opacity: 0, y: 46, scale: 0.94 }}
       whileInView={{ opacity: 1, y: 0, scale: 1 }}
       viewport={{ once: true, margin: '-8%' }}
@@ -47,6 +74,19 @@ function Card({ c, index }) {
         className="absolute inset-0 w-full h-full object-cover transition-all duration-500
           grayscale-[35%] group-hover:grayscale-0 group-hover:scale-105"
       />
+      {c.video && (
+        <video
+          ref={vref}
+          src={c.video}
+          muted
+          playsInline
+          preload="metadata"
+          onEnded={() => setVEnded(true)}
+          className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-500 ${
+            hovering && !vEnded ? 'opacity-100' : 'opacity-0'
+          }`}
+        />
+      )}
       <div className="absolute inset-0 bg-gradient-to-b from-black/45 via-transparent to-black/60" />
       {c.isRecruitment ? (
         <p className="absolute top-4 left-4 text-white font-semibold text-[0.85rem] leading-tight">
