@@ -70,13 +70,15 @@ export default function Seriously() {
   // the film runs clean — only the golf shot pings in mid-play. When the
   // film finishes on HEALTH, every photo fades into its box around the word.
   const PINGS = [
-    { t0: 13.5, t1: 99, cell: [5, 2], src: '/media/health-golf.jpg', pos: 'center 72%' },
     { cell: [1, 0], src: '/media/health-race.jpg' },
-    { cell: [6, 0], src: '/media/health-medal.jpg' },
     { cell: [2, 1], src: '/media/gareth-1.jpg' },
-    { cell: [3, 1], src: '/media/gareth-2.jpg' },
+    { cell: [6, 0], src: '/media/gareth-2.jpg' },
+    { cell: [5, 2], src: '/media/health-golf.jpg', pos: 'center 100%' },
     { cell: [1, 2], src: '/media/health-cover.jpg' },
   ];
+  // the film's viewpoint drops for Sean's finish-line segment so he crosses
+  // through the middle of the band, then returns home
+  const PAN = [[0, 30], [5.7, 30], [6.3, 58], [9.2, 58], [9.9, 30], [25, 30]];
   const [pingSet, setPingSet] = useState('');
   const [startWord, setStartWord] = useState(false);
   React.useEffect(() => {
@@ -91,6 +93,16 @@ export default function Seriously() {
         setPingSet((prev) => (prev === act ? prev : act));
         const sw = !v.paused && t < 1.35;
         setStartWord((prev) => (prev === sw ? prev : sw));
+        let y = 30;
+        for (let i = 0; i < PAN.length - 1; i++) {
+          const [t0, y0] = PAN[i];
+          const [t1, y1] = PAN[i + 1];
+          if (t >= t0 && t <= t1) {
+            y = y0 + ((t - t0) / (t1 - t0)) * (y1 - y0);
+            break;
+          }
+        }
+        v.style.objectPosition = `center ${y}%`;
       }
       raf = requestAnimationFrame(tick);
     };
