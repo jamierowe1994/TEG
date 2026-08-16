@@ -71,14 +71,14 @@ export default function Seriously() {
   // film finishes on HEALTH, every photo fades into its box around the word.
   const PINGS = [
     { cell: [1, 0], src: '/media/health-race.jpg' },
-    { cell: [2, 1], src: '/media/gareth-1.jpg' },
-    { cell: [6, 0], src: '/media/gareth-2.jpg' },
+    { cell: [6, 0], src: '/media/gareth-1.jpg' },
+    { cell: [7, 0], src: '/media/gareth-2.jpg' },
     { cell: [5, 2], src: '/media/health-golf.jpg', pos: 'center 100%' },
     { cell: [1, 2], src: '/media/health-cover.jpg' },
   ];
   // the film's viewpoint drops for Sean's finish-line segment so he crosses
   // through the middle of the band, then returns home
-  const PAN = [[0, 30], [5.7, 30], [6.3, 58], [9.2, 58], [9.9, 30], [25, 30]];
+  const PAN = [[0, 30], [5.7, 30], [6.3, 58], [12.5, 58], [13.3, 30], [25, 30]];
   const [pingSet, setPingSet] = useState('');
   const [startWord, setStartWord] = useState(false);
   React.useEffect(() => {

@@ -30,7 +30,6 @@ export default function Home() {
 
   return (
     <motion.div style={{ backgroundColor: pageBg }} className="text-foreground min-h-screen overflow-x-clip">
-      <div className="film-texture" aria-hidden="true" />
       <ExperienceNav dark />
       <Hero />
       <WhoWeAre />
