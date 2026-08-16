@@ -66,7 +66,7 @@ const BRANDS = [
     line: 'Meet the recruiters',
     pastel: '#FBD9DC',
     accent: '#E8222D',
-    photos: ['/media/bbs-89.jpg'],
+    photos: ['/media/tre-1.jpg', '/media/tre-2.jpg', '/media/tre-3.jpg', '/media/tre-4.jpg', '/media/tre-pill.jpg', '/media/bbs-89.jpg'],
   },
 ];
 

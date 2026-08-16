@@ -24,11 +24,9 @@ export default function Home() {
     target: brandsRef,
     offset: ['start end', 'end start'],
   });
-  const pageBg = useTransform(
-    brandsProgress,
-    [0.03, 0.11, 0.9, 0.97],
-    ['#F1F1F1', '#0d0c0f', '#0d0c0f', '#F1F1F1']
-  );
+  // once the dark span starts it holds — the carousel rolls over the top
+  // of the video wall, so there's no colour flip to see on the way out
+  const pageBg = useTransform(brandsProgress, [0.03, 0.11], ['#F1F1F1', '#0d0c0f']);
 
   return (
     <motion.div style={{ backgroundColor: pageBg }} className="text-foreground min-h-screen overflow-x-clip">

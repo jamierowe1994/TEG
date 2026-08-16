@@ -21,7 +21,7 @@ export default function FinalCta() {
           <span className="block text-[8.5vw] md:text-[5.6vw]">
             Do something
             <span className="inline-block align-middle mx-3 md:mx-4 w-[22vw] h-[10vw] md:w-[11vw] md:h-[4.8vw] rounded-full overflow-hidden">
-              <img src="/media/bbs-77.jpg" alt="One of ours, mid-laugh" className="w-full h-full object-cover" />
+              <img src="/media/tre-pill.jpg" alt="One of ours, mid-laugh" className="w-full h-full object-cover" />
             </span>
           </span>
           <span className="block text-[6.5vw] md:text-[4.2vw] mt-1">you're proud of.</span>

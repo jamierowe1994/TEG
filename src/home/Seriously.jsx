@@ -19,7 +19,7 @@ const THINGS = [
     video: '/media/health-full.mp4',
     poster: '/media/health-aerial.jpg',
     videoPos: 'center 22%',
-    cell: { col: 1, row: 1 },
+    cell: { col: 0, row: 2 },
     tile: '#4D1D81',
     tileText: '#ffffff',
     blurb:
@@ -93,10 +93,10 @@ export default function Seriously() {
   // the section runs 60vh past its content; the content pins, and the next
   // section rolls up over the top of it
   return (
-    <section ref={ref} className="relative pb-[100vh] text-white">
-      <div className="sticky top-0 pt-20 md:pt-24 overflow-hidden">
-      <div className="px-6 md:px-12 max-w-[1700px] mx-auto">
-        <h2 className="font-black-display font-extrabold uppercase tracking-tight text-4xl md:text-6xl leading-[1.02]">
+    <section ref={ref} className="relative h-[200vh] text-white">
+      <div className="sticky top-0 h-screen flex flex-col overflow-hidden pt-8 md:pt-10">
+      <div className="px-6 md:px-12 w-full max-w-[1700px] mx-auto shrink-0">
+        <h2 className="font-black-display font-extrabold uppercase tracking-tight text-3xl md:text-5xl leading-[1.02]">
           Three things we
           <br />
           take seriously<span className="text-[#9565FF]">.</span>
@@ -109,7 +109,7 @@ export default function Seriously() {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: '-8%' }}
         transition={{ duration: 0.9, ease: EASE }}
-        className="relative mt-12 md:mt-16 mx-3 md:mx-8 h-[58vh] md:h-[72vh] rounded-lg overflow-hidden bg-[#0d0c0f]"
+        className="relative mt-6 md:mt-8 mx-3 md:mx-8 mb-4 md:mb-6 flex-1 rounded-lg overflow-hidden bg-[#0d0c0f]"
       >
         {/* the films — one per story, cross-fading as you hover the chips */}
         {THINGS.map((t) => (
