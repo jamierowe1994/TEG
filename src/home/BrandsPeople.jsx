@@ -194,7 +194,7 @@ export default function BrandsPeople() {
       ref={ref}
       id="brands"
       style={{ color: fg }}
-      className="relative pt-14 md:pt-16 pb-24 md:pb-28 overflow-hidden"
+      className="relative pt-20 md:pt-24 pb-36 md:pb-48 overflow-hidden"
     >
       <div className="relative flex flex-col md:flex-row items-center gap-10 md:gap-14 px-6 md:px-10 lg:px-14 max-w-[1700px] mx-auto">
         <div className="relative w-full md:w-[36vw] shrink-0">

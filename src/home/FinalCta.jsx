@@ -20,8 +20,13 @@ export default function FinalCta() {
         <h2 className="font-black-display font-extrabold uppercase tracking-tight leading-[1.0]">
           <span className="block text-[11vw] md:text-[7.6vw]">
             Do
-            <span className="inline-block align-middle mx-3 md:mx-5 w-[26vw] h-[11.5vw] md:w-[15vw] md:h-[6.4vw] rounded-full overflow-hidden">
-              <img src="/media/bbs-77.jpg" alt="One of ours, mid-laugh" className="w-full h-full object-cover" />
+            <span className="inline-block align-middle mx-3 md:mx-5 w-[30vw] h-[19vw] md:w-[16vw] md:h-[10.5vw] rounded-[1.4rem] md:rounded-[2rem] overflow-hidden">
+              <img
+                src="/media/bbs-77.jpg"
+                alt="One of ours, mid-laugh"
+                style={{ objectPosition: 'center 28%' }}
+                className="w-full h-full object-cover"
+              />
             </span>
             something
           </span>

@@ -196,7 +196,7 @@ export default function Seriously() {
 
   return (
     <section ref={ref} className="relative h-[300vh] text-white">
-      <div className="sticky top-0 h-screen flex flex-col overflow-hidden pt-8 md:pt-10">
+      <div className="sticky top-0 h-screen flex flex-col overflow-hidden pt-12 md:pt-16">
         <div className="px-6 md:px-12 w-full max-w-[1700px] mx-auto shrink-0">
           <h2 className="font-black-display font-extrabold uppercase tracking-tight text-3xl md:text-5xl leading-[1.02]">
             Three things we
@@ -211,7 +211,7 @@ export default function Seriously() {
           viewport={{ once: true, margin: '-8%' }}
           transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
           ref={panelRef}
-          className="relative mt-6 md:mt-8 mx-3 md:mx-8 mb-4 md:mb-6 flex-1 rounded-lg overflow-hidden bg-[#0d0c0f]"
+          className="relative mt-6 md:mt-8 mx-3 md:mx-8 mb-10 md:mb-14 flex-1 rounded-lg overflow-hidden bg-[#0d0c0f]"
         >
           {THINGS.map((t) => (
             <video
