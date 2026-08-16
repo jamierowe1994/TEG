@@ -24,6 +24,7 @@ const MD_VIDEOS = {
   'the-mortgage-experts': '/media/md-gareth.mp4',
   'the-recruitment-experts': '/media/md-james.mp4',
   'the-auction-experts': '/media/md-ray.mp4',
+  'the-lettings-experts': '/media/md-susan.mp4',
 };
 
 const CARDS = EXPERIENCE_BRANDS.map((b) => ({
