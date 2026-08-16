@@ -42,7 +42,17 @@ const BRANDS = [
     mdPhoto: '/media/tle-sue.jpg',
     story:
       "This is Sue. Lettings is a people business pretending to be a property business — and nobody knows that better. Sue leads The Lettings Experts: local agents who treat every landlord's property like their own book of business.",
-    photos: ['/media/tle-1.jpg'],
+    photos: [
+      '/media/tle-1.jpg',
+      '/media/tle-2.jpg',
+      '/media/tle-3.jpg',
+      '/media/tle-4.jpg',
+      '/media/tle-5.jpg',
+      '/media/tle-6.jpg',
+      '/media/tle-7.jpg',
+      '/media/tle-8.jpg',
+      { video: '/media/md-susan.mp4' },
+    ],
   },
   {
     key: 'tme',
@@ -85,7 +95,7 @@ function BrandModal({ brand, onClose }) {
         exit={{ opacity: 0, y: 30, scale: 0.97 }}
         transition={{ type: 'spring', stiffness: 240, damping: 26 }}
         onClick={(e) => e.stopPropagation()}
-        className="relative w-full max-w-5xl max-h-[90vh] overflow-y-auto rounded-2xl bg-[#F7F6F4] text-[#131313] p-6 md:p-12"
+        className="relative w-full max-w-6xl max-h-[92vh] overflow-y-auto rounded-2xl bg-[#F7F6F4] text-[#131313] p-6 md:p-12"
       >
         <button
           onClick={onClose}
@@ -107,9 +117,13 @@ function BrandModal({ brand, onClose }) {
             {/* the agency in pictures — a proper square grid */}
             <div>
               <div className="grid grid-cols-3 gap-2.5">
-                {Array.from({ length: 9 }, (_, i) => brand.photos[i % brand.photos.length]).map((p, i) => (
-                  <img key={i} src={p} alt="" loading="lazy" className="w-full aspect-square object-cover rounded-lg" />
-                ))}
+                {Array.from({ length: 9 }, (_, i) => brand.photos[i % brand.photos.length]).map((m, i) =>
+                  typeof m === 'object' ? (
+                    <video key={i} src={m.video} controls playsInline className="w-full aspect-square object-cover rounded-lg bg-black" />
+                  ) : (
+                    <img key={i} src={m} alt="" loading="lazy" className="w-full aspect-square object-cover rounded-lg" />
+                  )
+                )}
               </div>
             </div>
 
@@ -144,9 +158,13 @@ function BrandModal({ brand, onClose }) {
         ) : (
           <div className="mt-8">
             <div className="grid grid-cols-2 md:grid-cols-3 gap-2.5">
-              {brand.photos.map((p) => (
-                <img key={p} src={p} alt="" loading="lazy" className="w-full aspect-square object-cover rounded-lg" />
-              ))}
+              {brand.photos.map((m, i) =>
+                typeof m === 'object' ? (
+                  <video key={i} src={m.video} controls playsInline className="w-full aspect-square object-cover rounded-lg bg-black" />
+                ) : (
+                  <img key={i} src={m} alt="" loading="lazy" className="w-full aspect-square object-cover rounded-lg" />
+                )
+              )}
             </div>
             <p className="mt-6 text-sm font-light text-black/50">
               The full story — and the person behind it — lands here soon.
