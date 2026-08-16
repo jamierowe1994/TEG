@@ -67,6 +67,34 @@ export default function Seriously() {
   const [ended, setEnded] = useState({});
   const [open, setOpen] = useState(null);
 
+  // the 100k film's crop follows him: down for the lean-in, up for the
+  // stand, home again when the scene changes. Times are seconds.
+  const HEALTH_PAN = [
+    [0, 32], [13, 32], [14.2, 38], [17.8, 38], [19.2, 14], [26.5, 14], [28, 32], [40, 32],
+  ];
+  React.useEffect(() => {
+    let raf;
+    const tick = () => {
+      const v = videoRefs.current.health;
+      if (v && !v.paused) {
+        const t = v.currentTime;
+        let y = 32;
+        for (let i = 0; i < HEALTH_PAN.length - 1; i++) {
+          const [t0, y0] = HEALTH_PAN[i];
+          const [t1, y1] = HEALTH_PAN[i + 1];
+          if (t >= t0 && t <= t1) {
+            y = y0 + ((t - t0) / (t1 - t0)) * (y1 - y0);
+            break;
+          }
+        }
+        v.style.objectPosition = `center ${y}%`;
+      }
+      raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, []);
+
   // only the active film plays; the others hold their frame
   React.useEffect(() => {
     Object.entries(videoRefs.current).forEach(([key, v]) => {
@@ -93,7 +121,7 @@ export default function Seriously() {
   // the section runs 60vh past its content; the content pins, and the next
   // section rolls up over the top of it
   return (
-    <section ref={ref} className="relative h-[200vh] text-white">
+    <section ref={ref} className="relative h-[300vh] text-white">
       <div className="sticky top-0 h-screen flex flex-col overflow-hidden pt-8 md:pt-10">
       <div className="px-6 md:px-12 w-full max-w-[1700px] mx-auto shrink-0">
         <h2 className="font-black-display font-extrabold uppercase tracking-tight text-3xl md:text-5xl leading-[1.02]">

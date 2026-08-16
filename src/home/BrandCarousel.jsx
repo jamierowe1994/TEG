@@ -102,7 +102,7 @@ export default function BrandCarousel() {
     <motion.section
       ref={ref}
       style={{ borderTopLeftRadius: topRadius, borderTopRightRadius: topRadius }}
-      className="relative z-10 bg-background text-foreground py-24 md:py-32 overflow-hidden"
+      className="relative z-10 -mt-[100vh] bg-background text-foreground py-24 md:py-32 overflow-hidden"
     >
       <div className="px-6 md:px-12 max-w-[1700px] mx-auto">
         <motion.div
