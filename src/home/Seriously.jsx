@@ -67,16 +67,15 @@ export default function Seriously() {
   const [ended, setEnded] = useState({});
   const [open, setOpen] = useState(null);
 
-  // photos ping into the wall's boxes while the health film plays —
-  // Gareth's before/after lands side by side. Times are seconds; cells are
-  // [col,row] and avoid the three purple tiles.
+  // the film runs clean — only the golf shot pings in mid-play. When the
+  // film finishes on HEALTH, every photo fades into its box around the word.
   const PINGS = [
-    { t0: 3, t1: 6.5, cell: [6, 0], src: '/media/health-medal.jpg' },
-    { t0: 5.5, t1: 9, cell: [1, 0], src: '/media/health-race.jpg' },
-    { t0: 10, t1: 14.5, cell: [2, 1], src: '/media/gareth-1.jpg' },
-    { t0: 10, t1: 14.5, cell: [3, 1], src: '/media/gareth-2.jpg' },
-    { t0: 13.5, t1: 16.5, cell: [5, 2], src: '/media/health-golf.jpg' },
-    { t0: 15.5, t1: 19, cell: [1, 2], src: '/media/health-cover.jpg' },
+    { t0: 13.5, t1: 99, cell: [5, 2], src: '/media/health-golf.jpg', pos: 'center 72%' },
+    { cell: [1, 0], src: '/media/health-race.jpg' },
+    { cell: [6, 0], src: '/media/health-medal.jpg' },
+    { cell: [2, 1], src: '/media/gareth-1.jpg' },
+    { cell: [3, 1], src: '/media/gareth-2.jpg' },
+    { cell: [1, 2], src: '/media/health-cover.jpg' },
   ];
   const [pingSet, setPingSet] = useState('');
   const [startWord, setStartWord] = useState(false);
@@ -86,7 +85,7 @@ export default function Seriously() {
       const v = videoRefs.current.health;
       if (v) {
         const t = v.currentTime;
-        const act = PINGS.map((pg, i) => (t >= pg.t0 && t <= pg.t1 ? i : -1))
+        const act = PINGS.map((pg, i) => (pg.t0 != null && t >= pg.t0 && t <= pg.t1 ? i : -1))
           .filter((i) => i >= 0)
           .join(',');
         setPingSet((prev) => (prev === act ? prev : act));
@@ -165,7 +164,7 @@ export default function Seriously() {
         {THINGS.map((t) => (
           <div
             key={`word-${t.key}`}
-            className={`absolute inset-0 flex items-center justify-center pointer-events-none transition-opacity duration-1000 ${
+            className={`absolute inset-0 z-[6] flex items-center justify-center pointer-events-none transition-opacity duration-1000 ${
               activeKey === t.key && ended[t.key] ? 'opacity-100' : 'opacity-0'
             }`}
           >
@@ -214,24 +213,29 @@ export default function Seriously() {
         </div>
 
         {/* photos pinging into the wall's boxes */}
-        {PINGS.map((pg, i) => (
-          <img
-            key={`ping-${i}`}
-            src={pg.src}
-            alt=""
-            style={{
-              left: `${(pg.cell[0] / COLS) * 100}%`,
-              top: `${(pg.cell[1] / ROWS) * 100}%`,
-              width: `${100 / COLS}%`,
-              height: `${100 / ROWS}%`,
-            }}
-            className={`absolute object-cover z-[5] border-[0.5px] border-black/60 transition-all duration-500 ${
-              activeKey === 'health' && pingSet.split(',').includes(String(i))
-                ? 'opacity-100 scale-100'
-                : 'opacity-0 scale-75'
-            }`}
-          />
-        ))}
+        {PINGS.map((pg, i) => {
+          const show =
+            activeKey === 'health' &&
+            (ended.health || pingSet.split(',').includes(String(i)));
+          return (
+            <img
+              key={`ping-${i}`}
+              src={pg.src}
+              alt=""
+              style={{
+                left: `${(pg.cell[0] / COLS) * 100}%`,
+                top: `${(pg.cell[1] / ROWS) * 100}%`,
+                width: `${100 / COLS}%`,
+                height: `${100 / ROWS}%`,
+                objectPosition: pg.pos || 'center',
+                transitionDelay: ended.health ? `${i * 130}ms` : '0ms',
+              }}
+              className={`absolute object-cover z-[5] border-[0.5px] border-black/60 transition-all duration-500 ${
+                show ? 'opacity-100 scale-100' : 'opacity-0 scale-75'
+              }`}
+            />
+          );
+        })}
 
         {/* the tiles — each claims a full pane of the wall. Hover switches the
             films; click opens the story. Deepest purple → lightest. */}

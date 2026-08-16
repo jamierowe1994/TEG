@@ -22,6 +22,7 @@ const MD_OVERRIDES = {
 // More MDs join as James finds their clips.
 const MD_VIDEOS = {
   'the-property-experts': '/media/md-jim.mp4',
+  'fine-and-country': '/media/md-lee.mp4',
   'the-mortgage-experts': '/media/md-gareth.mp4',
   'the-recruitment-experts': '/media/md-james.mp4',
   'the-auction-experts': '/media/md-ray.mp4',
