@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { motion } from 'framer-motion';
+import React, { useRef, useState } from 'react';
+import { motion, useScroll, useTransform } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { ArrowLeft, ArrowRight, ArrowUpRight } from 'lucide-react';
 import { EXPERIENCE_BRANDS } from '../experience/brands';
@@ -30,14 +30,16 @@ const CARDS = EXPERIENCE_BRANDS.map((b) => ({
   blurb: b.description,
 }));
 
-function Card({ c }) {
+function Card({ c, index }) {
   return (
     <motion.div
-      whileHover={{ y: -14, scale: 1.02 }}
-      transition={{ type: 'spring', stiffness: 260, damping: 22 }}
-      className="group relative shrink-0 w-[78vw] sm:w-[38vw] lg:w-[22.5vw] h-[52vh] md:h-[58vh]
-        rounded-[1.8rem] overflow-hidden bg-neutral-300 cursor-pointer"
+      initial={{ opacity: 0, y: 46, scale: 0.94 }}
+      whileInView={{ opacity: 1, y: 0, scale: 1 }}
+      viewport={{ once: true, margin: '-8%' }}
+      transition={{ type: 'spring', stiffness: 170, damping: 22, delay: (index % 4) * 0.12 }}
+      className="md-card group relative shrink-0 w-[78vw] sm:w-[38vw] lg:w-[22.5vw] h-[52vh] md:h-[58vh] cursor-pointer"
     >
+      <div className="relative w-full h-full rounded-[1.8rem] overflow-hidden bg-neutral-300">
       <img
         src={c.photo}
         alt={c.md ? `${c.md} — ${c.brand}` : c.brand}
@@ -75,19 +77,33 @@ function Card({ c }) {
             The brand <ArrowUpRight size={13} />
           </Link>
         </div>
+        </div>
       </div>
     </motion.div>
   );
 }
 
 export default function BrandCarousel() {
+  const ref = useRef(null);
   const [i, setI] = useState(0);
   const max = CARDS.length - VISIBLE;
   const prev = () => setI((v) => Math.max(0, v - 1));
   const next = () => setI((v) => Math.min(max, v + 1));
 
+  // rolls up over the black wall with curved shoulders, squaring off only
+  // in the last moments before it reaches the top
+  const { scrollYProgress: approach } = useScroll({
+    target: ref,
+    offset: ['start end', 'start start'],
+  });
+  const topRadius = useTransform(approach, [0.8, 1], ['3.5rem', '0rem']);
+
   return (
-    <section className="relative bg-background text-foreground py-24 md:py-32 overflow-hidden">
+    <motion.section
+      ref={ref}
+      style={{ borderTopLeftRadius: topRadius, borderTopRightRadius: topRadius }}
+      className="relative z-10 bg-background text-foreground py-24 md:py-32 overflow-hidden"
+    >
       <div className="px-6 md:px-12 max-w-[1700px] mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 26 }}
@@ -116,10 +132,10 @@ export default function BrandCarousel() {
         <motion.div
           animate={{ x: `calc(-${i} * (min(78vw, 22.5vw) + 1.25rem))` }}
           transition={{ type: 'spring', stiffness: 140, damping: 26 }}
-          className="flex gap-5 px-6 md:px-12 w-max"
+          className="md-strip flex gap-5 px-6 md:px-12 w-max"
         >
-          {CARDS.map((c) => (
-            <Card key={c.key} c={c} />
+          {CARDS.map((c, idx) => (
+            <Card key={c.key} c={c} index={idx} />
           ))}
         </motion.div>
       </div>
@@ -144,6 +160,6 @@ export default function BrandCarousel() {
           <ArrowRight size={17} />
         </button>
       </div>
-    </section>
+    </motion.section>
   );
 }

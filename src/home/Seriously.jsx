@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { X, Plus } from 'lucide-react';
 import { EASE } from '../experience/motion';
 
@@ -63,14 +63,13 @@ export default function Seriously() {
   const ref = useRef(null);
   const [activeKey, setActiveKey] = useState('health');
   const [open, setOpen] = useState(null);
-  const { scrollYProgress } = useScroll({ target: ref, offset: ['start end', 'end start'] });
-  // white in the black span; hands over to ink as Actual Humans arrives
-  const fg = useTransform(scrollYProgress, [0.8, 0.92], ['#ffffff', '#131313']);
-
   const active = open !== null ? THINGS[open] : null;
 
+  // the section runs 60vh past its content; the content pins, and the next
+  // section rolls up over the top of it
   return (
-    <motion.section ref={ref} style={{ color: fg }} className="relative py-20 md:py-24 overflow-hidden">
+    <section ref={ref} className="relative pb-[100vh] text-white">
+      <div className="sticky top-0 pt-20 md:pt-24 overflow-hidden">
       <div className="px-6 md:px-12 max-w-[1700px] mx-auto">
         <h2 className="font-black-display font-extrabold uppercase tracking-tight text-4xl md:text-6xl leading-[1.02]">
           Three things we
@@ -203,6 +202,7 @@ export default function Seriously() {
           </motion.div>
         )}
       </AnimatePresence>
-    </motion.section>
+      </div>
+    </section>
   );
 }

@@ -112,6 +112,14 @@
   text-transform: uppercase;
 }
 
+/* MD carousel — hovered card pops, siblings ease back; corners stay round
+   because the transform never sits on the clipping element */
+.md-card {
+  transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.md-strip:hover .md-card { transform: scale(0.96); }
+.md-strip:hover .md-card:hover { transform: scale(1.045) translateY(-12px); z-index: 5; }
+
 /* hide scrollbars on swipe shelves */
 .scrollbar-none { scrollbar-width: none; }
 .scrollbar-none::-webkit-scrollbar { display: none; }

@@ -6,6 +6,7 @@ import Lenis from 'lenis';
 export default function useLenis() {
   useEffect(() => {
     const lenis = new Lenis({ lerp: 0.08, smoothWheel: true, wheelMultiplier: 1 });
+    window.__lenis = lenis; // debugging / driving the page in tests
     let raf;
     const loop = (time) => {
       lenis.raf(time);
@@ -15,6 +16,7 @@ export default function useLenis() {
     return () => {
       cancelAnimationFrame(raf);
       lenis.destroy();
+      if (window.__lenis === lenis) delete window.__lenis;
     };
   }, []);
 }

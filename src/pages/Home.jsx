@@ -25,7 +25,7 @@ export default function Home() {
   });
   const pageBg = useTransform(
     brandsProgress,
-    [0.03, 0.11, 0.82, 0.93],
+    [0.03, 0.11, 0.9, 0.97],
     ['#F1F1F1', '#0d0c0f', '#0d0c0f', '#F1F1F1']
   );
 
