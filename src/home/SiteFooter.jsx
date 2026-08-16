@@ -16,19 +16,19 @@ function backToTop() {
 
 export default function SiteFooter() {
   return (
-    <footer className="relative z-30 overflow-hidden bg-white px-4 pt-10 sm:px-8">
-      <div className="relative mx-auto max-w-6xl rounded-[2rem] bg-[#f4f4f5] p-8 shadow-[0_18px_44px_-30px_rgba(17,24,39,0.14)] sm:p-12">
+    <footer className="relative z-30 overflow-hidden bg-background px-0 pt-0">
+      <div className="relative w-full bg-[#0d0c0f] text-white/70 px-8 py-12 sm:px-14 sm:py-16">
         <button
           onClick={backToTop}
           aria-label="Back to top"
-          className="absolute right-6 top-6 sm:right-10 sm:top-10 w-10 h-10 rounded-full border border-gray-300 text-gray-500 hover:text-gray-900 hover:border-gray-500 transition-colors flex items-center justify-center"
+          className="absolute right-6 top-6 sm:right-10 sm:top-10 w-10 h-10 rounded-full border border-white/25 text-white/60 hover:text-white hover:border-white/60 transition-colors flex items-center justify-center"
         >
           ↑
         </button>
-        <div className="flex flex-col justify-between gap-10 sm:flex-row sm:gap-14">
+        <div className="mx-auto max-w-6xl flex flex-col justify-between gap-10 sm:flex-row sm:gap-14">
           <div className="max-w-xs">
-            <img src="/teg-logo.png" alt="The Experts Group" className="h-14 w-auto" />
-            <div className="mt-5 flex items-center gap-4 text-[#4D1D81]">
+            <img src="/teg-logo-white.png" alt="The Experts Group" className="h-14 w-auto" />
+            <div className="mt-5 flex items-center gap-4 text-[#B78AF7]">
               {SOCIALS.map((name) => {
                 const icon = ICONS.find((i) => i.name === name);
                 return (
@@ -36,7 +36,7 @@ export default function SiteFooter() {
                     key={name}
                     href="#"
                     aria-label={name}
-                    className="transition hover:-translate-y-0.5 hover:text-[#5f2599]"
+                    className="transition hover:-translate-y-0.5 hover:text-white"
                   >
                     <SocialIcon icon={icon} className="h-5 w-5" />
                   </a>
@@ -46,19 +46,19 @@ export default function SiteFooter() {
           </div>
           <div className="flex gap-12 pr-0 sm:gap-16 sm:pr-20">
             <div>
-              <p className="text-xs font-semibold uppercase tracking-widest text-gray-400">Explore</p>
-              <ul className="mt-4 space-y-2.5 text-sm text-gray-600">
-                <li><a href="#brands" className="hover:text-gray-900">Our Brands</a></li>
-                <li><Link to="/partnership" className="hover:text-gray-900">Partnership</Link></li>
-                <li><Link to="/about" className="hover:text-gray-900">About</Link></li>
-                <li><Link to="/vacancies" className="hover:text-gray-900">Vacancies</Link></li>
+              <p className="text-xs font-semibold uppercase tracking-widest text-white/40">Explore</p>
+              <ul className="mt-4 space-y-2.5 text-sm text-white/65">
+                <li><a href="#brands" className="hover:text-white">Our Brands</a></li>
+                <li><Link to="/partnership" className="hover:text-white">Partnership</Link></li>
+                <li><Link to="/about" className="hover:text-white">About</Link></li>
+                <li><Link to="/vacancies" className="hover:text-white">Vacancies</Link></li>
               </ul>
             </div>
             <div>
-              <p className="text-xs font-semibold uppercase tracking-widest text-gray-400">Contact</p>
-              <ul className="mt-4 space-y-2.5 text-sm text-gray-600">
+              <p className="text-xs font-semibold uppercase tracking-widest text-white/40">Contact</p>
+              <ul className="mt-4 space-y-2.5 text-sm text-white/65">
                 <li>
-                  <a href="mailto:hello@theexpertsgroup.co.uk" className="hover:text-gray-900">
+                  <a href="mailto:hello@theexpertsgroup.co.uk" className="hover:text-white">
                     hello@theexpertsgroup.co.uk
                   </a>
                 </li>
@@ -67,11 +67,11 @@ export default function SiteFooter() {
           </div>
         </div>
 
-        <div className="mt-10 flex flex-col items-center justify-between gap-3 border-t border-gray-200 pt-6 text-xs text-gray-400 sm:flex-row">
+        <div className="mx-auto max-w-6xl mt-10 flex flex-col items-center justify-between gap-3 border-t border-white/12 pt-6 text-xs text-white/35 sm:flex-row">
           <span>© {new Date().getFullYear()} The Experts Group</span>
           <div className="flex gap-6">
-            <Link to="/privacy" className="transition hover:text-gray-900">Privacy</Link>
-            <Link to="/terms" className="transition hover:text-gray-900">Terms</Link>
+            <Link to="/privacy" className="transition hover:text-white">Privacy</Link>
+            <Link to="/terms" className="transition hover:text-white">Terms</Link>
           </div>
         </div>
       </div>

@@ -15,18 +15,19 @@ export default function FinalCta() {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: '-15%' }}
         transition={{ duration: 0.9, ease: EASE }}
-        className="text-center max-w-5xl"
+        className="text-center max-w-6xl"
       >
-        <h2 className="font-black-display font-extrabold uppercase tracking-tight leading-[1.02]">
-          <span className="block text-[8.5vw] md:text-[5.6vw]">
-            Do something
-            <span className="inline-block align-middle mx-3 md:mx-4 w-[22vw] h-[10vw] md:w-[11vw] md:h-[4.8vw] rounded-full overflow-hidden">
-              <img src="/media/tre-pill.jpg" alt="One of ours, mid-laugh" className="w-full h-full object-cover" />
+        <h2 className="font-black-display font-extrabold uppercase tracking-tight leading-[1.0]">
+          <span className="block text-[11vw] md:text-[7.6vw]">
+            Do
+            <span className="inline-block align-middle mx-3 md:mx-5 w-[26vw] h-[11.5vw] md:w-[15vw] md:h-[6.4vw] rounded-full overflow-hidden">
+              <img src="/media/bbs-77.jpg" alt="One of ours, mid-laugh" className="w-full h-full object-cover" />
             </span>
+            something
           </span>
-          <span className="block text-[6.5vw] md:text-[4.2vw] mt-1">you're proud of.</span>
+          <span className="block text-[9vw] md:text-[6.2vw] mt-1">you're proud of.</span>
         </h2>
-        <p className="mt-5 font-script text-[5.5vw] md:text-[2.2vw] text-[#9565FF]">
+        <p className="mt-6 font-script text-[6vw] md:text-[2.6vw] text-[#9565FF]">
           Live a life you love.
         </p>
         <div className="mt-10 flex items-center justify-center gap-4">

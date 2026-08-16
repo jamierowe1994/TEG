@@ -41,7 +41,7 @@ export default function Hero() {
   // the canvas colour of the next section fades in behind the shrinking
   // film, so the hand-off reads as one fluid surface
   const canvasIn = useTransform(exit, [0, 0.1], [0, 1]);
-  const filmY = useTransform(exit, [0, 1], ['0vh', '10vh']);
+  const filmY = useTransform(exit, [0, 1], ['0vh', '3vh']);
 
   // the veil lifts in a soft circle that follows the cursor
   const onMove = (e) => {

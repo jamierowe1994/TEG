@@ -180,7 +180,10 @@ export default function Seriously() {
               activeKey === t.key && ended[t.key] ? 'opacity-100' : 'opacity-0'
             }`}
           >
-            <p className="font-black-display font-extrabold uppercase tracking-tight text-white text-[17vw] leading-none">
+            <p
+              className="font-black-display font-extrabold uppercase tracking-tight text-white leading-none"
+              style={{ fontSize: `${Math.min(17, 82 / (t.label.length * 0.62))}vw` }}
+            >
               {t.label}
             </p>
           </div>
@@ -240,10 +243,10 @@ export default function Seriously() {
                 width: `${100 / COLS}%`,
                 height: `${100 / ROWS}%`,
                 objectPosition: pg.pos || 'center',
-                transitionDelay: ended.health ? `${i * 130}ms` : '0ms',
+                transitionDelay: ended.health ? `${300 + i * 320}ms` : '0ms',
               }}
-              className={`absolute object-cover z-[5] border-[0.5px] border-black/60 transition-all duration-500 ${
-                show ? 'opacity-100 scale-100' : 'opacity-0 scale-75'
+              className={`absolute object-cover z-[5] border-[0.5px] border-black/60 transition-all duration-[900ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${
+                show ? 'opacity-100 scale-100 translate-y-0' : 'opacity-0 scale-[0.55] translate-y-6'
               }`}
             />
           );
