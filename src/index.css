@@ -1,0 +1,164 @@
+@import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500;1,600&family=Inter:wght@200;300;400;500;600;700;800&family=Archivo:wght@600;700;800;900&family=Caveat:wght@500;600&family=Ms+Madi&display=swap');
+
+/* Brittany — Canva's thin signature script (seen in TLE's deck). Canva's
+   licence doesn't allow embedding it on the web; WindSong is the closest
+   free equivalent. If a properly licensed file ever lands at
+   public/fonts/brittany.woff2 it takes over automatically. */
+@font-face {
+  font-family: 'Brittany';
+  src: url('/fonts/brittany.woff2') format('woff2');
+  font-display: swap;
+}
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+    --font-serif: 'EB Garamond', Garamond, Georgia, 'Times New Roman', serif;
+    --font-black: 'Archivo', 'Inter', sans-serif;
+    --font-hand: 'Caveat', cursive;
+    --font-script: 'Brittany', 'Ms Madi', cursive;
+
+    /* ── TEG 2026 Brand System ─────────────────────────────
+       Canvas  #F1F1F1   Ink #131313
+       Purple  #4D1D81   Electric #9565FF   Lavender #E3D7FF */
+    --background: 0 0% 95%;            /* #F1F1F1 canvas */
+    --foreground: 0 0% 7%;             /* ink */
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 7%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 7%;
+    --primary: 269 63% 31%;            /* #4D1D81 */
+    --primary-foreground: 0 0% 100%;
+    --electric: 259 100% 70%;          /* #9565FF */
+    --secondary: 258 100% 92%;         /* #E3D7FF lavender */
+    --secondary-foreground: 269 63% 20%;
+    --muted: 0 0% 91%;
+    --muted-foreground: 0 0% 38%;
+    --accent: 259 100% 70%;
+    --accent-foreground: 0 0% 7%;
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 0 0% 85%;
+    --input: 0 0% 85%;
+    --ring: 269 63% 31%;
+    --chart-1: 269 63% 31%;
+    --chart-2: 259 100% 70%;
+    --chart-3: 258 100% 92%;
+    --chart-4: 43 74% 66%;
+    --chart-5: 27 87% 67%;
+    --radius: 0.75rem;
+
+    /* dark act surface — near-black with a purple undertone */
+    --ink-panel: 264 30% 6%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-family: var(--font-sans);
+  }
+  html {
+    scroll-behavior: smooth;
+  }
+  ::selection {
+    background: hsl(258 100% 92%);
+    color: hsl(269 63% 25%);
+  }
+}
+
+/* ── Display typography ─────────────────────────────────── */
+.type-display {
+  font-family: var(--font-serif);
+  font-weight: 500;
+  line-height: 0.98;
+  letter-spacing: -0.015em;
+}
+.type-display em,
+.type-italic {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 500;
+}
+.font-black-display {
+  font-family: var(--font-black);
+}
+.font-hand {
+  font-family: var(--font-hand);
+  font-weight: 500;
+}
+/* Brittany-style signature script (WindSong until a licensed Brittany lands) */
+.font-brittany {
+  font-family: var(--font-script);
+  font-weight: 400;
+}
+/* Accent words — the brand script (Ms Madi, standing in for Brittany) */
+.font-script {
+  font-family: var(--font-script);
+  font-weight: 400;
+}
+.type-label {
+  font-family: var(--font-sans);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+
+/* hide scrollbars on swipe shelves */
+.scrollbar-none { scrollbar-width: none; }
+.scrollbar-none::-webkit-scrollbar { display: none; }
+
+/* ── Scrollbar ──────────────────────────────────────────── */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: hsl(0 0% 93%); }
+::-webkit-scrollbar-thumb { background: hsl(269 63% 31%); border-radius: 3px; }
+
+/* ── Dark act ───────────────────────────────────────────── */
+.act-dark {
+  background: hsl(var(--ink-panel));
+  color: hsl(0 0% 96%);
+}
+
+/* ── Brand tile depth ───────────────────────────────────── */
+.tile-shadow {
+  box-shadow:
+    0 1px 2px rgb(19 19 19 / 0.06),
+    0 8px 24px rgb(19 19 19 / 0.10),
+    0 24px 64px rgb(19 19 19 / 0.12);
+}
+.tile-shadow-soft {
+  box-shadow:
+    0 1px 2px rgb(19 19 19 / 0.05),
+    0 6px 20px rgb(19 19 19 / 0.08);
+}
+
+/* ── Grain — subtle film texture over dark acts ─────────── */
+.grain::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.035;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* ── Marquee for the values ticker ──────────────────────── */
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+.animate-marquee {
+  animation: marquee 36s linear infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .animate-marquee { animation: none; }
+  html { scroll-behavior: auto; }
+}
