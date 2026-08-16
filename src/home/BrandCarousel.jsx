@@ -21,6 +21,7 @@ const MD_OVERRIDES = {
 // hover films — plays once on hover, then fades back to the face.
 // More MDs join as James finds their clips.
 const MD_VIDEOS = {
+  'the-property-experts': '/media/md-jim.mp4',
   'the-mortgage-experts': '/media/md-gareth.mp4',
   'the-recruitment-experts': '/media/md-james.mp4',
   'the-auction-experts': '/media/md-ray.mp4',
