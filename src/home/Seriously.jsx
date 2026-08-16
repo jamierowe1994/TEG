@@ -67,27 +67,31 @@ export default function Seriously() {
   const [ended, setEnded] = useState({});
   const [open, setOpen] = useState(null);
 
-  // the 100k film's crop follows him: down for the lean-in, up for the
-  // stand, home again when the scene changes. Times are seconds.
-  const HEALTH_PAN = [
-    [0, 32], [13, 32], [14.2, 38], [17.8, 38], [19.2, 14], [26.5, 14], [28, 32], [40, 32],
+  // photos ping into the wall's boxes while the health film plays —
+  // Gareth's before/after lands side by side. Times are seconds; cells are
+  // [col,row] and avoid the three purple tiles.
+  const PINGS = [
+    { t0: 3, t1: 6.5, cell: [6, 0], src: '/media/health-medal.jpg' },
+    { t0: 5.5, t1: 9, cell: [1, 0], src: '/media/health-race.jpg' },
+    { t0: 10, t1: 14.5, cell: [2, 1], src: '/media/gareth-1.jpg' },
+    { t0: 10, t1: 14.5, cell: [3, 1], src: '/media/gareth-2.jpg' },
+    { t0: 13.5, t1: 16.5, cell: [5, 2], src: '/media/health-golf.jpg' },
+    { t0: 15.5, t1: 19, cell: [1, 2], src: '/media/health-cover.jpg' },
   ];
+  const [pingSet, setPingSet] = useState('');
+  const [startWord, setStartWord] = useState(false);
   React.useEffect(() => {
     let raf;
     const tick = () => {
       const v = videoRefs.current.health;
-      if (v && !v.paused) {
+      if (v) {
         const t = v.currentTime;
-        let y = 32;
-        for (let i = 0; i < HEALTH_PAN.length - 1; i++) {
-          const [t0, y0] = HEALTH_PAN[i];
-          const [t1, y1] = HEALTH_PAN[i + 1];
-          if (t >= t0 && t <= t1) {
-            y = y0 + ((t - t0) / (t1 - t0)) * (y1 - y0);
-            break;
-          }
-        }
-        v.style.objectPosition = `center ${y}%`;
+        const act = PINGS.map((pg, i) => (t >= pg.t0 && t <= pg.t1 ? i : -1))
+          .filter((i) => i >= 0)
+          .join(',');
+        setPingSet((prev) => (prev === act ? prev : act));
+        const sw = !v.paused && t < 1.35;
+        setStartWord((prev) => (prev === sw ? prev : sw));
       }
       raf = requestAnimationFrame(tick);
     };
@@ -197,6 +201,37 @@ export default function Seriously() {
             );
           })}
         </div>
+
+        {/* the word opens the film too — HEALTH holds for the first beat */}
+        <div
+          className={`absolute inset-0 flex items-center justify-center pointer-events-none transition-opacity duration-700 ${
+            activeKey === 'health' && startWord ? 'opacity-100' : 'opacity-0'
+          }`}
+        >
+          <p className="font-black-display font-extrabold uppercase tracking-tight text-white text-[17vw] leading-none">
+            Health
+          </p>
+        </div>
+
+        {/* photos pinging into the wall's boxes */}
+        {PINGS.map((pg, i) => (
+          <img
+            key={`ping-${i}`}
+            src={pg.src}
+            alt=""
+            style={{
+              left: `${(pg.cell[0] / COLS) * 100}%`,
+              top: `${(pg.cell[1] / ROWS) * 100}%`,
+              width: `${100 / COLS}%`,
+              height: `${100 / ROWS}%`,
+            }}
+            className={`absolute object-cover z-[5] border-[0.5px] border-black/60 transition-all duration-500 ${
+              activeKey === 'health' && pingSet.split(',').includes(String(i))
+                ? 'opacity-100 scale-100'
+                : 'opacity-0 scale-75'
+            }`}
+          />
+        ))}
 
         {/* the tiles — each claims a full pane of the wall. Hover switches the
             films; click opens the story. Deepest purple → lightest. */}
