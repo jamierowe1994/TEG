@@ -16,14 +16,14 @@ const CHAPTERS = [
     title: 'The Person',
     left: ['One person,', 'one idea'],
     right: ['Where it', 'all started'],
-    photo: '/media/sean.jpg',
-    focus: '57% center',
+    photo: '/media/eass-18.jpg',
+    focus: 'center',
     lede: 'It all started here.',
     body: [
       "Shaun started The Experts Group with a straightforward belief: that good people do their best work when nobody is standing over them. He had spent long enough inside the traditional model to know what it costs — the targets that have nothing to do with the client, the talent that leaves because the ceiling is too low.",
       "So he built the thing he wished had existed. A group that hands experts the brand, the technology and the back-office, then gets out of their way. What began as one person and an idea now stands behind hundreds of people running businesses of their own.",
     ],
-    gallery: ['/media/eass-18.jpg', '/media/z63-5220.jpg', '/media/bbs-143.jpg'],
+    gallery: ['/media/sean.jpg', '/media/z63-5220.jpg', '/media/bbs-143.jpg'],
   },
   {
     key: 'stories',
@@ -80,7 +80,7 @@ function Launch({ chapter, index, onOpen }) {
           whileHover={{ scale: 1.015 }}
           transition={{ duration: 0.5, ease: EASE }}
           style={{ rotate: -11 }}
-          className="relative w-[64vw] max-w-[1000px] h-[82vh] overflow-hidden cursor-pointer"
+          className="relative w-[50vw] max-w-[760px] h-[80vh] overflow-hidden cursor-pointer"
         >
           <AnimatePresence initial={false}>
             <motion.img
@@ -190,33 +190,25 @@ function ChapterDetail({ chapter, onClose }) {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      transition={{ duration: 0.45, ease: EASE }}
+      transition={{ duration: 0.35, ease: EASE }}
       className="fixed inset-0 z-[80] overflow-y-auto bg-[#0d0c0f]"
     >
-      <div className="min-h-screen px-5 md:px-10 pt-6 pb-24">
-        <button
-          onClick={onClose}
-          className="sticky top-6 z-20 inline-flex items-center gap-2 rounded-full bg-white/10
-            hover:bg-white/20 backdrop-blur px-5 py-3 text-xs font-semibold text-white transition-colors"
-        >
-          <ArrowLeft size={14} /> Back
-        </button>
+      <button
+        onClick={onClose}
+        className="fixed top-6 left-5 md:left-10 z-[95] inline-flex items-center gap-2 rounded-full
+          bg-white/10 hover:bg-white/20 backdrop-blur px-5 py-3 text-xs font-semibold text-white transition-colors"
+      >
+        <ArrowLeft size={14} /> Back
+      </button>
 
-        <motion.h2
-          initial={{ y: 40, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ duration: 0.7, ease: EASE }}
-          className="mt-4 md:mt-6 font-black-display font-extrabold uppercase tracking-[-0.03em]
-            text-[#E3D7FF] leading-[0.85] text-center whitespace-nowrap text-[11vw] md:text-[7vw]"
-        >
-          {chapter.title}
-        </motion.h2>
-
+      {/* the frame twists straight and opens all the way out */}
+      <div className="relative h-screen w-full overflow-hidden flex items-center justify-center">
         <motion.div
-          initial={{ rotate: -11, scale: 0.92, opacity: 0 }}
-          animate={{ rotate: 0, scale: 1, opacity: 1 }}
-          transition={{ duration: 0.8, ease: EASE }}
-          className="mt-8 w-full h-[52vh] md:h-[62vh] rounded-2xl overflow-hidden"
+          initial={{ width: '50vw', height: '80vh', rotate: -11 }}
+          animate={{ width: '100vw', height: '100vh', rotate: 0 }}
+          exit={{ width: '50vw', height: '80vh', rotate: -11 }}
+          transition={{ duration: 0.95, ease: EASE }}
+          className="overflow-hidden"
         >
           <img
             src={chapter.photo}
@@ -227,31 +219,60 @@ function ChapterDetail({ chapter, onClose }) {
         </motion.div>
 
         <motion.div
-          initial={{ opacity: 0, y: 26 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, ease: EASE, delay: 0.3 }}
-          className="mt-12 md:mt-16 max-w-[1100px] mx-auto grid grid-cols-1 md:grid-cols-[0.9fr,1.1fr] gap-8 md:gap-14"
-        >
-          <p className="font-script text-[#B78AF7] text-3xl md:text-5xl leading-[1.15]">{chapter.lede}</p>
-          <div className="space-y-5">
-            {chapter.body.map((para, i) => (
-              <p key={i} className="text-white/70 font-light text-sm md:text-base leading-relaxed">
-                {para}
-              </p>
-            ))}
-          </div>
-        </motion.div>
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.7, delay: 0.5 }}
+          className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/25 to-black/80 pointer-events-none"
+        />
 
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
+        {/* the title climbs to the top */}
+        <motion.h2
+          initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, ease: EASE, delay: 0.45 }}
-          className="mt-12 md:mt-16 max-w-[1100px] mx-auto grid grid-cols-3 gap-3 md:gap-4"
+          transition={{ duration: 0.7, ease: EASE, delay: 0.55 }}
+          className="absolute top-[13vh] inset-x-0 z-10 font-black-display font-extrabold uppercase
+            tracking-[-0.03em] text-[#E3D7FF] leading-[0.85] text-center whitespace-nowrap
+            text-[11vw] md:text-[7vw] pointer-events-none"
         >
-          {chapter.gallery.map((src) => (
-            <img key={src} src={src} alt="" loading="lazy" className="w-full aspect-[4/5] object-cover rounded-xl" />
+          {chapter.title}
+        </motion.h2>
+
+        <motion.p
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.7, delay: 0.9 }}
+          className="absolute bottom-[6vh] inset-x-0 z-10 text-center font-script text-[#E3D7FF]
+            text-2xl md:text-4xl px-6 pointer-events-none"
+        >
+          {chapter.lede}
+        </motion.p>
+      </div>
+
+      {/* and the chapter runs on beneath it */}
+      <div className="px-5 md:px-10 pb-24 pt-16 md:pt-24">
+        <div className="max-w-[900px] mx-auto space-y-5">
+          {chapter.body.map((para, i) => (
+            <p key={i} className="text-white/70 font-light text-base md:text-lg leading-relaxed">
+              {para}
+            </p>
           ))}
-        </motion.div>
+        </div>
+
+        <div className="mt-14 md:mt-20 max-w-[1200px] mx-auto grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4">
+          {chapter.gallery.map((src) => (
+            <img
+              key={src}
+              src={src}
+              alt=""
+              loading="lazy"
+              className="w-full aspect-[4/5] object-cover rounded-xl"
+            />
+          ))}
+        </div>
+
+        <p className="mt-10 text-center text-white/30 text-xs">
+          More from this chapter — films and stories — landing here soon.
+        </p>
       </div>
     </motion.div>
   );
