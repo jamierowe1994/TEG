@@ -36,9 +36,9 @@ export default function ExperienceNav({ dark = false }) {
         transition={{ duration: 0.9, ease: EASE, delay: 0.15 }}
         className="absolute top-0 inset-x-0 z-50 bg-transparent"
       >
-        <nav className="mx-auto max-w-[1480px] px-5 md:px-12 h-20 md:h-24 flex items-center justify-between">
+        <nav className="mx-auto max-w-[1480px] px-5 md:px-12 h-24 md:h-28 flex items-center justify-between">
           <Link to="/" aria-label="The Experts Group — home" className="shrink-0">
-            <img src={dark ? TEG_LOGO_WHITE : TEG_LOGO} alt="The Experts Group" className="h-10 md:h-12 w-auto" />
+            <img src={dark ? TEG_LOGO_WHITE : TEG_LOGO} alt="The Experts Group" className="h-14 md:h-[4.5rem] w-auto" />
           </Link>
 
           <div className="hidden md:flex items-center gap-6">
