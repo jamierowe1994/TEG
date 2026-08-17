@@ -13,17 +13,17 @@ import { EASE } from '../experience/motion';
 const CHAPTERS = [
   {
     key: 'person',
-    title: 'The Person',
+    title: 'The Guy',
     left: ['One person,', 'one idea'],
     right: ['Where it', 'all started'],
-    photo: '/media/eass-18.jpg',
-    focus: 'center',
+    photo: '/media/sean-2.png',
+    focus: '55% center',
     lede: 'It all started here.',
     body: [
       "Shaun started The Experts Group with a straightforward belief: that good people do their best work when nobody is standing over them. He had spent long enough inside the traditional model to know what it costs — the targets that have nothing to do with the client, the talent that leaves because the ceiling is too low.",
       "So he built the thing he wished had existed. A group that hands experts the brand, the technology and the back-office, then gets out of their way. What began as one person and an idea now stands behind hundreds of people running businesses of their own.",
     ],
-    gallery: ['/media/sean.jpg', '/media/z63-5220.jpg', '/media/bbs-143.jpg'],
+    gallery: ['/media/sean.jpg', '/media/eass-18.jpg', '/media/bbs-143.jpg'],
   },
   {
     key: 'stories',
@@ -69,7 +69,7 @@ const FOLD_IN = {
   exit: { opacity: 0, transition: { duration: 0.18 } },
 };
 
-function Launch({ chapter, index, onOpen }) {
+function Launch({ chapter, index, onOpen, exiting }) {
   const size = Math.min(13, 90 / (chapter.title.length * 0.6));
   return (
     <>
@@ -95,9 +95,13 @@ function Launch({ chapter, index, onOpen }) {
         </motion.button>
       </div>
 
-      {/* the notes either side */}
-      <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 z-20 px-6 md:px-10
-        flex items-center justify-between pointer-events-none">
+      {/* the notes either side — they sink as the chapter opens */}
+      <motion.div
+        animate={exiting ? { y: 80, opacity: 0 } : { y: 0, opacity: 1 }}
+        transition={{ duration: 0.55, ease: EASE }}
+        className="absolute inset-x-0 top-1/2 -translate-y-1/2 z-20 px-6 md:px-10
+          flex items-center justify-between pointer-events-none"
+      >
         <div className="flex items-center gap-6 md:gap-12">
           <span className="text-[0.6rem] md:text-xs tracking-[0.25em] text-white/40">
             {String(index + 1).padStart(2, '0')}
@@ -136,24 +140,32 @@ function Launch({ chapter, index, onOpen }) {
             {String(CHAPTERS.length).padStart(2, '0')}
           </span>
         </div>
-      </div>
+      </motion.div>
 
-      {/* the word — folds with the picture */}
-      <div className="absolute inset-x-0 bottom-0 z-30 pointer-events-none overflow-hidden">
+      {/* the word — folds with the picture, then rises into the middle */}
+      <div className="absolute inset-x-0 bottom-0 z-30 pointer-events-none">
         <AnimatePresence initial={false} mode="wait">
           <motion.h2
             key={chapter.key}
             initial={{ clipPath: 'inset(0% 0% 100% 0%)', opacity: 0.4, y: '12%' }}
-            animate={{
-              clipPath: 'inset(-20% 0% 0% 0%)',
-              opacity: [0.4, 1, 0.6, 1],
-              y: '12%',
-              transition: {
-                clipPath: { duration: 0.6, ease: EASE },
-                opacity: { duration: 0.6, times: [0, 0.35, 0.55, 1] },
-              },
-            }}
-            exit={{ opacity: 0, transition: { duration: 0.16 } }}
+            animate={
+              exiting
+                ? {
+                    clipPath: 'inset(-40% 0% -40% 0%)',
+                    y: '-260%',
+                    opacity: 0,
+                    transition: { duration: 0.9, ease: EASE },
+                  }
+                : {
+                    clipPath: 'inset(-20% 0% 0% 0%)',
+                    opacity: [0.4, 1, 0.6, 1],
+                    y: '12%',
+                    transition: {
+                      clipPath: { duration: 0.6, ease: EASE },
+                      opacity: { duration: 0.6, times: [0, 0.35, 0.55, 1] },
+                    },
+                  }
+            }
             className="font-black-display font-extrabold uppercase tracking-[-0.03em]
               text-[#E3D7FF] leading-[0.85] text-center whitespace-nowrap px-4"
             style={{ fontSize: `${size}vw` }}
@@ -207,7 +219,7 @@ function ChapterDetail({ chapter, onClose }) {
           initial={{ width: '50vw', height: '80vh', rotate: -11 }}
           animate={{ width: '100vw', height: '100vh', rotate: 0 }}
           exit={{ width: '50vw', height: '80vh', rotate: -11 }}
-          transition={{ duration: 0.95, ease: EASE }}
+          transition={{ duration: 1.2, ease: EASE }}
           className="overflow-hidden"
         >
           <img
@@ -227,11 +239,11 @@ function ChapterDetail({ chapter, onClose }) {
 
         {/* the title climbs to the top */}
         <motion.h2
-          initial={{ opacity: 0, y: 40 }}
+          initial={{ opacity: 0, y: 90 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, ease: EASE, delay: 0.55 }}
-          className="absolute top-[13vh] inset-x-0 z-10 font-black-display font-extrabold uppercase
-            tracking-[-0.03em] text-[#E3D7FF] leading-[0.85] text-center whitespace-nowrap
+          transition={{ duration: 0.9, ease: EASE, delay: 0.25 }}
+          className="absolute inset-x-0 top-1/2 -translate-y-1/2 z-10 font-black-display font-extrabold
+            uppercase tracking-[-0.03em] text-[#E3D7FF] leading-[0.85] text-center whitespace-nowrap
             text-[11vw] md:text-[7vw] pointer-events-none"
         >
           {chapter.title}
@@ -283,6 +295,15 @@ export default function About() {
   const ref = React.useRef(null);
   const [index, setIndex] = useState(0);
   const [open, setOpen] = useState(null);
+  const [exiting, setExiting] = useState(null);
+
+  const openChapter = (key) => {
+    setExiting(key);
+    window.setTimeout(() => {
+      setOpen(key);
+      setExiting(null);
+    }, 700);
+  };
   const { scrollYProgress } = useScroll({ target: ref, offset: ['start start', 'end end'] });
 
   // each scroll lands on the next chapter
@@ -309,7 +330,8 @@ export default function About() {
           <Launch
             chapter={CHAPTERS[index]}
             index={index}
-            onOpen={() => setOpen(CHAPTERS[index].key)}
+            exiting={exiting === CHAPTERS[index].key}
+            onOpen={() => openChapter(CHAPTERS[index].key)}
           />
         </div>
       </section>
