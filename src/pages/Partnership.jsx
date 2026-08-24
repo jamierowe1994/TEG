@@ -82,66 +82,65 @@ const BRANDS = [
 function Hero() {
   const ref = useRef(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ['start start', 'end start'] });
-  const photoY = useTransform(scrollYProgress, [0, 1], ['0vh', '-12vh']);
-  const titleY = useTransform(scrollYProgress, [0, 1], ['0vh', '-22vh']);
+  const titleY = useTransform(scrollYProgress, [0, 1], ['0vh', '-14vh']);
 
   return (
     <section ref={ref} className="relative h-screen overflow-hidden bg-background text-foreground">
-      {/* the statement, sitting behind her */}
-      <motion.div
-        style={{ y: titleY }}
-        className="absolute inset-0 z-10 flex flex-col items-center justify-center px-6 pointer-events-none"
-      >
-        <div className="w-full max-w-[1400px]">
-          <h1 className="font-sans font-light tracking-[-0.045em] leading-[0.92] text-[13vw] md:text-[9.5vw]">
-            <span className="block overflow-hidden">
-              <motion.span
-                className="block text-center md:pl-[24%]"
-                initial={{ y: '108%' }}
-                animate={{ y: 0 }}
-                transition={{ duration: 1.05, ease: EASE, delay: 0.25 }}
-              >
-                Work for
-              </motion.span>
-            </span>
-            <span className="block overflow-hidden">
-              <motion.span
-                className="block text-center md:pl-[40%]"
-                initial={{ y: '108%' }}
-                animate={{ y: 0 }}
-                transition={{ duration: 1.05, ease: EASE, delay: 0.38 }}
-              >
-                yourself
-              </motion.span>
-            </span>
-          </h1>
-          <motion.p
-            initial={{ opacity: 0, y: 14 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.9, ease: EASE, delay: 0.9 }}
-            className="mt-5 md:mt-7 text-center md:pl-[42%] text-muted-foreground font-light text-sm md:text-base"
-          >
-            seven specialist brands, one group behind you
-          </motion.p>
-        </div>
-      </motion.div>
+      <div className="relative mx-auto w-full max-w-[1500px] h-full px-6">
+        {/* the statement. Line two is offset by an invisible copy of "Work ",
+            so "Yourself" starts exactly under "for" — no guessed padding. */}
+        <motion.h1
+          style={{ y: titleY }}
+          className="absolute left-6 right-6 md:left-[15%] top-[22vh] z-10 font-sans font-normal
+            tracking-[-0.045em] leading-[0.92] text-[15vw] md:text-[9.2vw] pointer-events-none"
+        >
+          <span className="block overflow-hidden">
+            <motion.span
+              className="block"
+              initial={{ y: '108%' }}
+              animate={{ y: 0 }}
+              transition={{ duration: 1.05, ease: EASE, delay: 0.25 }}
+            >
+              Work for
+            </motion.span>
+          </span>
+          <span className="block overflow-hidden">
+            <motion.span
+              className="block"
+              initial={{ y: '108%' }}
+              animate={{ y: 0 }}
+              transition={{ duration: 1.05, ease: EASE, delay: 0.38 }}
+            >
+              <span className="invisible" aria-hidden="true">
+                Work{' '}
+              </span>
+              Yourself
+            </motion.span>
+          </span>
+        </motion.h1>
 
-      {/* one of ours, cut out and standing in the room. The placement lives on
-          a plain wrapper — motion writes its own transform, which would wipe
-          out a Tailwind translate. */}
-      <div className="absolute bottom-0 left-1/2 z-20 -translate-x-[72%] md:-translate-x-[104%] pointer-events-none">
-        <motion.div
-          style={{ y: photoY }}
-          initial={{ opacity: 0, y: 40 }}
+        {/* her, in front of the words and standing on the floor of the screen.
+            No parallax — she stays put. */}
+        <motion.img
+          src="/media/partnership-hero.png"
+          alt="One of our agents"
+          initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1.1, ease: EASE, delay: 0.5 }}
+          className="absolute bottom-0 left-[2%] md:left-[1%] z-20 h-[70vh] md:h-[80vh]
+            w-auto object-contain object-bottom grayscale pointer-events-none"
+        />
+
+        {/* the line under it all */}
+        <motion.p
+          initial={{ opacity: 0, y: 14 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.9, ease: EASE, delay: 0.95 }}
+          className="absolute left-6 right-6 top-[48vh] md:top-[45vh] z-10 text-muted-foreground
+            font-light text-sm md:text-base md:pl-[52%] pointer-events-none"
         >
-          <img
-            src="/media/tle-lauren.png"
-            alt="One of our agents"
-            className="h-[62vh] md:h-[80vh] w-auto object-contain object-bottom grayscale"
-          />
-        </motion.div>
+          seven specialist brands, one group behind you
+        </motion.p>
       </div>
 
       {/* the way down */}
@@ -150,7 +149,7 @@ function Hero() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.8, delay: 1.3 }}
-        className="absolute bottom-8 left-6 md:left-10 z-30 w-12 h-12 rounded-full border border-foreground/25
+        className="absolute bottom-8 right-6 md:right-10 z-30 w-12 h-12 rounded-full border border-foreground/25
           flex items-center justify-center hover:bg-foreground hover:text-background transition-colors"
         aria-label="Scroll to the brands"
       >
@@ -164,7 +163,7 @@ function Hero() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.8, delay: 1.1 }}
-        className="absolute bottom-11 right-6 md:right-10 z-30 text-[0.6rem] tracking-[0.25em] uppercase text-muted-foreground"
+        className="absolute bottom-11 left-6 md:left-10 z-30 text-[0.6rem] tracking-[0.25em] uppercase text-muted-foreground"
       >
         Partnership
       </motion.p>
