@@ -70,7 +70,7 @@ function Card({ c, index }) {
       transition={{ type: 'spring', stiffness: 170, damping: 22, delay: (index % 4) * 0.12 }}
       className="md-card group relative shrink-0 w-[78vw] sm:w-[38vw] lg:w-[22.5vw] h-[52vh] md:h-[58vh] cursor-pointer"
     >
-      <div className="relative w-full h-full rounded-[1.8rem] overflow-hidden bg-neutral-300">
+      <div className="relative w-full h-full rounded-lg overflow-hidden bg-neutral-300">
       <img
         src={c.photo}
         alt={c.md ? `${c.md} — ${c.brand}` : c.brand}

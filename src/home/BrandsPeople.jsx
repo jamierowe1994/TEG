@@ -198,7 +198,7 @@ export default function BrandsPeople() {
     >
       <div className="relative flex flex-col md:flex-row items-center gap-10 md:gap-14 px-6 md:px-10 lg:px-14 max-w-[1700px] mx-auto">
         <div className="relative w-full md:w-[36vw] shrink-0">
-          <div className="relative h-[48vh] md:h-[68vh] overflow-hidden rounded-3xl">
+          <div className="relative h-[48vh] md:h-[68vh] overflow-hidden rounded-lg">
             <img src={PHOTO} alt="One of ours, mid-applause" className="absolute inset-0 w-full h-full object-cover" />
           </div>
         </div>

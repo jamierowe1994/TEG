@@ -196,22 +196,14 @@ export default function Seriously() {
 
   return (
     <section ref={ref} className="relative h-[300vh] text-white">
-      <div className="sticky top-0 h-screen flex flex-col overflow-hidden pt-12 md:pt-16">
-        <div className="px-6 md:px-12 w-full max-w-[1700px] mx-auto shrink-0">
-          <h2 className="font-black-display font-extrabold uppercase tracking-tight text-3xl md:text-5xl leading-[1.02]">
-            Three things we
-            <br />
-            take seriously<span className="text-[#9565FF]">.</span>
-          </h2>
-        </div>
-
+      <div className="sticky top-0 h-screen flex flex-col overflow-hidden py-12 md:py-16">
         <motion.div
           initial={{ opacity: 0, y: 160 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: '-8%' }}
           transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
           ref={panelRef}
-          className="relative mt-6 md:mt-8 mx-3 md:mx-8 mb-10 md:mb-14 flex-1 rounded-lg overflow-hidden bg-[#0d0c0f]"
+          className="relative mx-3 md:mx-8 flex-1 rounded-lg overflow-hidden bg-[#0d0c0f]"
         >
           {THINGS.map((t) => (
             <video
@@ -252,40 +244,6 @@ export default function Seriously() {
               );
             })}
           </div>
-
-          {/* the word opens the film too */}
-          {THINGS.map((t) => (
-            <div
-              key={`rest-${t.key}`}
-              className={`absolute inset-0 flex items-center justify-center pointer-events-none transition-opacity duration-700 ${
-                activeKey === t.key && !story && (!armed || startWord) ? 'opacity-100' : 'opacity-0'
-              }`}
-            >
-              <p
-                className="font-black-display font-extrabold uppercase tracking-tight text-white leading-none"
-                style={{ fontSize: `${Math.min(17, 82 / (t.label.length * 0.62))}vw` }}
-              >
-                {t.label}
-              </p>
-            </div>
-          ))}
-
-          {/* when a film finishes, its word takes the wall */}
-          {THINGS.map((t) => (
-            <div
-              key={`word-${t.key}`}
-              className={`absolute inset-0 z-[6] flex items-center justify-center pointer-events-none transition-opacity duration-1000 ${
-                activeKey === t.key && ended[t.key] && !story ? 'opacity-100' : 'opacity-0'
-              }`}
-            >
-              <p
-                className="font-black-display font-extrabold uppercase tracking-tight text-white leading-none"
-                style={{ fontSize: `${Math.min(17, 82 / (t.label.length * 0.62))}vw` }}
-              >
-                {t.label}
-              </p>
-            </div>
-          ))}
 
           {/* the people — fade in one by one, then step forward when clicked */}
           {PEOPLE.map((p, i) => {
@@ -419,7 +377,11 @@ export default function Seriously() {
               }}
               className={`absolute z-10 text-left p-3 md:p-4 transition-all duration-500 cursor-pointer
                 flex flex-col justify-between border-[0.5px] border-black/60
-                ${story ? 'opacity-0 pointer-events-none' : activeKey === t.key ? 'opacity-100' : 'opacity-90 hover:opacity-100'}`}
+                ${story
+                  ? 'opacity-0 pointer-events-none'
+                  : activeKey === t.key
+                    ? 'opacity-100 saturate-100'
+                    : 'opacity-70 saturate-[0.35] hover:opacity-100 hover:saturate-100'}`}
             >
               <span className="self-end opacity-70 text-lg leading-none">+</span>
               <span>
