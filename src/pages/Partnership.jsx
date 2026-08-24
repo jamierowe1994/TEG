@@ -6,7 +6,7 @@ import ExperienceNav from '../experience/ExperienceNav';
 import SiteFooter from '../home/SiteFooter';
 import useLenis from '../lib/useLenis';
 import { EASE } from '../experience/motion';
-import ParticleSphere from '../components/ParticleSphere';
+import VintageFrame from '../components/VintageFrame';
 
 // Partnership — the door in. A dark room where the seven brands are read
 // as a list of huge names; whichever one you touch floods the room with
@@ -81,45 +81,90 @@ const BRANDS = [
 ];
 
 function Hero() {
+  const ref = useRef(null);
+  const { scrollYProgress } = useScroll({ target: ref, offset: ['start start', 'end start'] });
+  const wordsY = useTransform(scrollYProgress, [0, 1], ['0vh', '-10vh']);
+
   return (
-    <section className="relative h-screen overflow-hidden bg-[#0d0c0f]">
-      {/* the globe — spinning, and it moves out of the way of your cursor */}
-      <ParticleSphere className="absolute inset-0 w-full h-full" />
-
-      {/* the words sit over it */}
-      <div className="absolute inset-0 z-10 flex flex-col items-center justify-center px-6 pointer-events-none">
-        <motion.p
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.9, ease: EASE, delay: 0.4 }}
-          className="text-white text-[0.62rem] md:text-[0.78rem] font-semibold tracking-[0.06em]
-            uppercase text-center mb-2 md:mb-3"
-        >
-          It's all connected — one goal: to build something of your own.
-        </motion.p>
-
-        <h1 className="font-black-display font-extrabold uppercase text-white text-center
-          tracking-[-0.035em] leading-[0.86] text-[13.5vw] md:text-[11.5vw]">
+    <section ref={ref} className="relative h-screen overflow-hidden bg-[#0d0c0f]">
+      {/* the line */}
+      <motion.div
+        style={{ y: wordsY }}
+        className="absolute inset-x-0 top-[15vh] z-10 px-6 text-center pointer-events-none"
+      >
+        <h1 className="font-serif text-white leading-[1.06] text-[9vw] md:text-[5.4vw]">
           <span className="block overflow-hidden">
             <motion.span
               className="block"
               initial={{ y: '110%' }}
               animate={{ y: 0 }}
-              transition={{ duration: 1.15, ease: EASE, delay: 0.15 }}
+              transition={{ duration: 1.05, ease: EASE, delay: 0.2 }}
             >
-              Our Partnership
+              Friends to your
+            </motion.span>
+          </span>
+          <span className="block overflow-hidden">
+            <motion.span
+              className="block"
+              initial={{ y: '110%' }}
+              animate={{ y: 0 }}
+              transition={{ duration: 1.05, ease: EASE, delay: 0.33 }}
+            >
+              massive ambitions.
             </motion.span>
           </span>
         </h1>
-      </div>
 
-      {/* the way down */}
+        <motion.p
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.9, ease: EASE, delay: 0.75 }}
+          className="mt-7 text-white/45 text-[0.6rem] md:text-[0.68rem] tracking-[0.22em] uppercase"
+        >
+          [ TEG / The Experts Group ]
+        </motion.p>
+        <motion.p
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.9, ease: EASE, delay: 0.85 }}
+          className="mt-2 text-white/80 text-sm md:text-base leading-[1.6]"
+        >
+          Seven specialist brands, one group behind you.
+          <br />
+          Property, finance and recruitment — run on your terms.
+        </motion.p>
+      </motion.div>
+
+      {/* the frame. A film for now; swap the photo for a reel when there is one */}
+      <motion.div
+        initial={{ opacity: 0, y: 60 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 1.2, ease: EASE, delay: 0.5 }}
+        className="absolute inset-x-4 md:inset-x-16 top-[46vh] h-[68vh]"
+      >
+        <VintageFrame
+          src="/media/vintage.jpg"
+          alt="Around the table at The Experts Group"
+          className="w-full h-full rounded-[1.4rem] md:rounded-[1.75rem]"
+        />
+      </motion.div>
+
+      {/* the label, quietly */}
+      <motion.p
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.8, delay: 1.1 }}
+        className="absolute bottom-6 left-6 md:left-10 z-20 text-[0.6rem] tracking-[0.25em] uppercase text-white/40"
+      >
+        Partnership
+      </motion.p>
+
       <motion.a
         href="#brands"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.8, delay: 1.2 }}
-        className="absolute top-28 right-6 md:right-10 z-20 text-white/70 hover:text-white transition-colors"
+        className="absolute bottom-6 right-6 md:right-10 z-20 text-white/60 hover:text-white transition-colors"
         aria-label="Scroll to the brands"
       >
         <motion.span
@@ -130,16 +175,6 @@ function Hero() {
           <ArrowDown size={18} />
         </motion.span>
       </motion.a>
-
-      {/* the label, quietly */}
-      <motion.p
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.8, delay: 1.1 }}
-        className="absolute bottom-10 left-6 md:left-10 z-20 text-[0.6rem] tracking-[0.25em] uppercase text-white/40"
-      >
-        Partnership
-      </motion.p>
     </section>
   );
 }
