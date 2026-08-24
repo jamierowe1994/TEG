@@ -82,74 +82,92 @@ const BRANDS = [
 function Hero() {
   const ref = useRef(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ['start start', 'end start'] });
-  const y = useTransform(scrollYProgress, [0, 1], ['0vh', '18vh']);
-  const fade = useTransform(scrollYProgress, [0, 0.8], [1, 0]);
+  const photoY = useTransform(scrollYProgress, [0, 1], ['0vh', '-12vh']);
+  const titleY = useTransform(scrollYProgress, [0, 1], ['0vh', '-22vh']);
 
   return (
-    <section ref={ref} className="relative h-screen overflow-hidden bg-[#0d0c0f]">
-      <video
-        src="/media/film-summit.mp4"
-        poster="/media/poster-summit.jpg"
-        autoPlay
-        muted
-        loop
-        playsInline
-        className="absolute inset-0 w-full h-full object-cover grayscale"
-      />
-      <div className="absolute inset-0 bg-gradient-to-b from-black/75 via-black/50 to-black/85" />
-      <div
-        className="absolute inset-0"
-        style={{ background: 'radial-gradient(ellipse at center, transparent 40%, rgba(0,0,0,0.6) 100%)' }}
-      />
-
+    <section ref={ref} className="relative h-screen overflow-hidden bg-background text-foreground">
+      {/* the statement, sitting behind her */}
       <motion.div
-        style={{ y, opacity: fade }}
-        className="absolute inset-0 flex flex-col items-center justify-center text-center px-6"
+        style={{ y: titleY }}
+        className="absolute inset-0 z-10 flex flex-col items-center justify-center px-6 pointer-events-none"
       >
-        <motion.p
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: EASE, delay: 0.2 }}
-          className="text-[0.62rem] md:text-[0.7rem] tracking-[0.25em] uppercase text-[#E3D7FF] mb-7"
-        >
-          Partnership
-        </motion.p>
-        <motion.h1
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, ease: EASE, delay: 0.35 }}
-          className="font-black-display font-extrabold uppercase tracking-tight text-white
-            text-[10vw] md:text-[6.4vw] leading-[0.92]"
-        >
-          Seven ways to
-          <br />
-          work for yourself
-          <span className="text-[#9565FF]">.</span>
-        </motion.h1>
-        <motion.p
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.9, ease: EASE, delay: 0.6 }}
-          className="mt-7 text-white/65 font-light text-sm md:text-base max-w-lg leading-relaxed"
-        >
-          Every brand in the Group is its own business, with its own craft and
-          its own MD. Find the one that fits what you already do brilliantly.
-        </motion.p>
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.9, delay: 1.1 }}
-          className="mt-14 flex flex-col items-center gap-2 text-white/45"
-        >
-          <span className="text-[0.6rem] tracking-[0.25em] uppercase">Choose your brand</span>
-          <motion.span
-            animate={{ y: [0, 6, 0] }}
-            transition={{ duration: 1.8, repeat: Infinity, ease: 'easeInOut' }}
+        <div className="w-full max-w-[1400px]">
+          <h1 className="font-sans font-light tracking-[-0.045em] leading-[0.92] text-[13vw] md:text-[9.5vw]">
+            <span className="block overflow-hidden">
+              <motion.span
+                className="block text-center md:pl-[24%]"
+                initial={{ y: '108%' }}
+                animate={{ y: 0 }}
+                transition={{ duration: 1.05, ease: EASE, delay: 0.25 }}
+              >
+                Work for
+              </motion.span>
+            </span>
+            <span className="block overflow-hidden">
+              <motion.span
+                className="block text-center md:pl-[40%]"
+                initial={{ y: '108%' }}
+                animate={{ y: 0 }}
+                transition={{ duration: 1.05, ease: EASE, delay: 0.38 }}
+              >
+                yourself
+              </motion.span>
+            </span>
+          </h1>
+          <motion.p
+            initial={{ opacity: 0, y: 14 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.9, ease: EASE, delay: 0.9 }}
+            className="mt-5 md:mt-7 text-center md:pl-[42%] text-muted-foreground font-light text-sm md:text-base"
           >
-            <ArrowDown size={14} />
-          </motion.span>
-        </motion.div>
+            seven specialist brands, one group behind you
+          </motion.p>
+        </div>
       </motion.div>
+
+      {/* one of ours, cut out and standing in the room. The placement lives on
+          a plain wrapper — motion writes its own transform, which would wipe
+          out a Tailwind translate. */}
+      <div className="absolute bottom-0 left-1/2 z-20 -translate-x-[72%] md:-translate-x-[104%] pointer-events-none">
+        <motion.div
+          style={{ y: photoY }}
+          initial={{ opacity: 0, y: 40 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1.1, ease: EASE, delay: 0.5 }}
+        >
+          <img
+            src="/media/tle-lauren.png"
+            alt="One of our agents"
+            className="h-[62vh] md:h-[80vh] w-auto object-contain object-bottom grayscale"
+          />
+        </motion.div>
+      </div>
+
+      {/* the way down */}
+      <motion.a
+        href="#brands"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.8, delay: 1.3 }}
+        className="absolute bottom-8 left-6 md:left-10 z-30 w-12 h-12 rounded-full border border-foreground/25
+          flex items-center justify-center hover:bg-foreground hover:text-background transition-colors"
+        aria-label="Scroll to the brands"
+      >
+        <motion.span animate={{ y: [0, 4, 0] }} transition={{ duration: 1.8, repeat: Infinity, ease: 'easeInOut' }}>
+          <ArrowDown size={16} />
+        </motion.span>
+      </motion.a>
+
+      {/* the label, quietly */}
+      <motion.p
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.8, delay: 1.1 }}
+        className="absolute bottom-11 right-6 md:right-10 z-30 text-[0.6rem] tracking-[0.25em] uppercase text-muted-foreground"
+      >
+        Partnership
+      </motion.p>
     </section>
   );
 }
@@ -221,7 +239,7 @@ function Chooser() {
   const hot = BRANDS.find((b) => b.key === hovered);
 
   return (
-    <section className="relative bg-[#0d0c0f] py-20 md:py-28 overflow-hidden">
+    <section id="brands" className="relative bg-[#0d0c0f] py-20 md:py-28 overflow-hidden">
       {/* whichever brand you touch floods the room. One image stack and one
           tint layer — mounting a fresh overlay per hover let them pile up and
           wash the room out. */}
@@ -299,8 +317,8 @@ function Closer() {
 export default function Partnership() {
   useLenis();
   return (
-    <div className="bg-[#0d0c0f] text-white min-h-screen overflow-x-clip">
-      <ExperienceNav dark />
+    <div className="bg-background text-foreground min-h-screen overflow-x-clip">
+      <ExperienceNav />
       <Hero />
       <Chooser />
       <Closer />
