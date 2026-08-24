@@ -6,6 +6,7 @@ import ExperienceNav from '../experience/ExperienceNav';
 import SiteFooter from '../home/SiteFooter';
 import useLenis from '../lib/useLenis';
 import { EASE } from '../experience/motion';
+import ParticleSphere from '../components/ParticleSphere';
 
 // Partnership — the door in. A dark room where the seven brands are read
 // as a list of huge names; whichever one you touch floods the room with
@@ -80,67 +81,36 @@ const BRANDS = [
 ];
 
 function Hero() {
-  const ref = useRef(null);
-  const { scrollYProgress } = useScroll({ target: ref, offset: ['start start', 'end start'] });
-  const titleY = useTransform(scrollYProgress, [0, 1], ['0vh', '-14vh']);
-
   return (
-    <section ref={ref} className="relative h-screen overflow-hidden bg-background text-foreground">
-      <div className="relative mx-auto w-full max-w-[1500px] h-full px-6">
-        {/* the statement. Line two is offset by an invisible copy of "Work ",
-            so "Yourself" starts exactly under "for" — no guessed padding. */}
-        <motion.h1
-          style={{ y: titleY }}
-          className="absolute left-6 right-6 md:left-[15%] top-[22vh] z-10 font-sans font-normal
-            tracking-[-0.045em] leading-[0.92] text-[15vw] md:text-[9.2vw] pointer-events-none"
-        >
-          <span className="block overflow-hidden">
-            <motion.span
-              className="block"
-              initial={{ y: '108%' }}
-              animate={{ y: 0 }}
-              transition={{ duration: 1.05, ease: EASE, delay: 0.25 }}
-            >
-              Work for
-            </motion.span>
-          </span>
-          <span className="block overflow-hidden">
-            <motion.span
-              className="block"
-              initial={{ y: '108%' }}
-              animate={{ y: 0 }}
-              transition={{ duration: 1.05, ease: EASE, delay: 0.38 }}
-            >
-              <span className="invisible" aria-hidden="true">
-                Work{' '}
-              </span>
-              Yourself
-            </motion.span>
-          </span>
-        </motion.h1>
+    <section className="relative h-screen overflow-hidden bg-[#0d0c0f]">
+      {/* the globe — spinning, and it moves out of the way of your cursor */}
+      <ParticleSphere className="absolute inset-0 w-full h-full" />
 
-        {/* her, in front of the words and standing on the floor of the screen.
-            No parallax — she stays put. */}
-        <motion.img
-          src="/media/partnership-hero.png"
-          alt="One of our agents"
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1.1, ease: EASE, delay: 0.5 }}
-          className="absolute bottom-0 left-[2%] md:left-[1%] z-20 h-[70vh] md:h-[80vh]
-            w-auto object-contain object-bottom grayscale pointer-events-none"
-        />
-
-        {/* the line under it all */}
+      {/* the words sit over it */}
+      <div className="absolute inset-0 z-10 flex flex-col items-center justify-center px-6 pointer-events-none">
         <motion.p
-          initial={{ opacity: 0, y: 14 }}
+          initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.9, ease: EASE, delay: 0.95 }}
-          className="absolute left-6 right-6 top-[48vh] md:top-[45vh] z-10 text-muted-foreground
-            font-light text-sm md:text-base md:pl-[52%] pointer-events-none"
+          transition={{ duration: 0.9, ease: EASE, delay: 0.4 }}
+          className="text-white text-[0.62rem] md:text-[0.78rem] font-semibold tracking-[0.06em]
+            uppercase text-center mb-2 md:mb-3"
         >
-          seven specialist brands, one group behind you
+          It's all connected — one goal: to build something of your own.
         </motion.p>
+
+        <h1 className="font-black-display font-extrabold uppercase text-white text-center
+          tracking-[-0.035em] leading-[0.86] text-[13.5vw] md:text-[11.5vw]">
+          <span className="block overflow-hidden">
+            <motion.span
+              className="block"
+              initial={{ y: '110%' }}
+              animate={{ y: 0 }}
+              transition={{ duration: 1.15, ease: EASE, delay: 0.15 }}
+            >
+              Our Partnership
+            </motion.span>
+          </span>
+        </h1>
       </div>
 
       {/* the way down */}
@@ -148,13 +118,16 @@ function Hero() {
         href="#brands"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ duration: 0.8, delay: 1.3 }}
-        className="absolute bottom-8 right-6 md:right-10 z-30 w-12 h-12 rounded-full border border-foreground/25
-          flex items-center justify-center hover:bg-foreground hover:text-background transition-colors"
+        transition={{ duration: 0.8, delay: 1.2 }}
+        className="absolute top-28 right-6 md:right-10 z-20 text-white/70 hover:text-white transition-colors"
         aria-label="Scroll to the brands"
       >
-        <motion.span animate={{ y: [0, 4, 0] }} transition={{ duration: 1.8, repeat: Infinity, ease: 'easeInOut' }}>
-          <ArrowDown size={16} />
+        <motion.span
+          className="block"
+          animate={{ y: [0, 6, 0] }}
+          transition={{ duration: 1.9, repeat: Infinity, ease: 'easeInOut' }}
+        >
+          <ArrowDown size={18} />
         </motion.span>
       </motion.a>
 
@@ -163,7 +136,7 @@ function Hero() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.8, delay: 1.1 }}
-        className="absolute bottom-11 left-6 md:left-10 z-30 text-[0.6rem] tracking-[0.25em] uppercase text-muted-foreground"
+        className="absolute bottom-10 left-6 md:left-10 z-20 text-[0.6rem] tracking-[0.25em] uppercase text-white/40"
       >
         Partnership
       </motion.p>
@@ -316,8 +289,8 @@ function Closer() {
 export default function Partnership() {
   useLenis();
   return (
-    <div className="bg-background text-foreground min-h-screen overflow-x-clip">
-      <ExperienceNav />
+    <div className="bg-[#0d0c0f] text-white min-h-screen overflow-x-clip">
+      <ExperienceNav dark />
       <Hero />
       <Chooser />
       <Closer />
