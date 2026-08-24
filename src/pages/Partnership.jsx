@@ -91,7 +91,7 @@ function Hero() {
   return (
     <section className="relative bg-[#0d0c0f] pt-[16vh]">
       <div className="px-6 text-center">
-        <h1 className="font-sans font-light tracking-[-0.03em] text-white leading-[1.06] text-[8.5vw] md:text-[5vw]">
+        <h1 className="font-black-display font-extrabold uppercase tracking-tight text-white text-[2.6rem] md:text-[4.6rem] leading-[0.98]">
           <span className="block overflow-hidden">
             <motion.span
               className="block"
