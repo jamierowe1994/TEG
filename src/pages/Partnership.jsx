@@ -144,6 +144,7 @@ function Hero() {
       >
         <VintageFrame
           src="/media/vintage.jpg"
+          mask="/media/vintage-mask.png"
           alt="Around the table at The Experts Group"
           className="w-full h-full rounded-[1.4rem] md:rounded-[1.75rem]"
         />
