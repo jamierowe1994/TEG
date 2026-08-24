@@ -173,13 +173,6 @@ export default function Seriously() {
     });
   }, [activeKey, ended, armed]);
 
-  // hovering only swaps films while nothing has finished — once you've
-  // earned an end state it stays put until you click another tile
-  const hoverThing = (t) => {
-    if (story || ended[activeKey]) return;
-    setActiveKey(t.key);
-  };
-
   const clickThing = (t) => {
     setStory(null);
     setActiveKey(t.key);
@@ -222,16 +215,23 @@ export default function Seriously() {
             />
           ))}
 
-          {/* the grid — hairlines, blur panes, diamond cutouts */}
+          {/* the grid — hairlines and diamond cutouts. It clears out of the
+              way while a story is open, and settles back when you leave. */}
           <div
-            className="absolute inset-0 grid pointer-events-none"
+            className={`absolute inset-0 grid pointer-events-none transition-opacity duration-500 ${
+              story ? 'opacity-0' : 'opacity-100'
+            }`}
             style={{ gridTemplateColumns: `repeat(${COLS}, 1fr)`, gridTemplateRows: `repeat(${ROWS}, 1fr)` }}
           >
             {Array.from({ length: COLS * ROWS }, (_, i) => (
               <div key={i} className="border-[0.5px] border-black/60" />
             ))}
           </div>
-          <div className="absolute inset-0 pointer-events-none">
+          <div
+            className={`absolute inset-0 pointer-events-none transition-opacity duration-500 ${
+              story ? 'opacity-0' : 'opacity-100'
+            }`}
+          >
             {Array.from({ length: (COLS - 1) * (ROWS - 1) }, (_, i) => {
               const c = (i % (COLS - 1)) + 1;
               const r = Math.floor(i / (COLS - 1)) + 1;
@@ -365,7 +365,6 @@ export default function Seriously() {
           {THINGS.map((t, i) => (
             <button
               key={t.key}
-              onMouseEnter={() => hoverThing(t)}
               onClick={() => clickThing(t)}
               style={{
                 left: `${(t.cell.col / COLS) * 100}%`,

@@ -161,9 +161,6 @@ export default function BrandCarousel() {
             <br />
             that fits<span className="text-[#9565FF]">.</span>
           </h2>
-          <p className="mt-4 font-script text-2xl md:text-3xl text-[#9565FF]">
-            Seven ways in — one conversation to start.
-          </p>
           <p className="mt-4 text-muted-foreground font-light text-sm md:text-base max-w-md mx-auto leading-relaxed">
             Every brand is led by someone who's already made the leap. Hover
             for the detail, then come and talk to us.

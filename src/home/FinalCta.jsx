@@ -20,21 +20,18 @@ export default function FinalCta() {
         <h2 className="font-black-display font-extrabold uppercase tracking-tight leading-[1.0]">
           <span className="block text-[11vw] md:text-[7.6vw]">
             Do
-            <span className="inline-block align-middle mx-3 md:mx-5 w-[30vw] h-[19vw] md:w-[16vw] md:h-[10.5vw] rounded-lg overflow-hidden">
+            <span className="inline-block align-middle mx-3 md:mx-5 w-[25vw] h-[15.5vw] md:w-[13vw] md:h-[8.4vw] rounded-lg overflow-hidden group">
               <img
                 src="/media/bbs-77.jpg"
                 alt="One of ours, mid-laugh"
                 style={{ objectPosition: 'center 28%' }}
-                className="w-full h-full object-cover"
+                className="w-full h-full object-cover transition-[filter] duration-500 group-hover:grayscale"
               />
             </span>
             something
           </span>
           <span className="block text-[9vw] md:text-[6.2vw] mt-1">you're proud of.</span>
         </h2>
-        <p className="mt-6 font-script text-[6vw] md:text-[2.6vw] text-[#9565FF]">
-          Live a life you love.
-        </p>
         <div className="mt-10 flex items-center justify-center gap-4">
           <a
             href="mailto:hello@theexpertsgroup.co.uk"
