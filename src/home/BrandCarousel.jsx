@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { ArrowLeft, ArrowRight, ArrowUpRight } from 'lucide-react';
 import { EXPERIENCE_BRANDS } from '../experience/brands';
 import { EASE } from '../experience/motion';
+import VintageFrame from '../components/VintageFrame';
 
 // The call to action after the video wall: find the brand that fits.
 // Hope-Rise-style carousel — four tall rounded cards per screen, each an MD
@@ -12,11 +13,19 @@ import { EASE } from '../experience/motion';
 
 const VISIBLE = 4;
 
-// local, better shots for the MDs we have them for
-const MD_OVERRIDES = {
+// every MD, served locally so each one can carry a subject mask
+const MD_PHOTOS = {
   'the-property-experts': '/media/tpe-jim.jpg',
   'the-lettings-experts': '/media/tle-sue.jpg',
+  'fine-and-country': '/media/md-lee-p.png',
+  'the-mortgage-experts': '/media/md-gareth-p.png',
+  'the-auction-experts': '/media/md-ray-p.png',
+  'the-commercial-property-experts': '/media/md-steve-p.png',
+  'the-recruitment-experts': '/media/md-james-p.png',
 };
+
+// the mask that keeps them warm while the room behind ages back
+const maskFor = (src) => src.replace(/\.(png|jpg)$/, '-mask.png');
 
 // hover films — plays once on hover, then fades back to the face.
 // More MDs join as James finds their clips.
@@ -34,7 +43,8 @@ const CARDS = EXPERIENCE_BRANDS.map((b) => ({
   brand: b.name,
   specialty: b.specialty,
   md: b.md?.name,
-  photo: MD_OVERRIDES[b.id] || b.md?.photo || b.cardPhoto,
+  photo: MD_PHOTOS[b.id] || b.cardPhoto,
+  masked: !!MD_PHOTOS[b.id],
   logo: b.whiteLogo,
   video: MD_VIDEOS[b.id],
   isRecruitment: b.id === 'the-recruitment-experts',
@@ -71,13 +81,23 @@ function Card({ c, index }) {
       className="md-card group relative shrink-0 w-[78vw] sm:w-[38vw] lg:w-[22.5vw] h-[52vh] md:h-[58vh] cursor-pointer"
     >
       <div className="relative w-full h-full rounded-lg overflow-hidden bg-neutral-300">
-      <img
-        src={c.photo}
-        alt={c.md ? `${c.md} — ${c.brand}` : c.brand}
-        loading="lazy"
-        className="absolute inset-0 w-full h-full object-cover transition-all duration-500
-          grayscale-[35%] group-hover:grayscale-0 group-hover:scale-105"
-      />
+      {c.masked ? (
+        <VintageFrame
+          src={c.photo}
+          mask={maskFor(c.photo)}
+          alt={c.md ? `${c.md} — ${c.brand}` : c.brand}
+          strength={0.85}
+          className="absolute inset-0 w-full h-full transition-transform duration-500 group-hover:scale-105"
+        />
+      ) : (
+        <img
+          src={c.photo}
+          alt={c.brand}
+          loading="lazy"
+          className="absolute inset-0 w-full h-full object-cover transition-all duration-500
+            grayscale-[35%] group-hover:grayscale-0 group-hover:scale-105"
+        />
+      )}
       {c.video && (
         <video
           ref={vref}
