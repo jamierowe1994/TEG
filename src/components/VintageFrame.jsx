@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useRef } from 'react';
+import { motion, useScroll, useTransform } from 'framer-motion';
 
 // A photo put through a film treatment — but not evenly. The room behind is
 // aged and muted; the people in it stay warm and bright, the way the shot of
@@ -28,7 +29,15 @@ export default function VintageFrame({
   className = '',
   strength = 1,
   alt = '',
+  parallax = false,
 }) {
+  // the picture drifts against its frame as the frame crosses the viewport.
+  // Both passes travel together inside one wrapper — split them and the mask
+  // would slide off the person it was cut for.
+  const ref = useRef(null);
+  const { scrollYProgress } = useScroll({ target: ref, offset: ['start end', 'end start'] });
+  const drift = useTransform(scrollYProgress, [0, 1], ['-5.5%', '5.5%']);
+
   const Media = ({ filter, style }) =>
     video ? (
       <video
@@ -62,9 +71,13 @@ export default function VintageFrame({
     : null;
 
   return (
-    <div className={`relative overflow-hidden ${className}`}>
-      {/* the room, aged back */}
-      <Media filter={mask ? ROOM : WHOLE} />
+    <div ref={ref} className={`relative overflow-hidden ${className}`}>
+      <motion.div
+        className={parallax ? 'absolute inset-x-0 -inset-y-[9%] will-change-transform' : 'absolute inset-0'}
+        style={parallax ? { y: drift } : undefined}
+      >
+        {/* the room, aged back */}
+        <Media filter={mask ? ROOM : WHOLE} />
 
       {/* amber wash — sits under the people, so only the room takes it */}
       <div
@@ -80,8 +93,9 @@ export default function VintageFrame({
         style={{ backgroundColor: '#8a6b4a', opacity: 0.14 * strength, mixBlendMode: 'lighten' }}
       />
 
-      {/* the people, kept warm and bright on top of it */}
-      {mask && <Media filter={PEOPLE} style={maskStyle} />}
+        {/* the people, kept warm and bright on top of it */}
+        {mask && <Media filter={PEOPLE} style={maskStyle} />}
+      </motion.div>
 
       {/* grain and vignette run over both passes, so it reads as one photo */}
       <div
