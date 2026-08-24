@@ -1,6 +1,6 @@
-import React, { useRef, useState } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
-import { motion, useScroll, useTransform } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { ArrowUpRight, ArrowDown } from 'lucide-react';
 import ExperienceNav from '../experience/ExperienceNav';
 import SiteFooter from '../home/SiteFooter';
@@ -8,91 +8,90 @@ import useLenis from '../lib/useLenis';
 import { EASE } from '../experience/motion';
 import VintageFrame from '../components/VintageFrame';
 
-// Partnership — the door in. A dark room where the seven brands are read
-// as a list of huge names; whichever one you touch floods the room with
-// its own picture and colour. Pick the one that's yours and it hands you
-// over to that brand's own page.
+// Partnership — a dark, open room. One line at the top, one photograph, then
+// each brand gets its own space to be itself. No walls of copy: the job here
+// is the feeling of belonging to something, not the spec sheet. The detail
+// lives in the pack people can ask for when they actually want it.
 
 const BRANDS = [
   {
     key: 'tpe',
+    n: '01',
     name: 'The Property Experts',
     craft: 'Estate agency',
-    line: 'Run your own patch, keep your own name above the door.',
-    accent: '#E8420D',
+    why: 'For the agent who has outgrown the branch. Your patch, your name above the door, your way of doing it.',
     photo: '/media/tpe-1.jpg',
+    accent: '#E8420D',
     to: '/partnership/property',
   },
   {
     key: 'fc',
+    n: '02',
     name: 'Fine & Country',
     craft: 'Premium & luxury homes',
-    line: 'The premium market, with a global name behind you.',
-    accent: '#B49A6A',
+    why: 'For the agent whose market is the one everyone else gets nervous about.',
     photo: '/media/bbs-239.jpg',
+    accent: '#B49A6A',
     to: '/partnership/fine-and-country',
   },
   {
     key: 'tle',
+    n: '03',
     name: 'The Letting Experts',
     craft: 'Lettings & property management',
-    line: 'Built for lettings alone — not an estate agency hybrid.',
-    accent: '#ED1C24',
+    why: 'For the letting agent tired of being the afterthought in someone else’s estate agency.',
     photo: '/media/tle-1.jpg',
+    accent: '#ED1C24',
     to: '/partnership/lettings',
     ready: true,
   },
   {
     key: 'tme',
+    n: '04',
     name: 'The Mortgage Experts',
     craft: 'Mortgage & protection',
-    line: 'Whole-of-market advice, none of the branch politics.',
-    accent: '#2255A4',
+    why: 'For the adviser who wants the whole market, and none of the politics.',
     photo: '/media/bbs-30.jpg',
+    accent: '#2255A4',
     to: '/partnership/mortgages',
   },
   {
     key: 'tac',
+    n: '05',
     name: 'The Auction Company',
     craft: 'Property auctions',
-    line: 'The fastest route to sold, run on your terms.',
-    accent: '#A8D32A',
+    why: 'For the agent who works best against a deadline and a room full of bidders.',
     photo: '/media/bbs-242.jpg',
+    accent: '#A8D32A',
     to: '/partnership/auctions',
   },
   {
     key: 'tcpe',
+    n: '06',
     name: 'The Commercial Property Experts',
     craft: 'Commercial sales, lettings & investment',
-    line: 'Commercial deals, specialist backing.',
-    accent: '#0094D2',
+    why: 'For the agent who talks in yield and lease terms, not kerb appeal.',
     photo: '/media/bbs-162.jpg',
+    accent: '#0094D2',
     to: '/partnership/commercial',
   },
   {
     key: 'tre',
+    n: '07',
     name: 'The Recruitment Experts',
     craft: 'Property industry recruitment',
-    line: 'Recruit for the industry you already know.',
-    accent: '#E8222D',
+    why: 'For the recruiter who already knows this industry, because they came from it.',
     photo: '/media/tre-1.jpg',
+    accent: '#E8222D',
     to: '/partnership/recruitment',
   },
 ];
 
 function Hero() {
-  const ref = useRef(null);
-  const { scrollYProgress } = useScroll({ target: ref, offset: ['start start', 'end start'] });
-  const wordsY = useTransform(scrollYProgress, [0, 1], ['0vh', '-10vh']);
-
   return (
-    <section ref={ref} className="relative h-screen overflow-hidden bg-[#0d0c0f]">
-      {/* the line */}
-      <motion.div
-        style={{ y: wordsY }}
-        className="absolute inset-x-0 top-[15vh] z-10 px-6 text-center pointer-events-none"
-      >
-        <h1 className="font-serif text-white leading-[1.06] text-[9vw] md:text-[5.4vw]">
+    <section className="relative bg-[#0d0c0f] pt-[16vh]">
+      <div className="px-6 text-center">
+        <h1 className="font-sans font-light tracking-[-0.03em] text-white leading-[1.06] text-[8.5vw] md:text-[5vw]">
           <span className="block overflow-hidden">
             <motion.span
               className="block"
@@ -119,7 +118,7 @@ function Hero() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.9, ease: EASE, delay: 0.75 }}
-          className="mt-7 text-white/45 text-[0.6rem] md:text-[0.68rem] tracking-[0.22em] uppercase"
+          className="mt-7 text-white/40 text-[0.6rem] md:text-[0.68rem] tracking-[0.22em] uppercase"
         >
           [ TEG / The Experts Group ]
         </motion.p>
@@ -127,162 +126,111 @@ function Hero() {
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.9, ease: EASE, delay: 0.85 }}
-          className="mt-2 text-white/80 text-sm md:text-base leading-[1.6]"
+          className="mt-2 text-white/75 text-sm md:text-base leading-[1.6]"
         >
           Seven specialist brands, one group behind you.
           <br />
           Property, finance and recruitment — run on your terms.
         </motion.p>
-      </motion.div>
+      </div>
 
-      {/* the frame. A film for now; swap the photo for a reel when there is one */}
+      {/* the photograph runs past the fold; the rest arrives as you scroll */}
       <motion.div
         initial={{ opacity: 0, y: 60 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 1.2, ease: EASE, delay: 0.5 }}
-        className="absolute inset-x-4 md:inset-x-16 top-[46vh] h-[68vh]"
+        className="mt-[7vh] px-4 md:px-16"
       >
         <VintageFrame
           src="/media/vintage.jpg"
           mask="/media/vintage-mask.png"
           alt="Around the table at The Experts Group"
-          className="w-full h-full rounded-[1.4rem] md:rounded-[1.75rem]"
+          className="w-full h-[88vh] rounded-lg"
         />
       </motion.div>
 
-      {/* the label, quietly */}
-      <motion.p
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.8, delay: 1.1 }}
-        className="absolute bottom-6 left-6 md:left-10 z-20 text-[0.6rem] tracking-[0.25em] uppercase text-white/40"
-      >
-        Partnership
-      </motion.p>
-
-      <motion.a
-        href="#brands"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.8, delay: 1.2 }}
-        className="absolute bottom-6 right-6 md:right-10 z-20 text-white/60 hover:text-white transition-colors"
-        aria-label="Scroll to the brands"
-      >
+      <div className="flex items-center justify-between px-6 md:px-16 pt-5">
+        <p className="text-[0.6rem] tracking-[0.25em] uppercase text-white/35">Partnership</p>
         <motion.span
-          className="block"
           animate={{ y: [0, 6, 0] }}
           transition={{ duration: 1.9, repeat: Infinity, ease: 'easeInOut' }}
+          className="text-white/40"
         >
-          <ArrowDown size={18} />
+          <ArrowDown size={16} />
         </motion.span>
-      </motion.a>
+      </div>
     </section>
   );
 }
 
-function BrandRow({ brand, index, hovered, setHovered }) {
-  const isHot = hovered === brand.key;
-  const dimmed = hovered !== null && !isHot;
-
+function BrandPanel({ brand, index }) {
+  const flip = index % 2 === 1;
   return (
-    <Link
-      to={brand.to}
-      onMouseEnter={() => setHovered(brand.key)}
-      onMouseLeave={() => setHovered(null)}
-      className="group relative block border-b border-white/10"
-    >
-      <motion.div
-        animate={{ opacity: dimmed ? 0.28 : 1, x: isHot ? 22 : 0 }}
-        transition={{ duration: 0.55, ease: EASE }}
-        className="relative z-10 px-6 md:px-12 py-7 md:py-9 flex items-center gap-6 md:gap-10"
+    <section className="relative bg-[#0d0c0f] py-[13vh] md:py-[16vh] px-6 md:px-16">
+      <div
+        className={`max-w-[1500px] mx-auto flex flex-col gap-10 md:gap-20 md:items-center ${
+          flip ? 'md:flex-row-reverse' : 'md:flex-row'
+        }`}
       >
-        <span className="text-[0.6rem] md:text-xs tracking-[0.25em] text-white/35 w-8 shrink-0">
-          {String(index + 1).padStart(2, '0')}
-        </span>
+        {/* a small window, never a backdrop */}
+        <motion.div
+          initial={{ opacity: 0, y: 40 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-15%' }}
+          transition={{ duration: 0.9, ease: EASE }}
+          className="w-full md:w-[30%] shrink-0"
+        >
+          <img
+            src={brand.photo}
+            alt=""
+            loading="lazy"
+            className="w-full aspect-[4/5] object-cover rounded-lg grayscale"
+          />
+        </motion.div>
 
-        <div className="min-w-0 flex-1">
-          <h2
-            className="font-black-display font-extrabold uppercase tracking-[-0.02em] leading-[0.95]
-              text-[6.2vw] md:text-[3.4vw] transition-colors duration-500"
-            style={{ color: isHot ? brand.accent : '#F1F1F1' }}
-          >
+        <motion.div
+          initial={{ opacity: 0, y: 40 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-15%' }}
+          transition={{ duration: 0.9, ease: EASE, delay: 0.1 }}
+          className="flex-1 min-w-0"
+        >
+          <div className="flex items-center gap-4">
+            <span className="text-[0.6rem] tracking-[0.28em]" style={{ color: brand.accent }}>
+              {brand.n}
+            </span>
+            <span className="h-px w-[70px] bg-white/15" />
+            <span className="text-[0.6rem] tracking-[0.2em] uppercase text-white/35">
+              {brand.craft}
+            </span>
+            {brand.ready && (
+              <span
+                className="rounded-full px-3 py-1 text-[0.55rem] tracking-[0.18em] uppercase"
+                style={{ backgroundColor: `${brand.accent}22`, color: brand.accent }}
+              >
+                Open now
+              </span>
+            )}
+          </div>
+
+          <h2 className="mt-6 font-sans font-light tracking-[-0.03em] text-white leading-[1.02] text-[8vw] md:text-[3.6vw]">
             {brand.name}
           </h2>
-          <motion.p
-            animate={{ opacity: isHot ? 1 : 0, height: isHot ? 'auto' : 0 }}
-            transition={{ duration: 0.4, ease: EASE }}
-            className="overflow-hidden text-white/60 font-light text-sm md:text-base mt-1"
+
+          <p className="mt-6 text-white/60 font-light text-base md:text-xl leading-[1.6] max-w-[26em]">
+            {brand.why}
+          </p>
+
+          <Link
+            to={brand.to}
+            className="group mt-9 inline-flex items-center gap-2 text-sm font-medium text-white/80 hover:text-white transition-colors"
           >
-            {brand.line}
-          </motion.p>
-        </div>
-
-        <span className="hidden md:block text-[0.62rem] tracking-[0.2em] uppercase text-white/40 shrink-0">
-          {brand.craft}
-        </span>
-
-        <motion.span
-          animate={{ opacity: isHot ? 1 : 0.25, rotate: isHot ? 0 : -30 }}
-          transition={{ duration: 0.45, ease: EASE }}
-          className="shrink-0 text-white"
-        >
-          <ArrowUpRight size={22} />
-        </motion.span>
-
-        {brand.ready && (
-          <span
-            className="hidden md:inline-flex shrink-0 rounded-full px-3 py-1 text-[0.58rem] tracking-[0.18em] uppercase"
-            style={{ backgroundColor: `${brand.accent}22`, color: brand.accent }}
-          >
-            Open now
-          </span>
-        )}
-      </motion.div>
-    </Link>
-  );
-}
-
-function Chooser() {
-  const [hovered, setHovered] = useState(null);
-  const hot = BRANDS.find((b) => b.key === hovered);
-
-  return (
-    <section id="brands" className="relative bg-[#0d0c0f] py-20 md:py-28 overflow-hidden">
-      {/* whichever brand you touch floods the room. One image stack and one
-          tint layer — mounting a fresh overlay per hover let them pile up and
-          wash the room out. */}
-      <div className="absolute inset-0 pointer-events-none">
-        {BRANDS.map((b) => (
-          <img
-            key={b.key}
-            src={b.photo}
-            alt=""
-            className={`absolute inset-0 w-full h-full object-cover grayscale transition-opacity duration-700 ${
-              hovered === b.key ? 'opacity-100' : 'opacity-0'
-            }`}
-          />
-        ))}
-        <div
-          className={`absolute inset-0 bg-black transition-opacity duration-700 ${
-            hot ? 'opacity-[0.72]' : 'opacity-0'
-          }`}
-        />
-        <motion.div
-          animate={{ backgroundColor: hot ? hot.accent : '#0d0c0f', opacity: hot ? 0.2 : 0 }}
-          transition={{ duration: 0.6, ease: EASE }}
-          className="absolute inset-0 mix-blend-overlay"
-        />
-      </div>
-
-      <div className="relative z-10">
-        <div className="px-6 md:px-12 mb-10 md:mb-14">
-          <p className="text-[0.62rem] tracking-[0.25em] uppercase text-[#E3D7FF]">Our brands</p>
-        </div>
-        <div className="border-t border-white/10">
-          {BRANDS.map((b, i) => (
-            <BrandRow key={b.key} brand={b} index={i} hovered={hovered} setHovered={setHovered} />
-          ))}
-        </div>
+            <span className="border-b border-white/30 group-hover:border-white pb-1 transition-colors">
+              Look inside {brand.name}
+            </span>
+            <ArrowUpRight size={16} />
+          </Link>
+        </motion.div>
       </div>
     </section>
   );
@@ -290,34 +238,39 @@ function Chooser() {
 
 function Closer() {
   return (
-    <section className="relative bg-background text-foreground py-24 md:py-32 px-6 md:px-12">
-      <div className="max-w-3xl mx-auto text-center">
-        <motion.div
-          initial={{ opacity: 0, y: 26 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-15%' }}
-          transition={{ duration: 0.85, ease: EASE }}
-        >
-          <h2 className="font-black-display font-extrabold uppercase tracking-tight text-3xl md:text-5xl leading-[1.05]">
-            Not sure which
-            <br />
-            one is yours?
-          </h2>
-          <p className="mt-5 font-script text-[#9565FF] text-2xl md:text-3xl">
-            Tell us what you do. We'll tell you where you'd fit.
-          </p>
-          <p className="mt-5 text-muted-foreground font-light text-sm md:text-base max-w-md mx-auto leading-relaxed">
-            One conversation, no pitch. We'd rather point you at the right
-            brand than the nearest one.
-          </p>
+    <section className="relative bg-[#0d0c0f] py-[18vh] px-6 md:px-16">
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: '-15%' }}
+        transition={{ duration: 0.95, ease: EASE }}
+        className="max-w-[1100px] mx-auto text-center"
+      >
+        <h2 className="font-sans font-light tracking-[-0.03em] text-white leading-[1.08] text-[9vw] md:text-[4.4vw]">
+          You already know
+          <br />
+          how to do the work.
+        </h2>
+        <p className="mt-8 text-white/55 font-light text-base md:text-lg max-w-[30em] mx-auto leading-[1.7]">
+          The rest — the brand, the technology, the compliance, the people who
+          pick up the phone when it goes wrong — is what we're for.
+        </p>
+        <div className="mt-12 flex flex-wrap items-center justify-center gap-4">
           <a
-            href="mailto:hello@theexpertsgroup.co.uk?subject=Partnership%20enquiry"
-            className="mt-9 inline-flex items-center gap-2 rounded-xl bg-[#9565FF] text-white px-9 py-4 text-sm font-semibold hover:opacity-90 transition-opacity"
+            href="mailto:hello@theexpertsgroup.co.uk?subject=Partnership"
+            className="rounded-lg bg-white text-[#131313] px-9 py-4 text-sm font-semibold hover:bg-white/85 transition-colors"
           >
-            Start a conversation <ArrowUpRight size={15} />
+            Start a conversation
           </a>
-        </motion.div>
-      </div>
+          <a
+            href="mailto:hello@theexpertsgroup.co.uk?subject=Information%20pack"
+            className="inline-flex items-center gap-2 rounded-lg border border-white/25 text-white px-8 py-4
+              text-sm font-medium hover:border-white/60 transition-colors"
+          >
+            Or just take the pack <ArrowUpRight size={15} />
+          </a>
+        </div>
+      </motion.div>
     </section>
   );
 }
@@ -328,7 +281,9 @@ export default function Partnership() {
     <div className="bg-[#0d0c0f] text-white min-h-screen overflow-x-clip">
       <ExperienceNav dark />
       <Hero />
-      <Chooser />
+      {BRANDS.map((b, i) => (
+        <BrandPanel key={b.key} brand={b} index={i} />
+      ))}
       <Closer />
       <SiteFooter />
     </div>
