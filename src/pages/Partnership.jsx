@@ -288,7 +288,7 @@ function BrandArc() {
   return (
     <section className="relative bg-[#0d0c0f] h-screen flex items-center overflow-hidden">
       <div
-        className="flex w-full items-center"
+        className="flex w-full items-center px-[5vw] md:px-[6vw]"
         style={{ perspective: `${CURVE.depth}px`, transformStyle: 'preserve-3d' }}
       >
         {BRANDS.map((b, i) => {
@@ -321,7 +321,7 @@ function BrandArc() {
               >
                 <Link to={b.to} className="group block">
                   <div
-                    className="relative w-[7.4vw] h-[62vh] overflow-hidden bg-neutral-900
+                    className="relative w-[8.3vw] h-[74vh] overflow-hidden bg-neutral-900
                       transition-transform duration-500 group-hover:-translate-y-4"
                   >
                     <img
