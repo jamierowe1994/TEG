@@ -328,8 +328,8 @@ function BrandArc() {
                       src={b.photo}
                       alt=""
                       loading="lazy"
-                      className="absolute inset-0 w-full h-full object-cover grayscale
-                        transition-all duration-700 group-hover:grayscale-0 group-hover:scale-[1.06]"
+                      className="absolute inset-0 w-full h-full object-cover
+                        transition-transform duration-700 group-hover:scale-[1.06]"
                     />
                     <span
                       className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
