@@ -230,56 +230,44 @@ function Reasons() {
   );
 }
 
-// The strips are laid along a shallow arc, like a hand of cards: each one
-// rotates a little further from centre and the middle of the row rides
-// highest. Hovering lifts a strip out of the fan and gives it its colour.
+// The fan. Read the reference carefully and it's concave, not convex: the
+// strips at the edges are the TALLEST and they shrink toward the middle,
+// which is what makes the row feel like it's curving around you rather than
+// bulging out at you.
+//
+// Spacing has to be even, so each strip sits in its own fixed-width slot and
+// the rotation is allowed to overflow. Rotating inside a flex gap would make
+// the gaps uneven — a rotated tall element has a much wider bounding box.
 function BrandArc() {
   const mid = (BRANDS.length - 1) / 2;
 
   return (
-    <section className="relative bg-[#0d0c0f] pt-[14vh] pb-[10vh] overflow-hidden">
-      <div className="px-6 md:px-16 max-w-[1500px] mx-auto">
-        <motion.div
-          initial={{ opacity: 0, y: 26 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-15%' }}
-          transition={{ duration: 0.9, ease: EASE }}
-        >
-          <h2 className="font-black-display font-extrabold uppercase tracking-tight text-white
-            text-[2.2rem] md:text-[3.6rem] leading-[1]">
-            Seven brands.
-            <br />
-            One of them is yours.
-          </h2>
-          <p className="mt-6 text-white/50 font-light text-base md:text-lg max-w-[32em] leading-[1.7]">
-            Each one is its own business with its own MD. Pick the one that
-            matches what you already do brilliantly.
-          </p>
-        </motion.div>
-      </div>
+    <section className="relative bg-[#0d0c0f] h-screen flex items-center overflow-hidden">
+      <div className="flex w-full items-center">
+        {BRANDS.map((b, i) => {
+          const off = i - mid;                    // -3 … 3
+          const away = Math.abs(off) / mid;       // 0 at centre, 1 at the edges
+          const height = 54 + away * 20;          // 54vh in the middle, 74vh at the ends
+          const rot = off * 3.4;                  // leaning out of the curve
 
-      {/* the fan */}
-      <div className="mt-[9vh] overflow-x-auto scrollbar-none">
-        <div className="flex items-end justify-center gap-2 md:gap-3 px-6 md:px-10 w-max mx-auto pb-2">
-          {BRANDS.map((b, i) => {
-            const off = i - mid;                         // -3 … 3
-            const rot = off * 3.1;                       // the fan
-            const lift = (1 - (off / mid) ** 2) * 30;    // the middle rides highest
-            return (
+          return (
+            <div
+              key={b.key}
+              className="w-[14.285%] shrink-0 flex justify-center"
+              style={{ zIndex: 10 - Math.round(away * 10) }}
+            >
               <motion.div
-                key={b.key}
-                initial={{ opacity: 0, y: 60 }}
-                whileInView={{ opacity: 1, y: -lift }}
+                initial={{ opacity: 0, y: 70 }}
+                whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: '-10%' }}
-                transition={{ duration: 0.8, ease: EASE, delay: Math.abs(off) * 0.07 }}
+                transition={{ duration: 0.9, ease: EASE, delay: (1 - away) * 0.18 }}
                 style={{ rotate: rot }}
-                className="shrink-0"
               >
                 <Link to={b.to} className="group block">
                   <div
-                    className="relative w-[24vw] sm:w-[15vw] lg:w-[10.2vw] h-[46vh] md:h-[62vh]
-                      overflow-hidden rounded-lg bg-neutral-900
+                    className="relative w-[11.6vw] overflow-hidden rounded-lg bg-neutral-900
                       transition-transform duration-500 group-hover:-translate-y-4"
+                    style={{ height: `${height}vh` }}
                   >
                     <img
                       src={b.photo}
@@ -303,18 +291,18 @@ function BrandArc() {
                     )}
                   </div>
 
-                  <div className="mt-4 flex items-baseline gap-2 justify-center">
+                  <div className="mt-4 flex flex-col items-center gap-1">
                     <span className="text-[0.55rem] tracking-[0.2em] text-white/30">{b.n}</span>
-                    <span className="text-[0.58rem] md:text-[0.66rem] tracking-[0.12em] uppercase
-                      text-white/55 group-hover:text-white transition-colors text-center leading-tight">
+                    <span className="text-[0.55rem] md:text-[0.62rem] tracking-[0.12em] uppercase
+                      text-white/55 group-hover:text-white transition-colors text-center leading-tight px-1">
                       {b.name}
                     </span>
                   </div>
                 </Link>
               </motion.div>
-            );
-          })}
-        </div>
+            </div>
+          );
+        })}
       </div>
     </section>
   );
