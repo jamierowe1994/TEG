@@ -230,42 +230,35 @@ function Reasons() {
   );
 }
 
-// The fan. Read the reference carefully and it's concave, not convex: the
-// strips at the edges are the TALLEST and they shrink toward the middle,
-// which is what makes the row feel like it's curving around you rather than
-// bulging out at you.
-//
-// Spacing has to be even, so each strip sits in its own fixed-width slot and
-// the rotation is allowed to overflow. Rotating inside a flex gap would make
-// the gaps uneven — a rotated tall element has a much wider bounding box.
+// The row. Every strip is dead vertical and evenly spaced; the only thing
+// that changes is height — tallest at the edges, shortest in the middle — so
+// the top edge swoops down toward the centre while the feet stay on one line.
+// The curve comes entirely from that swoop, with no tilting.
 function BrandArc() {
   const mid = (BRANDS.length - 1) / 2;
 
   return (
     <section className="relative bg-[#0d0c0f] h-screen flex items-center overflow-hidden">
-      <div className="flex w-full items-center">
+      <div className="flex w-full items-end">
         {BRANDS.map((b, i) => {
-          const off = i - mid;                    // -3 … 3
+          const off = i - mid;
           const away = Math.abs(off) / mid;       // 0 at centre, 1 at the edges
-          const height = 54 + away * 20;          // 54vh in the middle, 74vh at the ends
-          const rot = off * 3.4;                  // leaning out of the curve
+          const height = 52 + away * 22;          // 52vh in the middle, 74vh at the ends
 
           return (
             <div
               key={b.key}
               className="w-[14.285%] shrink-0 flex justify-center"
-              style={{ zIndex: 10 - Math.round(away * 10) }}
             >
               <motion.div
                 initial={{ opacity: 0, y: 70 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: '-10%' }}
                 transition={{ duration: 0.9, ease: EASE, delay: (1 - away) * 0.18 }}
-                style={{ rotate: rot }}
               >
                 <Link to={b.to} className="group block">
                   <div
-                    className="relative w-[11.6vw] overflow-hidden rounded-lg bg-neutral-900
+                    className="relative w-[11.6vw] overflow-hidden bg-neutral-900
                       transition-transform duration-500 group-hover:-translate-y-4"
                     style={{ height: `${height}vh` }}
                   >
