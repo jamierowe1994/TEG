@@ -209,7 +209,7 @@ const REASONS = [
 
 function Reasons() {
   return (
-    <section className="relative bg-[#0d0c0f] pt-[14vh] pb-[6vh] px-6 md:px-16">
+    <section className="relative bg-[#0d0c0f] pt-[14vh] pb-[4vh] px-6 md:px-16">
       <div className="max-w-[1500px] mx-auto">
         <motion.h2
           initial={{ opacity: 0, y: 26 }}
@@ -222,7 +222,7 @@ function Reasons() {
           What actually changes
         </motion.h2>
 
-        <div className="mt-[9vh] grid grid-cols-1 md:grid-cols-2">
+        <div className="mt-[4.5vh] grid grid-cols-1 md:grid-cols-2">
           {REASONS.map((r, i) => (
             <motion.div
               key={r.n}
@@ -246,6 +246,76 @@ function Reasons() {
           ))}
         </div>
       </div>
+    </section>
+  );
+}
+
+// The economics, said plainly and given room: two huge lines pinned to
+// opposite corners with the argument sitting off-centre between them.
+function VisionLed() {
+  const rise = (delay) => ({
+    initial: { opacity: 0, y: 40 },
+    whileInView: { opacity: 1, y: 0 },
+    viewport: { once: true, margin: '-15%' },
+    transition: { duration: 0.9, ease: EASE, delay },
+  });
+
+  return (
+    <section className="relative bg-[#0d0c0f] min-h-screen flex flex-col justify-between
+      px-6 md:px-12 py-[12vh] overflow-hidden">
+      {/* top left, and the small print opposite it */}
+      <div className="flex items-start justify-between gap-8">
+        <motion.h2
+          {...rise(0)}
+          className="font-black-display font-extrabold uppercase tracking-[-0.04em] text-white
+            text-[16vw] md:text-[10vw] leading-[0.8]"
+        >
+          Vision
+          <br />
+          led.
+        </motion.h2>
+
+        <motion.div
+          {...rise(0.15)}
+          className="text-right text-white/50 text-[0.62rem] md:text-[0.72rem] tracking-[0.08em] leading-[1.9] shrink-0"
+        >
+          <p className="text-white/80 mb-1">The Experts Group</p>
+          <p>[&nbsp; 50–80% of the fee &nbsp;]</p>
+          <p>[&nbsp; tech &amp; tools &nbsp;]</p>
+          <p>[&nbsp; back-office &nbsp;]</p>
+        </motion.div>
+      </div>
+
+      {/* the argument, off-centre to the left */}
+      <motion.div
+        {...rise(0.1)}
+        className="md:ml-[24%] max-w-[42ch] space-y-6 py-[6vh]"
+      >
+        <p className="text-white/45 text-sm md:text-base leading-[1.65] text-justify">
+          Most groups take the lion's share of the fee and call it support.
+        </p>
+        <p className="text-white/45 text-sm md:text-base leading-[1.65] text-justify">
+          Our brands pay <span className="text-[#9565FF]">between 50% and 80% of the fee</span> to
+          the agent who earned it. That single number changes what the job can
+          be: fewer transactions to chase, more time on each one, and the room
+          to actually care about every customer who comes through the door.
+        </p>
+        <p className="text-white/45 text-sm md:text-base leading-[1.65] text-justify">
+          The technology, the tools and the back-office are ours to worry
+          about. What's left is the part you're good at.
+        </p>
+      </motion.div>
+
+      {/* bottom right */}
+      <motion.h2
+        {...rise(0.2)}
+        className="font-black-display font-extrabold uppercase tracking-[-0.04em] text-white
+          text-[16vw] md:text-[10vw] leading-[0.8] text-right self-end"
+      >
+        People
+        <br />
+        built.
+      </motion.h2>
     </section>
   );
 }
@@ -390,6 +460,7 @@ export default function Partnership() {
       <ExperienceNav dark />
       <Hero />
       <Reasons />
+      <VisionLed />
       <BrandArc />
       <Closer />
       <SiteFooter />

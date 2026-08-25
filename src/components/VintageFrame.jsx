@@ -36,7 +36,10 @@ export default function VintageFrame({
   // would slide off the person it was cut for.
   const ref = useRef(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ['start end', 'end start'] });
-  const drift = useTransform(scrollYProgress, [0, 1], ['-5.5%', '5.5%']);
+  // the overhang has to out-reach the travel or the frame shows daylight at
+  // the top and bottom of the drift: 13% of a 140%-tall wrapper is 18.2% of
+  // the frame, and the wrapper hangs 20% past each edge.
+  const drift = useTransform(scrollYProgress, [0, 1], ['-13%', '13%']);
 
   const Media = ({ filter, style }) =>
     video ? (
@@ -73,7 +76,7 @@ export default function VintageFrame({
   return (
     <div ref={ref} className={`relative overflow-hidden ${className}`}>
       <motion.div
-        className={parallax ? 'absolute inset-x-0 -inset-y-[9%] will-change-transform' : 'absolute inset-0'}
+        className={parallax ? 'absolute inset-x-0 -inset-y-[20%] will-change-transform' : 'absolute inset-0'}
         style={parallax ? { y: drift } : undefined}
       >
         {/* the room, aged back */}
