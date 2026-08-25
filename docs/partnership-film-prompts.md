@@ -1,90 +1,107 @@
-# Higgsfield prompt sheet — Partnership film
+# Higgsfield — the one-shot Partnership film
 
-Nine generations at 5s each, cut down to 30s. One Success Day still as the
-reference image per shot.
+One generation. 18 seconds. No second attempt, so the whole film has to be a
+**single unbroken camera move**.
 
 ---
 
-## Settings — identical on every generation
+## Why one move, not nine shots
 
-Nine separate generations have to look like one film, so nothing that affects
-the look may change between them.
+Ask a video model for cuts inside one generation and it doesn't cut — it
+morphs. Faces melt into other faces at the transitions. The reliable way to
+get 18 usable seconds in one go is a **single continuous take**, which is also
+the more cinematic answer: one slow pull back through the room that keeps
+revealing more people, ending wide.
+
+The move does the editing:
+
+| Time | What happens |
+|---|---|
+| 0–4s | Tight on hands, papers, water glasses. Light through the blinds. |
+| 4–8s | Pulling back — a woman comes into frame mid-sentence, gesturing |
+| 8–12s | Past a listening face, then a man laughing |
+| 12–18s | Rises slightly, reveals the whole table, decelerates, rests wide |
+
+It ends wide and still — which is exactly what the page needs, because
+**FRIENDS TO YOUR MASSIVE AMBITIONS** sits over that final frame.
+
+---
+
+## Settings
 
 | Field | Set to |
 |---|---|
-| Duration | **5s** |
+| Duration | **18s** |
 | Resolution | **1080p** |
 | Aspect | **16:9** |
 | Film setup | **Documentary / handheld** (nearest available) |
-| Camera | set **per shot** — see list below |
-| Colour palette | **Neutral / natural** — *not* a warm or vintage preset |
+| Camera | **Dolly out** — or Auto if dolly-out isn't offered; the prompt carries it |
+| Colour palette | **Neutral / natural** — *not* warm, not vintage, not cinematic-teal |
 | Lighting | **Natural / available light** |
-| Variants | 4 per shot, pick the calmest |
 
-**Why neutral colour:** the website applies the vintage grade itself — muted
-room, warm skin, grain, vignette. If the footage arrives already warm it cooks
-twice and goes muddy.
+**Reference image:** the wide boardroom frame — the one with the bearded man
+in the mint t-shirt beside the woman in the polka-dot blouse. It has the
+table, the window light, the depth and the wardrobe all in one, so the model
+has everything it needs to stay consistent for 18 seconds.
 
-## Style tail
-
-Append this to **every** prompt. It's what keeps nine generations in the same
-world:
-
-> `natural available light, shallow depth of field, 35mm documentary, subtle handheld micro-movement, no camera shake, realistic skin tones, neutral colour, no text, no captions, no logos`
-
-## Do not generate the type
-
-Higgsfield will mangle lettering. **No brand names in the prompts.** The seven
-names get added afterwards in the edit, where they can snap cleanly in Archivo
-and the right brand colours.
+**Colour must stay neutral.** The website applies the vintage grade itself —
+muted room, warm skin, grain, vignette. Warm footage would cook twice.
 
 ---
 
-## The nine prompts
+## The prompt
 
-Paste the prompt, attach the reference still, set the camera, generate.
+Paste this whole thing.
 
-**01 — The room before anyone speaks** · *Camera: slow dolly in*
-> An empty corner of a meeting room, afternoon light falling through venetian blinds onto a table, dust in the air, nobody speaking yet, the camera creeping forward almost imperceptibly
+> A single unbroken eighteen-second dolly shot inside a sunlit boardroom during a property agents' meeting. The shot opens tight and low on hands resting on a polished walnut table beside water glasses and scattered papers, warm afternoon light striping through venetian blinds behind. The camera begins a slow, steady backward glide. As it retreats, a woman in a black polka-dot blouse comes into frame mid-sentence, both hands shaping an idea in the air, a lanyard around her neck, completely absorbed in what she is saying. The camera keeps drifting back, passing the shoulder of a bearded man in a pale mint t-shirt who listens with his chin low and his arms folded on the table, then past an older man in a white polo shirt who breaks into a warm, genuine laugh. At around twelve seconds the camera begins to rise gently as it continues pulling away, lifting from seated eye level to a slightly elevated angle, revealing the full length of the table and the whole group working together — open laptops, notebooks, coffee cups, a presentation glowing on a wall-mounted screen. The movement decelerates smoothly and comes to rest in a wide, still frame with the room balanced and the centre of the frame uncluttered. Nobody looks at the camera. Natural available light only, strong warm daylight from a large window to camera left, shallow depth of field softening the far end of the room, 35mm lens, subtle handheld micro-movement, fine 35mm film grain, neutral colour, unhurried and observational, documentary realism.
 
-**02 — Someone has the floor** · *Camera: slow push in*
-> A woman mid-sentence at a boardroom table, hands shaping an idea in the air, colleagues out of focus around her, caught candidly in conversation, the camera easing slowly toward her
+## Negative prompt
 
-**03 — The room listens** · *Camera: static*
-> Two men listening across a meeting table, one resting a hand near his mouth, completely still and concentrated, only breathing and a blink, the camera locked off
-
-**04 — It isn't all serious** · *Camera: slow push in*
-> A man leaning back at a meeting table breaking into a genuine laugh, relaxed and unguarded, warm daylight from a window behind him, the camera drifting gently closer
-
-**05 — Someone stands up** · *Camera: slow vertical rise / tilt up*
-> A man standing to address a room, hands mid-gesture as he explains something, seated colleagues watching, the camera rising slowly from chest height to his eye line
-
-**06 — The stage** · *Camera: static (hold)*
-> A woman presenting to a room holding a printed document, projector glow behind her, mid-sentence and animated, the camera completely still
-
-**07 — Thinking** · *Camera: very slow push in*
-> A man listening with his chin resting on his hand and glasses pushed up on his head, thinking rather than waiting to speak, soft daylight, the camera barely moving
-
-**08 — Two of them, together** · *Camera: slow lateral drift right*
-> Two colleagues leaning in over papers on a table, working something out together, one pointing at the page, the camera drifting slowly sideways past them
-
-**09 — The whole table** · *Camera: slow pull back / dolly out*
-> A wide view of a full boardroom of people working together, laptops and water glasses and papers across the table, warm daylight, the camera pulling slowly back and coming to rest
+> text, captions, subtitles, titles, logos, watermarks, cuts, jump cuts, whip pans, crash zooms, speed ramps, slow motion, people looking at camera, posed group photo, distorted hands, extra fingers, warped faces, morphing features, oversaturated colour, teal and orange grade, HDR, plastic skin, stock footage look
 
 ---
 
-## After you generate
+## Reading the result before you commit to it
 
-1. Trim each clip to the runtime in the script — most are 2.5–3s, only shot 09 keeps its full length
-2. Cross-dissolve 6–10 frames between shots; never hard-cut the pictures
-3. Add the brand names on top: **snap on in 2 frames, no fade**, each in its brand colour
-4. Shot 06 is the burst — camera dead still, all seven names flick through, 4 frames each
-5. Export H.264 1920×1080, no audio, ~10–12 MB
-6. Drop it in as `/media/partnership-film.mp4` and it inherits the vintage treatment automatically
+Watch for these in order — the first two are fatal, the rest are liveable:
 
-## If a shot comes back wrong
+1. **Faces morphing** as the camera passes them → fatal
+2. **Hands** — count fingers on the gesturing woman → fatal
+3. Movement too fast — should feel almost too slow
+4. Ends wide and still, with the middle of frame clear
+5. Nobody has glanced at camera
 
-- **Too much movement** → add `locked off tripod, minimal camera movement` and regenerate
-- **Faces distorting** → tighter crop on the reference so the face is larger in frame
-- **Looks like an advert** → add `unposed, nobody looking at camera, observational`
-- **Too warm** → add `neutral white balance, no colour grade`
+## If you get one more attempt
+
+Simplify rather than elaborate. Cut the laugh and the rise, and ask only for:
+opens on hands → pulls back past one speaker → rests wide. Fewer people
+passing the lens means fewer chances to morph. The shorter, calmer version
+will beat an ambitious broken one.
+
+---
+
+## Afterwards
+
+**The brand names are not in the prompt on purpose.** Any model asked for
+lettering returns "THE PROPRETY EXPFRTS". They go on in the edit, where they
+can snap in Archivo in the right colours:
+
+| Time | Name | Colour |
+|---|---|---|
+| 4.5s | The Property Experts | `#E8420D` |
+| 7s | Fine & Country | `#B49A6A` |
+| 9s | The Letting Experts | `#ED1C24` |
+| 10.5s | The Mortgage Experts | `#2255A4` |
+| 12s | The Auction Company | `#A8D32A` |
+| 13s | The Commercial Property Experts | `#0094D2` |
+| 14s | The Recruitment Experts | `#E8222D` |
+| 15–18s | all seven stack, then cut to white together | — |
+
+Names snap on in two frames — no fade, no easing — and sit in a corner or off
+a shoulder, never across a face. As the camera pulls back and the room opens
+up, the names arrive faster and faster, so the film accelerates typographically
+while the picture slows down. That contrast is the whole personality of it.
+
+Export H.264 1920×1080, no audio, then drop it in as
+`/media/partnership-film.mp4` — it inherits the vintage treatment
+automatically.
