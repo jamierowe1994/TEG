@@ -96,14 +96,14 @@ const BRANDS = [
     to: '/partnership/travel',
   },
   {
-    key: 'tce',
+    key: 'tme2',
     photo: '/media/eass-63.jpg',
     n: '09',
-    name: 'The Coaching Experts',
-    craft: 'Coaching & development',
-    why: 'For the coach who has spent years making other people better and wants it to be their own name on it.',
+    name: 'The Marketing Experts',
+    craft: 'Brand & marketing',
+    why: 'For the marketer tired of making someone else’s brand look good while their own sits in a drawer.',
     accent: '#E8A33D',
-    to: '/partnership/coaching',
+    to: '/partnership/marketing',
   },
   {
     key: 'teg',
@@ -288,7 +288,7 @@ function BrandArc() {
   return (
     <section className="relative bg-[#0d0c0f] h-screen flex items-center overflow-hidden">
       <div
-        className="flex w-full items-center px-[5vw] md:px-[6vw]"
+        className="flex w-full items-center px-[4.5vw] md:px-[5.5vw]"
         style={{ perspective: `${CURVE.depth}px`, transformStyle: 'preserve-3d' }}
       >
         {BRANDS.map((b, i) => {
@@ -321,7 +321,7 @@ function BrandArc() {
               >
                 <Link to={b.to} className="group block">
                   <div
-                    className="relative w-[8.3vw] h-[74vh] overflow-hidden bg-neutral-900
+                    className="relative w-[6.9vw] h-[74vh] overflow-hidden bg-neutral-900
                       transition-transform duration-500 group-hover:-translate-y-4"
                   >
                     <img
@@ -346,10 +346,10 @@ function BrandArc() {
                     )}
                   </div>
 
-                  <div className="mt-4 flex flex-col items-center gap-1">
+                  <div className="mt-4 w-[6.9vw] mx-auto flex flex-col items-center gap-1">
                     <span className="text-[0.55rem] tracking-[0.2em] text-white/30">{b.n}</span>
-                    <span className="text-[0.5rem] md:text-[0.58rem] tracking-[0.12em] uppercase
-                      text-white/55 group-hover:text-white transition-colors text-center leading-tight px-1">
+                    <span className="text-[0.5rem] md:text-[0.56rem] tracking-[0.1em] uppercase
+                      text-white/55 group-hover:text-white transition-colors text-center leading-[1.35] text-balance">
                       {b.name}
                     </span>
                   </div>
