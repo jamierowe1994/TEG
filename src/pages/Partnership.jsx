@@ -85,6 +85,46 @@ const BRANDS = [
     accent: '#E8222D',
     to: '/partnership/recruitment',
   },
+  {
+    key: 'tte',
+    photo: '/media/z63-5220.jpg',
+    n: '08',
+    name: 'The Travel Experts',
+    craft: 'Independent travel planning',
+    why: 'For the travel specialist who would rather build a client book than hit a call target.',
+    accent: '#3AAFDA',
+    to: '/partnership/travel',
+  },
+  {
+    key: 'tce',
+    photo: '/media/eass-63.jpg',
+    n: '09',
+    name: 'The Coaching Experts',
+    craft: 'Coaching & development',
+    why: 'For the coach who has spent years making other people better and wants it to be their own name on it.',
+    accent: '#E8A33D',
+    to: '/partnership/coaching',
+  },
+  {
+    key: 'teg',
+    photo: '/media/eass-18.jpg',
+    n: '10',
+    name: 'The Experts Group',
+    craft: 'The group itself',
+    why: 'The thing all of them stand on: the brand, the technology, the back-office and the people.',
+    accent: '#4D1D81',
+    to: '/about',
+  },
+  {
+    key: 'tef',
+    photo: '/media/bbs-143.jpg',
+    n: '11',
+    name: 'The Experts Foundation',
+    craft: 'Giving something back',
+    why: 'Because none of it counts for much if it does nothing for anyone outside the room.',
+    accent: '#B78AF7',
+    to: '/about',
+  },
 ];
 
 function Hero() {
@@ -230,37 +270,59 @@ function Reasons() {
   );
 }
 
-// The row. Every strip is dead vertical and evenly spaced; the only thing
-// that changes is height — tallest at the edges, shortest in the middle — so
-// the top edge swoops down toward the centre while the feet stay on one line.
-// The curve comes entirely from that swoop, with no tilting.
+// The fan, done the way the reference actually does it — which the inspector
+// settled: every strip is the SAME height and width, evenly spaced, and the
+// curve is real 3D. Each one is rotated on its Y axis and pushed toward the
+// viewer along Z, inside a container with perspective. The size difference is
+// perspective doing the work, so the drop between neighbours stays gentle
+// instead of stepping down like a staircase.
+const CURVE = {
+  step: 4.6,     // degrees between neighbouring strips
+  radius: 1750,  // how hard the row wraps toward you
+  depth: 1400,   // perspective on the container
+};
+
 function BrandArc() {
   const mid = (BRANDS.length - 1) / 2;
 
   return (
     <section className="relative bg-[#0d0c0f] h-screen flex items-center overflow-hidden">
-      <div className="flex w-full items-end">
+      <div
+        className="flex w-full items-center"
+        style={{ perspective: `${CURVE.depth}px`, transformStyle: 'preserve-3d' }}
+      >
         {BRANDS.map((b, i) => {
           const off = i - mid;
-          const away = Math.abs(off) / mid;       // 0 at centre, 1 at the edges
-          const height = 52 + away * 22;          // 52vh in the middle, 74vh at the ends
+          const angle = off * CURVE.step;
+          const rad = (angle * Math.PI) / 180;
+          // the ends of the row lean toward you; the middle sits furthest back
+          const z = CURVE.radius * (1 - Math.cos(rad));
+          const away = Math.abs(off) / mid;
 
           return (
             <div
               key={b.key}
-              className="w-[14.285%] shrink-0 flex justify-center"
+              className="shrink-0 flex justify-center"
+              style={{ width: `${100 / BRANDS.length}%`, transformStyle: 'preserve-3d' }}
             >
+              {/* the 3D placement sits on a plain wrapper: motion writes its own
+                  transform for the entrance and would wipe this one out */}
+              <div
+                style={{
+                  transform: `translate3d(0, 0, ${z.toFixed(1)}px) rotateY(${(-angle).toFixed(2)}deg)`,
+                  transformStyle: 'preserve-3d',
+                }}
+              >
               <motion.div
                 initial={{ opacity: 0, y: 70 }}
-                whileInView={{ opacity: 1, y: 0 }}
+                whileInView={{ opacity: 1 - away * 0.12, y: 0 }}
                 viewport={{ once: true, margin: '-10%' }}
                 transition={{ duration: 0.9, ease: EASE, delay: (1 - away) * 0.18 }}
               >
                 <Link to={b.to} className="group block">
                   <div
-                    className="relative w-[11.6vw] overflow-hidden bg-neutral-900
+                    className="relative w-[7.4vw] h-[62vh] overflow-hidden bg-neutral-900
                       transition-transform duration-500 group-hover:-translate-y-4"
-                    style={{ height: `${height}vh` }}
                   >
                     <img
                       src={b.photo}
@@ -286,13 +348,14 @@ function BrandArc() {
 
                   <div className="mt-4 flex flex-col items-center gap-1">
                     <span className="text-[0.55rem] tracking-[0.2em] text-white/30">{b.n}</span>
-                    <span className="text-[0.55rem] md:text-[0.62rem] tracking-[0.12em] uppercase
+                    <span className="text-[0.5rem] md:text-[0.58rem] tracking-[0.12em] uppercase
                       text-white/55 group-hover:text-white transition-colors text-center leading-tight px-1">
                       {b.name}
                     </span>
                   </div>
                 </Link>
               </motion.div>
+              </div>
             </div>
           );
         })}
