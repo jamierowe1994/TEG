@@ -16,6 +16,7 @@ import VintageFrame from '../components/VintageFrame';
 const BRANDS = [
   {
     key: 'tpe',
+    photo: '/media/tpe-1.jpg',
     n: '01',
     name: 'The Property Experts',
     craft: 'Estate agency',
@@ -25,6 +26,7 @@ const BRANDS = [
   },
   {
     key: 'fc',
+    photo: '/media/bbs-239.jpg',
     n: '02',
     name: 'Fine & Country',
     craft: 'Premium & luxury homes',
@@ -34,6 +36,7 @@ const BRANDS = [
   },
   {
     key: 'tle',
+    photo: '/media/tle-1.jpg',
     n: '03',
     name: 'The Letting Experts',
     craft: 'Lettings & property management',
@@ -44,6 +47,7 @@ const BRANDS = [
   },
   {
     key: 'tme',
+    photo: '/media/bbs-30.jpg',
     n: '04',
     name: 'The Mortgage Experts',
     craft: 'Mortgage & protection',
@@ -53,6 +57,7 @@ const BRANDS = [
   },
   {
     key: 'tac',
+    photo: '/media/bbs-242.jpg',
     n: '05',
     name: 'The Auction Company',
     craft: 'Property auctions',
@@ -62,6 +67,7 @@ const BRANDS = [
   },
   {
     key: 'tcpe',
+    photo: '/media/bbs-162.jpg',
     n: '06',
     name: 'The Commercial Property Experts',
     craft: 'Commercial sales, lettings & investment',
@@ -71,6 +77,7 @@ const BRANDS = [
   },
   {
     key: 'tre',
+    photo: '/media/tre-1.jpg',
     n: '07',
     name: 'The Recruitment Experts',
     craft: 'Property industry recruitment',
@@ -223,10 +230,15 @@ function Reasons() {
   );
 }
 
-function BrandPicker() {
+// The strips are laid along a shallow arc, like a hand of cards: each one
+// rotates a little further from centre and the middle of the row rides
+// highest. Hovering lifts a strip out of the fan and gives it its colour.
+function BrandArc() {
+  const mid = (BRANDS.length - 1) / 2;
+
   return (
-    <section className="relative bg-[#0d0c0f] py-[14vh] px-6 md:px-16">
-      <div className="max-w-[1500px] mx-auto">
+    <section className="relative bg-[#0d0c0f] pt-[14vh] pb-[10vh] overflow-hidden">
+      <div className="px-6 md:px-16 max-w-[1500px] mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 26 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -244,46 +256,64 @@ function BrandPicker() {
             matches what you already do brilliantly.
           </p>
         </motion.div>
+      </div>
 
-        <div className="mt-[8vh] border-t border-white/10">
-          {BRANDS.map((b, i) => (
-            <motion.div
-              key={b.key}
-              initial={{ opacity: 0, y: 18 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: '-8%' }}
-              transition={{ duration: 0.6, ease: EASE, delay: (i % 4) * 0.06 }}
-            >
-              <Link
-                to={b.to}
-                className="group flex items-center gap-5 md:gap-8 py-6 md:py-7 border-b border-white/10
-                  transition-colors hover:bg-white/[0.03]"
+      {/* the fan */}
+      <div className="mt-[9vh] overflow-x-auto scrollbar-none">
+        <div className="flex items-end justify-center gap-2 md:gap-3 px-6 md:px-10 w-max mx-auto pb-2">
+          {BRANDS.map((b, i) => {
+            const off = i - mid;                         // -3 … 3
+            const rot = off * 3.1;                       // the fan
+            const lift = (1 - (off / mid) ** 2) * 30;    // the middle rides highest
+            return (
+              <motion.div
+                key={b.key}
+                initial={{ opacity: 0, y: 60 }}
+                whileInView={{ opacity: 1, y: -lift }}
+                viewport={{ once: true, margin: '-10%' }}
+                transition={{ duration: 0.8, ease: EASE, delay: Math.abs(off) * 0.07 }}
+                style={{ rotate: rot }}
+                className="shrink-0"
               >
-                <span
-                  className="w-1.5 h-1.5 rounded-full shrink-0 transition-transform duration-500 group-hover:scale-[2.2]"
-                  style={{ backgroundColor: b.accent }}
-                />
-                <span className="font-sans font-light tracking-[-0.02em] text-white text-[1.4rem] md:text-[2.1rem] leading-none">
-                  {b.name}
-                </span>
-                <span className="hidden md:block ml-auto text-[0.62rem] tracking-[0.2em] uppercase text-white/30">
-                  {b.craft}
-                </span>
-                {b.ready && (
-                  <span
-                    className="hidden md:inline-flex rounded-full px-3 py-1 text-[0.55rem] tracking-[0.18em] uppercase shrink-0"
-                    style={{ backgroundColor: `${b.accent}22`, color: b.accent }}
+                <Link to={b.to} className="group block">
+                  <div
+                    className="relative w-[24vw] sm:w-[15vw] lg:w-[10.2vw] h-[46vh] md:h-[62vh]
+                      overflow-hidden rounded-lg bg-neutral-900
+                      transition-transform duration-500 group-hover:-translate-y-4"
                   >
-                    Open now
-                  </span>
-                )}
-                <ArrowUpRight
-                  size={20}
-                  className="shrink-0 text-white/25 group-hover:text-white transition-colors ml-auto md:ml-0"
-                />
-              </Link>
-            </motion.div>
-          ))}
+                    <img
+                      src={b.photo}
+                      alt=""
+                      loading="lazy"
+                      className="absolute inset-0 w-full h-full object-cover grayscale
+                        transition-all duration-700 group-hover:grayscale-0 group-hover:scale-[1.06]"
+                    />
+                    <span
+                      className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+                      style={{ background: `linear-gradient(to top, ${b.accent}66, transparent 55%)` }}
+                    />
+                    {b.ready && (
+                      <span
+                        className="absolute top-3 left-1/2 -translate-x-1/2 rounded-full px-2.5 py-1
+                          text-[0.5rem] tracking-[0.16em] uppercase whitespace-nowrap"
+                        style={{ backgroundColor: b.accent, color: '#fff' }}
+                      >
+                        Open
+                      </span>
+                    )}
+                  </div>
+
+                  <div className="mt-4 flex items-baseline gap-2 justify-center">
+                    <span className="text-[0.55rem] tracking-[0.2em] text-white/30">{b.n}</span>
+                    <span className="text-[0.58rem] md:text-[0.66rem] tracking-[0.12em] uppercase
+                      text-white/55 group-hover:text-white transition-colors text-center leading-tight">
+                      {b.name}
+                    </span>
+                  </div>
+                </Link>
+              </motion.div>
+            );
+          })}
         </div>
       </div>
     </section>
@@ -336,7 +366,7 @@ export default function Partnership() {
       <ExperienceNav dark />
       <Hero />
       <Reasons />
-      <BrandPicker />
+      <BrandArc />
       <Closer />
       <SiteFooter />
     </div>
