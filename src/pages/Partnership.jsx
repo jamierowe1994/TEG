@@ -86,19 +86,9 @@ const BRANDS = [
     to: '/partnership/recruitment',
   },
   {
-    key: 'tte',
-    photo: '/media/z63-5220.jpg',
-    n: '08',
-    name: 'The Travel Experts',
-    craft: 'Independent travel planning',
-    why: 'For the travel specialist who would rather build a client book than hit a call target.',
-    accent: '#3AAFDA',
-    to: '/partnership/travel',
-  },
-  {
     key: 'tme2',
     photo: '/media/eass-63.jpg',
-    n: '09',
+    n: '08',
     name: 'The Marketing Experts',
     craft: 'Brand & marketing',
     why: 'For the marketer tired of making someone else’s brand look good while their own sits in a drawer.',
@@ -108,21 +98,11 @@ const BRANDS = [
   {
     key: 'teg',
     photo: '/media/eass-18.jpg',
-    n: '10',
+    n: '09',
     name: 'The Experts Group',
     craft: 'The group itself',
     why: 'The thing all of them stand on: the brand, the technology, the back-office and the people.',
     accent: '#4D1D81',
-    to: '/about',
-  },
-  {
-    key: 'tef',
-    photo: '/media/bbs-143.jpg',
-    n: '11',
-    name: 'The Experts Foundation',
-    craft: 'Giving something back',
-    why: 'Because none of it counts for much if it does nothing for anyone outside the room.',
-    accent: '#B78AF7',
     to: '/about',
   },
 ];
@@ -206,22 +186,22 @@ function Hero() {
 
 const REASONS = [
   {
-    n: '01',
+    n: '10',
     head: 'Your diary is your own',
     body: 'Work the hours that fit your life. The school run, the training run, the long lunch — you decide what the day looks like, not a rota.',
   },
   {
-    n: '02',
+    n: '11',
     head: 'Nobody over your shoulder',
     body: 'No micromanagement, no arbitrary targets, nobody asking why you left the office at three. You are trusted to run your own business.',
   },
   {
-    n: '03',
+    n: '12',
     head: 'Do what you are good at',
     body: 'Compliance, marketing, technology and the back-office sit with us. Your day goes on the work only you can do.',
   },
   {
-    n: '04',
+    n: '13',
     head: 'Start without betting the house',
     body: 'A low set-up cost and no premises to fund. The step into running your own business is a smaller one than most people expect.',
   },
@@ -288,7 +268,7 @@ function BrandArc() {
   return (
     <section className="relative bg-[#0d0c0f] h-screen flex items-center overflow-hidden">
       <div
-        className="flex w-full items-center px-[4.5vw] md:px-[5.5vw]"
+        className="flex w-full items-center px-[3.5vw] md:px-[4vw]"
         style={{ perspective: `${CURVE.depth}px`, transformStyle: 'preserve-3d' }}
       >
         {BRANDS.map((b, i) => {
@@ -321,7 +301,7 @@ function BrandArc() {
               >
                 <Link to={b.to} className="group block">
                   <div
-                    className="relative w-[6.9vw] h-[74vh] overflow-hidden bg-neutral-900
+                    className="relative w-[8.6vw] h-[74vh] overflow-hidden bg-neutral-900
                       transition-transform duration-500 group-hover:-translate-y-4"
                   >
                     <img
@@ -346,7 +326,7 @@ function BrandArc() {
                     )}
                   </div>
 
-                  <div className="mt-4 w-[6.9vw] mx-auto flex flex-col items-center gap-1">
+                  <div className="mt-4 w-[8.6vw] mx-auto flex flex-col items-center gap-1">
                     <span className="text-[0.55rem] tracking-[0.2em] text-white/30">{b.n}</span>
                     <span className="text-[0.5rem] md:text-[0.56rem] tracking-[0.1em] uppercase
                       text-white/55 group-hover:text-white transition-colors text-center leading-[1.35] text-balance">
