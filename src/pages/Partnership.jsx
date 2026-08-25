@@ -132,7 +132,7 @@ function Hero() {
         initial={{ opacity: 0, y: 60 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 1.2, ease: EASE, delay: 0.5 }}
-        className="mt-[7vh] px-4 md:px-16"
+        className="mt-[7vh] px-6 md:px-28 lg:px-40"
       >
         <VintageFrame
           src="/media/vintage.jpg"
@@ -143,7 +143,7 @@ function Hero() {
         />
       </motion.div>
 
-      <div className="flex items-center justify-between px-6 md:px-16 pt-5">
+      <div className="flex items-center justify-between px-6 md:px-28 lg:px-40 pt-5">
         <p className="text-[0.6rem] tracking-[0.25em] uppercase text-white/35">Partnership</p>
         <motion.span
           animate={{ y: [0, 6, 0] }}
