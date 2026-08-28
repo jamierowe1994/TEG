@@ -332,8 +332,32 @@ const CURVE = {
   depth: 1400,   // perspective on the container
 };
 
+// One photograph — the whole room at the Agents Success Day — laid across the
+// full width of the viewport, with each strip acting as a window onto its own
+// slice of it. The row reads as a single group shot until you hover a brand,
+// at which point that strip's own picture takes over. Collective first, then
+// the individual.
+const COLLECTIVE = '/media/z63-0884.jpg';
+
+// vw, and they have to agree with the padding and width classes below: the
+// slice offsets are worked out from them, so changing one without the other
+// slides the photograph out of register.
+const LAYOUT = { pad: 4, strip: 8.6 };
+
+// At natural size the row would spend its two end strips on curtain and its
+// top third on the projector screen, so the picture is pushed in and dropped
+// down until every strip has a face in it.
+const FRAME = { zoom: 1.3, y: 62 };
+
 function BrandArc() {
   const mid = (BRANDS.length - 1) / 2;
+  const slot = (100 - LAYOUT.pad * 2) / BRANDS.length;
+  // where this strip's left edge lands across the viewport, which is exactly
+  // the part of the photograph it should be showing
+  const sliceX = (i) => LAYOUT.pad + i * slot + (slot - LAYOUT.strip) / 2;
+  // zooming keeps the picture centred, so the whole row shifts by half the
+  // overspill — every strip has to use the same origin or the seams break
+  const origin = 50 * (1 - FRAME.zoom);
 
   return (
     <section className="relative bg-[#0d0c0f] h-screen flex items-center overflow-hidden">
@@ -374,12 +398,25 @@ function BrandArc() {
                     className="relative w-[8.6vw] h-[74vh] overflow-hidden bg-neutral-900
                       transition-transform duration-500 group-hover:-translate-y-4"
                   >
+                    {/* the brand's own picture waits underneath */}
                     <img
                       src={b.photo}
                       alt=""
                       loading="lazy"
                       className="absolute inset-0 w-full h-full object-cover
                         transition-transform duration-700 group-hover:scale-[1.06]"
+                    />
+                    {/* its slice of the group shot sits over the top and clears
+                        out of the way on hover */}
+                    <div
+                      className="absolute inset-0 transition-opacity duration-500 group-hover:opacity-0"
+                      style={{
+                        backgroundImage: `url(${COLLECTIVE})`,
+                        // width-driven so the picture keeps its shape: forcing
+                        // it to a fixed height would stretch the room sideways
+                        backgroundSize: `${FRAME.zoom * 100}vw auto`,
+                        backgroundPosition: `-${(sliceX(i) - origin).toFixed(2)}vw ${FRAME.y}%`,
+                      }}
                     />
                     <span
                       className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
