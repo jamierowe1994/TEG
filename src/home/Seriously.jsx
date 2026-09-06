@@ -408,7 +408,7 @@ export default function Seriously() {
               exit={{ opacity: 0, y: 30, scale: 0.97 }}
               transition={{ type: 'spring', stiffness: 240, damping: 26 }}
               onClick={(e) => e.stopPropagation()}
-              className="relative w-full max-w-3xl max-h-[86vh] overflow-y-auto rounded-2xl bg-[#141217] text-white p-6 md:p-10"
+              className="relative w-full max-w-3xl max-h-[86vh] overflow-y-auto rounded-2xl bg-[#111111] text-white p-6 md:p-10"
             >
               <button
                 onClick={() => setOpen(null)}

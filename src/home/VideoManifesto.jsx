@@ -23,7 +23,7 @@ export default function VideoManifesto() {
       <div className="sticky top-0 h-screen flex items-center px-4 md:px-12">
         <motion.div
           style={{ scale, borderRadius: radius }}
-          className="relative w-full h-[82vh] overflow-hidden bg-[#141217] will-change-transform"
+          className="relative w-full h-[82vh] overflow-hidden bg-[#111111] will-change-transform"
         >
           <video
             src={FILM}
@@ -34,7 +34,7 @@ export default function VideoManifesto() {
             playsInline
             className="absolute inset-0 w-full h-full object-cover opacity-50"
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-[#141217]/55 via-transparent to-[#141217]/55" />
+          <div className="absolute inset-0 bg-gradient-to-b from-[#111111]/55 via-transparent to-[#111111]/55" />
 
           <div className="absolute inset-0 flex items-center justify-center px-6 overflow-hidden">
             <motion.p

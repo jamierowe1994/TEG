@@ -67,7 +67,7 @@ export default function Hero() {
     return (
       <section className="relative h-screen overflow-hidden bg-[#111111] text-white">
         <video src={FILM} poster={POSTER} autoPlay muted loop playsInline className="absolute inset-0 w-full h-full object-cover grayscale" />
-        <div className="absolute inset-0 bg-black/60" />
+        <div className="absolute inset-0 bg-[#111111]/60" />
         <HeroCopy />
       </section>
     );
@@ -151,12 +151,12 @@ export default function Hero() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.8, delay: T_TEXT - 0.3 }}
-            className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/45 to-black/75 pointer-events-none"
+            className="absolute inset-0 bg-gradient-to-b from-[#111111]/70 via-[#111111]/45 to-[#111111]/75 pointer-events-none"
           />
           {/* vignette — a darker tint pulling in from the edges */}
           <div
             className="absolute inset-0 pointer-events-none"
-            style={{ background: 'radial-gradient(ellipse at center, transparent 42%, rgba(0,0,0,0.55) 100%)' }}
+            style={{ background: 'radial-gradient(ellipse at center, transparent 42%, rgba(17,17,17,0.55) 100%)' }}
           />
         </motion.div>
       </motion.div>

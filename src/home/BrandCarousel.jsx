@@ -111,7 +111,7 @@ function Card({ c, index }) {
           }`}
         />
       )}
-      <div className="absolute inset-0 bg-gradient-to-b from-black/45 via-transparent to-black/60" />
+      <div className="absolute inset-0 bg-gradient-to-b from-[#111111]/45 via-transparent to-[#111111]/60" />
       {c.isRecruitment ? (
         <p className="absolute top-4 left-4 text-white font-semibold text-[0.85rem] leading-tight">
           The<br />Recruitment<br />Experts
