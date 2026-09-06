@@ -1,4 +1,4 @@
-import React, { useLayoutEffect, useRef, useState } from 'react';
+import React, { useLayoutEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import ExperienceNav from '../experience/ExperienceNav';
 import SiteFooter from '../home/SiteFooter';
@@ -15,7 +15,10 @@ const CANVAS = '#F1F1F1';
 const INK = '#131313';
 const FADE = '#E1E1E1';
 
-const CONDENSED = { fontStretch: '62%', fontWeight: 900 };
+// one page margin, set by the title and shared by every row beneath it
+const PAD = 'px-6 md:px-16 lg:px-24 xl:px-32';
+
+const CONDENSED = { fontStretch: '62.5%', fontWeight: 900 };
 
 const rise = (delay = 0) => ({
   initial: { opacity: 0, y: 24 },
@@ -50,30 +53,44 @@ const CHAPTERS = [
 ];
 
 // One line of condensed type that fills its container edge to edge. The
-// natural width is measured after the font lands so the glyphs are never
-// stretched, only scaled.
+// ink of the letters is measured (not the advance width, which carries the
+// glyphs' side bearings) so the first and last letter sit flush with the
+// page margin, exactly where the photographs and labels start and stop.
+const DISPLAY_FONT = '900 extra-condensed 200px Archivo';
+
+function measureInk(text) {
+  const ctx = document.createElement('canvas').getContext('2d');
+  ctx.font = DISPLAY_FONT;
+  if ('fontStretch' in ctx) ctx.fontStretch = 'extra-condensed';
+  const m = ctx.measureText(text);
+  if (!m.actualBoundingBoxRight) return null;
+  return {
+    x: -m.actualBoundingBoxLeft,
+    w: m.actualBoundingBoxLeft + m.actualBoundingBoxRight,
+    y: 150 - m.actualBoundingBoxAscent,
+    h: m.actualBoundingBoxAscent + m.actualBoundingBoxDescent,
+  };
+}
+
 function Display({ text, fill = INK, className = '' }) {
-  const ref = useRef(null);
-  const [w, setW] = useState(null);
+  const [box, setBox] = useState(null);
   useLayoutEffect(() => {
     const measure = () => {
-      const len = ref.current?.getComputedTextLength();
-      if (len) setW(Math.ceil(len));
+      const b = measureInk(text);
+      if (b) setBox(b);
     };
     measure();
+    document.fonts?.load(DISPLAY_FONT).then(measure);
     document.fonts?.ready.then(measure);
   }, [text]);
-  const width = w || 1000;
+  const b = box || { x: 0, y: 6, w: 1000, h: 144 };
   return (
-    <svg viewBox={`0 0 ${width} 158`} className={`block w-full h-auto ${className}`} aria-hidden="true">
-      <text
-        ref={ref}
-        x="0"
-        y="150"
-        fill={fill}
-        className="font-black-display"
-        style={{ fontSize: 200, letterSpacing: '-0.02em', ...CONDENSED }}
-      >
+    <svg
+      viewBox={`${b.x} ${b.y} ${b.w} ${b.h}`}
+      className={`block w-full h-auto overflow-visible ${className}`}
+      aria-hidden="true"
+    >
+      <text x="0" y="150" fill={fill} className="font-black-display" style={{ fontSize: 200, ...CONDENSED }}>
         {text}
       </text>
     </svg>
@@ -85,13 +102,13 @@ function Display({ text, fill = INK, className = '' }) {
 // wall to the exact canvas grey.
 function Hero() {
   return (
-    <section className="px-5 md:px-10 pt-[15vh] md:pt-[18vh]" style={{ backgroundColor: CANVAS }}>
+    <section className={`${PAD} pt-[15vh] md:pt-[18vh]`} style={{ backgroundColor: CANVAS }}>
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 1.1, ease: EASE, delay: 0.15 }}
         className="relative overflow-hidden"
-        style={{ isolation: 'isolate' }}
+        style={{ isolation: 'isolate', backgroundColor: CANVAS }}
       >
         <video
           src="/media/fc-aerial-loop.mp4"
@@ -100,11 +117,11 @@ function Hero() {
           muted
           loop
           playsInline
-          className="absolute inset-0 w-full h-full object-cover"
+          className="absolute -inset-px w-[calc(100%+2px)] h-[calc(100%+2px)] object-cover"
           style={{ filter: 'grayscale(1) brightness(0.34) contrast(1.15)' }}
         />
         <div className="relative" style={{ backgroundColor: CANVAS, mixBlendMode: 'screen' }}>
-          <Display text="OUR VISION" />
+          <Display text="OUR STORY" />
         </div>
         <div className="absolute -inset-px pointer-events-none" style={{ backgroundColor: CANVAS, mixBlendMode: 'darken' }} />
       </motion.div>
@@ -117,7 +134,7 @@ function Hero() {
         style={{ ...CONDENSED, fontWeight: 700, color: INK }}
       >
         <span>One person, one idea</span>
-        <span className="text-center">More than 250 self-employed experts</span>
+        <span className="hidden md:block text-center">More than 250 self-employed experts</span>
         <span className="text-right">Seven brands, one group</span>
       </motion.div>
     </section>
@@ -126,7 +143,7 @@ function Hero() {
 
 function Chapter({ chapter, index }) {
   return (
-    <section className="px-5 md:px-10 pt-[12vh] md:pt-[16vh]" style={{ backgroundColor: CANVAS }}>
+    <section className={`${PAD} pt-[12vh] md:pt-[16vh]`} style={{ backgroundColor: CANVAS }}>
       <motion.h2
         {...rise(0)}
         className="font-black-display uppercase leading-[0.92] tracking-[-0.02em] text-[13vw] md:text-[6.4vw] max-w-[9em]"
