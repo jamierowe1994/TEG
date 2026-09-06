@@ -6,34 +6,34 @@ import SiteFooter from '../home/SiteFooter';
 import useLenis from '../lib/useLenis';
 import { EASE } from '../experience/motion';
 
-// About — a launch screen. One tilted cutout is held in the middle of a
-// black room; scrolling folds the next chapter down into it and swaps the
-// word beneath.
+// About — a black room with the chapter title punched out of it. The film
+// (or photograph) for the chapter plays behind the wall and only shows
+// through the letters. Scrolling folds the next chapter in and swaps the words.
 //
-// Opening a chapter never swaps one element for another: the same frame,
-// the same word and the same two notes stay mounted and simply trade
-// places — the frame twists open to fill the room, the word climbs to the
-// middle, the notes drop to the floor. The story then scrolls up over it.
+// Opening a chapter never swaps one element for another: the wall fades,
+// the whole film is the room, the title climbs to the middle and the notes
+// drop to the floor. The story then scrolls up over it.
 
 const CHAPTERS = [
   {
     key: 'person',
-    title: 'The Guy',
+    title: 'Where it all started',
+    lines: ['Where', 'it all', 'started'],
     left: ['One person,', 'one idea'],
-    right: ['Where it', 'all started'],
-    photo: '/media/sean-2.png',
-    focus: '55% center',
-    mono: true,
+    right: ['Sean Newman,', 'founder'],
+    video: '/media/fc-aerial-preview.mp4',
+    poster: '/media/fc-aerial-poster.jpg',
     lede: 'It all started here.',
     body: [
-      "Shaun started The Experts Group with a straightforward belief: that good people do their best work when nobody is standing over them. He had spent long enough inside the traditional model to know what it costs — the targets that have nothing to do with the client, the talent that leaves because the ceiling is too low.",
+      "Sean started The Experts Group with a straightforward belief: that good people do their best work when nobody is standing over them. He had spent long enough inside the traditional model to know what it costs — the targets that have nothing to do with the client, the talent that leaves because the ceiling is too low.",
       "So he built the thing he wished had existed. A group that hands experts the brand, the technology and the back-office, then gets out of their way. What began as one person and an idea now stands behind hundreds of people running businesses of their own.",
     ],
     gallery: ['/media/sean.jpg', '/media/eass-18.jpg', '/media/bbs-143.jpg'],
   },
   {
     key: 'stories',
-    title: 'The Stories',
+    title: 'Their stories',
+    lines: ['Their', 'stories'],
     left: ['Real people,', 'real decisions'],
     right: ['The leap,', 'and after'],
     photo: '/media/z63-5220.jpg',
@@ -47,7 +47,8 @@ const CHAPTERS = [
   },
   {
     key: 'brands',
-    title: 'The Brands',
+    title: 'Seven brands',
+    lines: ['Seven', 'brands'],
     left: ['Seven specialisms,', 'one group'],
     right: ['Property, finance', 'and people'],
     photo: '/media/z63-0884.jpg',
@@ -76,6 +77,53 @@ const FOLD = {
 };
 
 const SWAP = { duration: 1.2, ease: EASE };
+
+// The title as a justified block: every line is stretched to the same
+// width, so the words sit as one solid shape in the middle of the room.
+const TITLE_W = 1000;
+const TITLE_FS = 200;
+const TITLE_LH = 170;
+
+function TitleBlock({ chapter, fill }) {
+  const n = chapter.lines.length;
+  const first = 150;
+  const height = first + TITLE_LH * (n - 1) + 14;
+  return (
+    <AnimatePresence initial={false} mode="wait">
+      <motion.svg
+        key={chapter.key}
+        viewBox={`0 0 ${TITLE_W} ${height}`}
+        className="block w-full h-auto overflow-visible"
+        aria-hidden="true"
+        initial={{ clipPath: 'inset(0% 0% 100% 0%)', opacity: 0.4 }}
+        animate={{
+          clipPath: 'inset(-30% 0% -10% 0%)',
+          opacity: [0.4, 1, 0.6, 1],
+          transition: {
+            clipPath: { duration: 0.6, ease: EASE },
+            opacity: { duration: 0.6, times: [0, 0.35, 0.55, 1] },
+          },
+        }}
+        exit={{ opacity: 0, transition: { duration: 0.16 } }}
+      >
+        {chapter.lines.map((line, i) => (
+          <text
+            key={line}
+            x="0"
+            y={first + TITLE_LH * i}
+            textLength={TITLE_W}
+            lengthAdjust="spacing"
+            fill={fill}
+            className="font-black-display"
+            style={{ fontSize: TITLE_FS, fontWeight: 800, letterSpacing: '-0.02em' }}
+          >
+            {line.toUpperCase()}
+          </text>
+        ))}
+      </motion.svg>
+    </AnimatePresence>
+  );
+}
 
 function Note({ chapter, side }) {
   const lines = chapter[side];
@@ -127,7 +175,13 @@ export default function About() {
     return () => window.removeEventListener('keydown', onKey);
   }, []);
 
-  const titleSize = Math.min(13, 90 / (chapter.title.length * 0.6));
+  // the title block: the same motion on the knockout and its white twin,
+  // so the one fades into the other without moving
+  const titleMotion = {
+    animate: { scale: isOpen ? 0.55 : 1, y: isOpen ? '-4vh' : '0vh' },
+    transition: SWAP,
+  };
+  const titleWidth = 'w-[88vw] md:w-[60vw] max-w-[900px]';
 
   return (
     <div className="bg-[#111111] text-white min-h-screen overflow-x-clip">
@@ -135,37 +189,65 @@ export default function About() {
 
       <section ref={ref} style={{ height: `${CHAPTERS.length * 100}vh` }} className="relative">
         <div className="sticky top-0 h-screen overflow-hidden" style={{ zIndex: isOpen ? 90 : 10 }}>
-          {/* the frame — twists open to fill the room */}
-          <div className="absolute inset-0 flex items-center justify-center">
-            <motion.button
-              onClick={() => !isOpen && setOpen(chapter.key)}
-              animate={
-                isOpen
-                  ? { width: '100vw', height: '100vh', rotate: 0, maxWidth: '100vw' }
-                  : { width: '50vw', height: '80vh', rotate: -11, maxWidth: '760px' }
-              }
-              transition={SWAP}
-              whileHover={isOpen ? undefined : { scale: 1.015 }}
-              className={`relative overflow-hidden ${isOpen ? 'cursor-default' : 'cursor-pointer'}`}
+          {/* the room — film behind, black wall in front with the title punched out */}
+          <button
+            type="button"
+            onClick={() => !isOpen && setOpen(chapter.key)}
+            aria-label={isOpen ? chapter.title : `Open ${chapter.title}`}
+            className={`absolute inset-0 w-full h-full block ${isOpen ? 'cursor-default' : 'cursor-pointer'}`}
+            style={{ isolation: 'isolate' }}
+          >
+            <AnimatePresence initial={false}>
+              <motion.div key={chapter.key} {...FOLD} className="absolute inset-0">
+                {chapter.video ? (
+                  <video
+                    src={chapter.video}
+                    poster={chapter.poster}
+                    autoPlay
+                    muted
+                    loop
+                    playsInline
+                    className="absolute inset-0 w-full h-full object-cover"
+                  />
+                ) : (
+                  <img
+                    src={chapter.photo}
+                    alt=""
+                    style={{ objectPosition: chapter.focus }}
+                    className="absolute inset-0 w-full h-full object-cover"
+                  />
+                )}
+              </motion.div>
+            </AnimatePresence>
+
+            {/* a veil so the word still reads once the film is the room */}
+            <motion.span
+              animate={{ opacity: isOpen ? 1 : 0 }}
+              transition={{ duration: 0.9, ease: EASE }}
+              className="absolute inset-0 bg-gradient-to-b from-black/65 via-black/25 to-black/75"
+            />
+
+            {/* the wall: pure black everywhere except through the letters
+                (multiply), then lifted to the site's #111111 (lighten) so the
+                room matches the rest of the page without the film ghosting */}
+            <motion.div
+              animate={{ opacity: isOpen ? 0 : 1 }}
+              transition={{ duration: 0.9, ease: EASE }}
+              className="absolute inset-0 bg-black flex items-center justify-center"
+              style={{ mixBlendMode: 'multiply' }}
             >
-              <AnimatePresence initial={false}>
-                <motion.img
-                  key={chapter.key}
-                  src={chapter.photo}
-                  alt={chapter.title}
-                  {...FOLD}
-                  style={{ objectPosition: chapter.focus }}
-                  className={`absolute inset-0 w-full h-full object-cover ${chapter.mono ? 'grayscale' : ''}`}
-                />
-              </AnimatePresence>
-              {/* a veil so the word still reads once the frame is the room */}
-              <motion.span
-                animate={{ opacity: isOpen ? 1 : 0 }}
-                transition={{ duration: 0.9, ease: EASE }}
-                className="absolute inset-0 bg-gradient-to-b from-black/65 via-black/25 to-black/75"
-              />
-            </motion.button>
-          </div>
+              <motion.div {...titleMotion} className={titleWidth}>
+                <TitleBlock chapter={chapter} fill="#ffffff" />
+              </motion.div>
+            </motion.div>
+            <motion.div
+              animate={{ opacity: isOpen ? 0 : 1 }}
+              transition={{ duration: 0.9, ease: EASE }}
+              className="absolute inset-0 bg-[#111111] pointer-events-none"
+              style={{ mixBlendMode: 'lighten' }}
+            />
+
+          </button>
 
           {/* the two notes — they drop to the floor as the word rises */}
           <motion.div
@@ -188,50 +270,29 @@ export default function About() {
             </div>
           </motion.div>
 
-          {/* the word — one element, floor of the room to the middle of it */}
-          <div className="absolute inset-0 z-30 flex items-center justify-center pointer-events-none">
-            <motion.div
-              animate={{ y: isOpen ? '0vh' : '38vh', scale: isOpen ? 0.55 : 1 }}
-              transition={SWAP}
-              className="w-full"
-            >
-              <AnimatePresence initial={false} mode="wait">
-                <motion.h2
-                  key={chapter.key}
-                  initial={{ clipPath: 'inset(0% 0% 100% 0%)', opacity: 0.4 }}
-                  animate={{
-                    clipPath: 'inset(-30% 0% -10% 0%)',
-                    opacity: [0.4, 1, 0.6, 1],
-                    transition: {
-                      clipPath: { duration: 0.6, ease: EASE },
-                      opacity: { duration: 0.6, times: [0, 0.35, 0.55, 1] },
-                    },
-                  }}
-                  exit={{ opacity: 0, transition: { duration: 0.16 } }}
-                  className="font-black-display font-extrabold uppercase tracking-[-0.03em]
-                    text-[#E3D7FF] leading-[0.85] text-center whitespace-nowrap px-4"
-                  style={{ fontSize: `${titleSize}vw` }}
-                >
-                  {chapter.title}
-                </motion.h2>
-              </AnimatePresence>
-
-              {/* the line under it, once the chapter is open */}
+          {/* the title's white twin — takes over once the wall is gone */}
+          <motion.div
+            animate={{ opacity: isOpen ? 1 : 0 }}
+            transition={{ duration: 0.9, ease: EASE }}
+            className="absolute inset-0 z-30 flex items-center justify-center pointer-events-none"
+          >
+            <motion.div {...titleMotion} className={titleWidth}>
+              <TitleBlock chapter={chapter} fill="#E3D7FF" />
               <motion.p
                 animate={{ opacity: isOpen ? 1 : 0 }}
                 transition={{ duration: 0.7, ease: EASE, delay: isOpen ? 0.7 : 0 }}
-                className="mt-6 font-script text-[#E3D7FF] text-[3.4vw] text-center px-6"
+                className="mt-8 font-script text-[#E3D7FF] text-[8vw] md:text-[4.4vw] text-center"
               >
                 {chapter.lede}
               </motion.p>
             </motion.div>
-          </div>
+          </motion.div>
 
           {/* which chapter you're on */}
           <motion.div
             animate={{ opacity: isOpen ? 0 : 1 }}
             transition={{ duration: 0.4 }}
-            className="absolute left-1/2 -translate-x-1/2 bottom-[13vh] z-30 flex items-center gap-2"
+            className="absolute left-1/2 -translate-x-1/2 bottom-[6vh] z-30 flex items-center gap-2"
           >
             {CHAPTERS.map((c) => (
               <span

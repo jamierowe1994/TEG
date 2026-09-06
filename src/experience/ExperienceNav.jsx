@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X, ArrowUpRight, Handshake, BookOpen, Briefcase } from 'lucide-react';
+import ParticleButton from '../components/ParticleButton';
 import { TEG_LOGO, TEG_LOGO_WHITE } from './brands';
 import { EASE } from './motion';
 
@@ -125,12 +126,15 @@ export default function ExperienceNav({ dark = false }) {
           <IconNav dark={dark} />
 
           <div className="flex items-center gap-3">
-            <a
+            {/* jet black face, light grey rim; the label is particles that
+                scatter and reform as "Let's go" on hover */}
+            <ParticleButton
               href="mailto:hello@theexpertsgroup.co.uk"
-              className={dark ? "hidden md:inline-flex items-center gap-2 rounded-xl bg-white text-[#131313] text-sm font-medium pl-6 pr-5 py-3 hover:bg-white/85 transition-colors" : "hidden md:inline-flex items-center gap-2 rounded-xl bg-foreground text-background text-sm font-medium pl-6 pr-5 py-3 hover:bg-foreground/85 transition-colors"}
-            >
-              Let's talk <ArrowUpRight size={15} strokeWidth={2} />
-            </a>
+              width={158}
+              height={46}
+              font="600 15px Inter, system-ui, sans-serif"
+              className="hidden md:inline-block"
+            />
             <button
               onClick={() => setOpen(true)}
               aria-label="Open menu"

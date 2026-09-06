@@ -51,9 +51,10 @@ export default function ParticleButton({
   width = 240,
   height = 54,
   font = '600 26px Inter, system-ui, sans-serif',
-  points = 2400,
-  grain = 0.1,
-  flecks = 1,
+  points = 4600,
+  grain = 0.3,
+  flecks = 0.4,
+  href,
   onClick,
   className = '',
 }) {
@@ -114,15 +115,16 @@ export default function ParticleButton({
       const t = now / 1000;
 
       const target = hoverRef.current ? 1 : 0;
-      p += (target - p) * Math.min(1, dt * (reduced ? 14 : 4.6));
+      p += (target - p) * Math.min(1, dt * (reduced ? 14 : 3.6));
       if (Math.abs(target - p) < 0.002) p = target;
 
       const want = p > 0.5 ? active : idle;
       if (want !== announced) { announced = want; setLabel(want); }
 
+      // the face is left transparent: the button's own background supplies
+      // it, so it can share the icon nav's translucent tint and let whatever
+      // sits behind the header show through the same way
       ctx.clearRect(0, 0, W, H);
-      ctx.fillStyle = '#000';
-      ctx.fillRect(P, P, IW, IH);
 
       topD.fill(0); botD.fill(0);
       const paths = Array.from({ length: BUCKETS }, () => new Path2D());
@@ -209,13 +211,21 @@ export default function ParticleButton({
         }
       }
 
+      // grain over the face. With a transparent face it has to lay itself
+      // down as faint specks rather than nudging pixels that aren't there.
       if (grain > 0) {
         const im = ctx.getImageData(P, P, IW, IH);
         const d = im.data;
         for (let i = 0; i < d.length; i += 4) {
-          const g = (Math.random() - 0.5) * grain * 255;
-          const v = Math.max(0, Math.min(255, d[i] + g));
-          d[i] = v; d[i + 1] = v; d[i + 2] = v;
+          const g = (Math.random() - 0.5) * grain;
+          if (d[i + 3] > 0) {
+            const v = Math.max(0, Math.min(255, d[i] + g * 255));
+            d[i] = v; d[i + 1] = v; d[i + 2] = v;
+          } else {
+            const v = g > 0 ? 255 : 0;
+            d[i] = v; d[i + 1] = v; d[i + 2] = v;
+            d[i + 3] = Math.min(255, Math.abs(g) * 230);
+          }
         }
         ctx.putImageData(im, P, P);
       }
@@ -226,19 +236,23 @@ export default function ParticleButton({
     return () => cancelAnimationFrame(raf);
   }, [idle, active, width, height, font, points, grain, flecks]);
 
+  // a mailto or a route wants to stay a real link - middle click, right
+  // click and open-in-new-tab all break if it becomes a button
+  const Tag = href ? 'a' : 'button';
+  const shared = {
+    onClick,
+    onMouseEnter: () => { hoverRef.current = true; },
+    onMouseLeave: () => { hoverRef.current = false; },
+    onFocus: () => { hoverRef.current = true; },
+    onBlur: () => { hoverRef.current = false; },
+    style: { width, height },
+    className: `relative inline-block rounded-xl bg-white/[0.06] border border-[#D6D6D6]/45
+      hover:border-[#D6D6D6]/80 transition-colors duration-300
+      focus:outline-none focus-visible:ring-2 focus-visible:ring-[#9565FF] ${className}`,
+  };
+
   return (
-    <button
-      type="button"
-      onClick={onClick}
-      onMouseEnter={() => { hoverRef.current = true; }}
-      onMouseLeave={() => { hoverRef.current = false; }}
-      onFocus={() => { hoverRef.current = true; }}
-      onBlur={() => { hoverRef.current = false; }}
-      style={{ width, height }}
-      className={`relative rounded-xl bg-black border border-[#D6D6D6]/45
-        hover:border-[#D6D6D6]/80 transition-colors duration-300
-        focus:outline-none focus-visible:ring-2 focus-visible:ring-[#9565FF] ${className}`}
-    >
+    <Tag {...shared} {...(href ? { href } : { type: 'button' })}>
       <canvas
         ref={canvasRef}
         aria-hidden
@@ -246,6 +260,6 @@ export default function ParticleButton({
         style={{ left: -PAD, top: -PAD, width: width + PAD * 2, height: height + PAD * 2 }}
       />
       <span className="sr-only">{label}</span>
-    </button>
+    </Tag>
   );
 }

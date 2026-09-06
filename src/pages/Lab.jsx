@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import ParticleButton from '../lab/ParticleButton';
+import ParticleButton from '../components/ParticleButton';
 
 // Prototype only - not linked from anywhere and not part of the site.
 
@@ -15,9 +15,9 @@ function Slider({ label, value, set, min, max, step }) {
 }
 
 export default function Lab() {
-  const [points, setPoints] = useState(2400);
-  const [grain, setGrain] = useState(0.1);
-  const [flecks, setFlecks] = useState(1);
+  const [points, setPoints] = useState(4600);
+  const [grain, setGrain] = useState(0.3);
+  const [flecks, setFlecks] = useState(0.4);
 
   return (
     <div className="bg-black text-white min-h-screen px-6 md:px-12 py-16">
@@ -38,7 +38,7 @@ export default function Lab() {
       </div>
 
       <div className="mt-14 flex flex-col gap-3">
-        <Slider label="Particles" value={points} set={setPoints} min={400} max={6000} step={100} />
+        <Slider label="Particles" value={points} set={setPoints} min={400} max={9000} step={100} />
         <Slider label="Grain" value={grain} set={setGrain} min={0} max={0.35} step={0.01} />
         <Slider label="Flecks" value={flecks} set={setFlecks} min={0} max={2.5} step={0.1} />
       </div>
