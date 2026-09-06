@@ -1,20 +1,20 @@
 import React, { useEffect, useRef } from 'react';
 
-// A mark - a logo, or a line of type - rebuilt out of drifting points.
+// A mark rendered as a solid, swelling metal body with hard static over it,
+// and a little smoke coming off the silhouette.
 //
-// The metallic read in the Spline piece isn't a metal shader: it's density.
-// Points are drawn additively, so where they crowd they sum toward white and
-// where they thin they fall away to black. So the whole job is deciding how
-// bright each point should be, and then letting the noise field push them
-// about without losing the shape.
+// The first attempt drew the whole thing out of scattered points, which is
+// why it read as grainy - you could see black between them. The reference
+// isn't a particle field at all. It's a filled, smoothly shaded form; the
+// static is a fine modulation ON TOP of that fill, and only the wisps
+// drifting off the edges are actual particles.
 //
-// Brightness comes from pretending the flat mark has a surface. Blur its
-// alpha and you get a soft dome over it; the gradient of that dome behaves
-// like a normal, so it can be lit from a direction. Add a rim where the
-// original alpha still stands proud of the blurred version and you get the
-// bright edge that sells the bevel.
+// So there are three layers here:
+//   1. the body   - per-pixel shading of a dome built from the mark's alpha
+//   2. the static - high-frequency noise multiplied over the body each frame
+//   3. the wisps  - points seeded on the silhouette, drifting outward
 
-const LIGHT = { x: -0.55, y: -0.68, z: 0.48 }; // upper left, slightly toward us
+const TWO_PI = Math.PI * 2;
 
 function boxBlur(src, w, h, r) {
   const tmp = new Float32Array(w * h);
@@ -39,33 +39,18 @@ function boxBlur(src, w, h, r) {
   return out;
 }
 
-// cheap value noise - smooth enough for drift, far cheaper than simplex
-function hash(x, y) {
-  const s = Math.sin(x * 127.1 + y * 311.7) * 43758.5453;
-  return s - Math.floor(s);
-}
-function noise2(x, y) {
-  const xi = Math.floor(x), yi = Math.floor(y);
-  const xf = x - xi, yf = y - yi;
-  const u = xf * xf * (3 - 2 * xf), v = yf * yf * (3 - 2 * yf);
-  const a = hash(xi, yi), b = hash(xi + 1, yi);
-  const c = hash(xi, yi + 1), d = hash(xi + 1, yi + 1);
-  return (a * (1 - u) + b * u) * (1 - v) + (c * (1 - u) + d * u) * v;
-}
-
 export default function ParticleMark({
   src,
   text,
   font = '700 150px Archivo, system-ui, sans-serif',
+  crop,
   width = 900,
   height = 460,
-  count = 90000,
-  drift = 5.2,        // how far the static pushes a point, in pixels
-  grain = 0.0075,     // noise frequency - higher is finer static
-  speed = 0.22,
-  focusSweep = true,  // the slow blur in and out
-  sheen = 0.75,       // light falling across the whole mark, not just its edges
-  crop,               // [x, y, w, h] as fractions of the source, to isolate part of it
+  grit = 0.42,       // how hard the static bites. 0 is a clean render
+  swell = 0.5,       // how much the body breathes in and out
+  wisps = 5000,      // points of smoke coming off the edge
+  sheen = 0.62,      // light travelling across the whole mark
+  speed = 0.5,
   padding = 0.1,
   className = '',
   style,
@@ -77,18 +62,15 @@ export default function ParticleMark({
     const canvas = canvasRef.current;
     if (!canvas) return;
     const W = width, H = height;
-    canvas.width = W;
-    canvas.height = H;
+    canvas.width = W; canvas.height = H;
     const ctx = canvas.getContext('2d');
     const image = ctx.createImageData(W, H);
     const rgba = image.data;
-
     let cancelled = false;
 
     const build = (stamp) => {
       if (cancelled) return;
 
-      // ---- 1. the mark's alpha, drawn to fit with a little air around it
       const off = document.createElement('canvas');
       off.width = W; off.height = H;
       const octx = off.getContext('2d', { willReadFrequently: true });
@@ -96,133 +78,153 @@ export default function ParticleMark({
       const px = octx.getImageData(0, 0, W, H).data;
 
       const alpha = new Float32Array(W * H);
-      for (let i = 0, n = W * H; i < n; i++) alpha[i] = px[i * 4 + 3] / 255;
-
-      // ---- 2. blur it into a dome, and light that dome
-      const dome = boxBlur(alpha, W, H, Math.round(Math.min(W, H) * 0.028));
-      const shade = new Float32Array(W * H);
-
-      // the mark's own bounds, so the sweep lands on the artwork rather than
-      // on the canvas - a logo with air around it would otherwise stay flat
       let minX = W, maxX = 0, minY = H, maxY = 0;
       for (let y = 0; y < H; y++) {
         for (let x = 0; x < W; x++) {
-          if (alpha[y * W + x] > 0.04) {
+          const a = px[(y * W + x) * 4 + 3] / 255;
+          alpha[y * W + x] = a;
+          if (a > 0.04) {
             if (x < minX) minX = x; if (x > maxX) maxX = x;
             if (y < minY) minY = y; if (y > maxY) maxY = y;
           }
         }
       }
       const spanX = Math.max(1, maxX - minX), spanY = Math.max(1, maxY - minY);
-      const len = Math.hypot(LIGHT.x, LIGHT.y, LIGHT.z);
-      const lx = LIGHT.x / len, ly = LIGHT.y / len, lz = LIGHT.z / len;
+      const R = Math.max(2, Math.round(Math.min(spanX, spanY) * 0.09));
 
-      for (let y = 1; y < H - 1; y++) {
-        for (let x = 1; x < W - 1; x++) {
+      // the dome: a soft swelling over the mark. Blurring twice gives a
+      // rounder falloff than one pass, which is what makes it look inflated
+      // rather than merely soft.
+      const dome = boxBlur(boxBlur(alpha, W, H, R), W, H, Math.round(R * 0.6));
+
+      // work out the shading once - only the static and the wisps move
+      const body = new Float32Array(W * H);
+      const slopeArr = new Float32Array(W * H);
+      const outX = new Float32Array(W * H);
+      const outY = new Float32Array(W * H);
+
+      const shadeInto = (target, lightAngle, inflate) => {
+        const lx = Math.cos(lightAngle), ly = Math.sin(lightAngle), lz = 0.62;
+        for (let y = 1; y < H - 1; y++) {
+          for (let x = 1; x < W - 1; x++) {
+            const i = y * W + x;
+            if (alpha[i] < 0.03) { target[i] = 0; continue; }
+            const gx = (dome[i + 1] - dome[i - 1]) * 22 * inflate;
+            const gy = (dome[i + W] - dome[i - W]) * 22 * inflate;
+            const slope = Math.hypot(gx, gy);
+            slopeArr[i] = slope;
+            const nl = Math.hypot(gx, gy, 1);
+            outX[i] = -gx / (slope || 1); outY[i] = -gy / (slope || 1);
+            const diff = Math.max(0, (-gx / nl) * lx + (-gy / nl) * ly + (1 / nl) * lz);
+            const spec = Math.pow(diff, 12) * 0.9;
+            // the bright contour: strongest where the dome falls away fastest
+            const rim = Math.min(1, slope * 0.85) * 0.9;
+            const u = (x - minX) / spanX, v = (y - minY) / spanY;
+            const sweep = Math.pow(Math.max(0, 1 - (u * 0.42 + v * 0.5)), 1.2);
+            const lit = (1 - sheen) + sheen * (0.28 + sweep * 1.25);
+            const val = (0.2 + diff * 0.72 + spec + rim) * lit;
+            // fade the very outside so the silhouette isn't a cut edge
+            target[i] = Math.min(1.25, val) * Math.min(1, alpha[i] * 2.2);
+          }
+        }
+      };
+
+      // ---- the smoke. Seeded on the silhouette, drifting outward.
+      shadeInto(body, -2.2, 1);
+      const edge = [];
+      for (let y = 1; y < H - 1; y += 1) {
+        for (let x = 1; x < W - 1; x += 1) {
           const i = y * W + x;
-          if (alpha[i] < 0.04) continue;
-          // gradient of the dome stands in for a surface normal
-          const gx = (dome[i + 1] - dome[i - 1]) * 26;
-          const gy = (dome[i + W] - dome[i - W]) * 26;
-          const nl = Math.hypot(gx, gy, 1);
-          const d = Math.max(0, (-gx / nl) * lx + (-gy / nl) * ly + (1 / nl) * lz);
-          // rim: where the hard edge still stands proud of the soft dome
-          const rim = Math.max(0, alpha[i] - dome[i] * 1.06);
-          const spec = Math.pow(d, 7) * 0.85;
-          // one light travelling across the whole mark: bright where it lands
-          // first, falling away to almost nothing on the far side. This is what
-          // makes it read as a single metal object instead of a grainy stencil.
-          const u = (x - minX) / spanX, v = (y - minY) / spanY;
-          const sweep = Math.pow(Math.max(0, 1 - (u * 0.46 + v * 0.54)), 1.35);
-          const lit = (1 - sheen) + sheen * (0.12 + sweep * 1.5);
-          shade[i] = Math.min(1, (0.1 + d * 0.62 + spec + rim * 2.6) * lit);
+          if (slopeArr[i] > 0.35 && alpha[i] > 0.2) edge.push(i);
         }
       }
+      const wN = Math.min(wisps, 20000);
+      const wx = new Float32Array(wN), wy = new Float32Array(wN);
+      const wvx = new Float32Array(wN), wvy = new Float32Array(wN);
+      const wlife = new Float32Array(wN), wmax = new Float32Array(wN);
+      const seed = (p) => {
+        if (!edge.length) return;
+        const i = edge[(Math.random() * edge.length) | 0];
+        const x = i % W, y = (i / W) | 0;
+        wx[p] = x; wy[p] = y;
+        const a = Math.random() * TWO_PI, s = 0.25 + Math.random() * 0.55;
+        wvx[p] = outX[i] * s + Math.cos(a) * 0.18;
+        wvy[p] = outY[i] * s + Math.sin(a) * 0.18;
+        wlife[p] = 0;
+        wmax[p] = 28 + Math.random() * 70;
+      };
+      for (let p = 0; p < wN; p++) { seed(p); wlife[p] = Math.random() * wmax[p]; }
 
-      // ---- 3. scatter points, keeping brighter areas denser
-      const xs = new Float32Array(count);
-      const ys = new Float32Array(count);
-      const bs = new Float32Array(count);
-      const zs = new Float32Array(count);
-      let made = 0, guard = 0;
-      while (made < count && guard < count * 60) {
-        guard++;
-        const x = Math.random() * W, y = Math.random() * H;
-        const i = (y | 0) * W + (x | 0);
-        if (alpha[i] < 0.35) continue;
-        const b = shade[i];
-        if (Math.random() > 0.18 + b * 0.82) continue; // density follows light
-        xs[made] = x; ys[made] = y;
-        bs[made] = 0.25 + b * 0.75;
-        zs[made] = Math.random();
-        made++;
-      }
+      // xorshift - much cheaper than Math.random at this volume
+      let rng = 2463534242;
+      const rand = () => {
+        rng ^= rng << 13; rng ^= rng >>> 17; rng ^= rng << 5;
+        return (rng >>> 0) / 4294967296;
+      };
 
-      // ---- 4. the loop
-      const acc = new Float32Array(W * H);
       const t0 = performance.now();
-
       const frame = () => {
         if (cancelled) return;
         const t = ((performance.now() - t0) / 1000) * speed;
-        acc.fill(0);
 
-        // the whole field drifts between sharp and dissolved
-        const focus = focusSweep ? 0.5 + 0.5 * Math.sin(t * 1.7) : 0.5;
+        // the swell: the body inflates and the light swings a little, so the
+        // shadow inside the bite creeps in and out
+        const inflate = 1 + Math.sin(t * 0.9) * 0.3 * swell;
+        shadeInto(body, -2.2 + Math.sin(t * 0.62) * 0.28, inflate);
 
-        for (let p = 0; p < made; p++) {
-          const bx = xs[p], by = ys[p];
-          const n1 = noise2(bx * grain + t * 2.1, by * grain);
-          const n2 = noise2(bx * grain, by * grain + t * 2.1 + 37.2);
-          const x = bx + (n1 - 0.5) * 2 * drift;
-          const y = by + (n2 - 0.5) * 2 * drift;
-          const xi = x | 0, yi = y | 0;
-          if (xi < 1 || yi < 1 || xi >= W - 1 || yi >= H - 1) continue;
+        rgba.fill(0);
 
-          // distance from the focal plane decides how far the point smears
-          const blur = Math.abs(zs[p] - focus);
-          const b = bs[p];
-
-          if (blur < 0.22) {
-            acc[yi * W + xi] += b;
-          } else {
-            // spread it over a small cross, dimmer the further out of focus
-            const w = b * (0.34 - blur * 0.16);
-            const i = yi * W + xi;
-            acc[i] += w * 1.5;
-            acc[i - 1] += w; acc[i + 1] += w;
-            acc[i - W] += w; acc[i + W] += w;
+        // 1 + 2: the body, with hard fine static over it
+        const lo = 1 - grit, hi = grit * 2;
+        for (let y = minY - R; y <= maxY + R; y++) {
+          if (y < 0 || y >= H) continue;
+          for (let x = minX - R; x <= maxX + R; x++) {
+            if (x < 0 || x >= W) continue;
+            const i = y * W + x;
+            const b = body[i];
+            if (b <= 0.002) continue;
+            const c = b * (lo + rand() * hi);
+            const v = c > 1 ? 255 : (c * 255) | 0;
+            const o = i * 4;
+            rgba[o] = v; rgba[o + 1] = v; rgba[o + 2] = v; rgba[o + 3] = 255;
           }
         }
 
-        // tone map the accumulation into white points on black
-        for (let i = 0, n = W * H; i < n; i++) {
-          const v = acc[i];
-          if (v <= 0) { rgba[i * 4 + 3] = 0; continue; }
-          const c = Math.min(255, Math.round(255 * (1 - Math.exp(-v * 1.35))));
-          const o = i * 4;
-          rgba[o] = c; rgba[o + 1] = c; rgba[o + 2] = c; rgba[o + 3] = c;
+        // 3: the wisps, added on top
+        for (let p = 0; p < wN; p++) {
+          wlife[p] += 1;
+          if (wlife[p] >= wmax[p]) { seed(p); continue; }
+          wx[p] += wvx[p]; wy[p] += wvy[p];
+          wvx[p] += (rand() - 0.5) * 0.09;
+          wvy[p] += (rand() - 0.5) * 0.09 - 0.008; // drifts up, like smoke
+          const xi = wx[p] | 0, yi = wy[p] | 0;
+          if (xi < 0 || yi < 0 || xi >= W || yi >= H) continue;
+          const k = 1 - wlife[p] / wmax[p];
+          const v = (k * k * 190 * (0.4 + rand() * 0.6)) | 0;
+          const o = (yi * W + xi) * 4;
+          const nv = rgba[o] + v;
+          const cl = nv > 255 ? 255 : nv;
+          rgba[o] = cl; rgba[o + 1] = cl; rgba[o + 2] = cl;
+          rgba[o + 3] = Math.max(rgba[o + 3], cl);
         }
+
         ctx.putImageData(image, 0, 0);
         rafRef.current = requestAnimationFrame(frame);
       };
       frame();
     };
 
-    // stamp the mark into the offscreen canvas, whichever kind it is
     if (src) {
       const img = new Image();
       img.crossOrigin = 'anonymous';
       img.onload = () => {
-        const pad = padding;
         const sx = crop ? crop[0] * img.width : 0;
         const sy = crop ? crop[1] * img.height : 0;
         const sw = crop ? crop[2] * img.width : img.width;
         const sh = crop ? crop[3] * img.height : img.height;
-        const scale = Math.min((W * (1 - pad * 2)) / sw, (H * (1 - pad * 2)) / sh);
+        const scale = Math.min((W * (1 - padding * 2)) / sw, (H * (1 - padding * 2)) / sh);
         const dw = sw * scale, dh = sh * scale;
-        build((octx) =>
-          octx.drawImage(img, sx, sy, sw, sh, (W - dw) / 2, (H - dh) / 2, dw, dh));
+        build((octx) => octx.drawImage(img, sx, sy, sw, sh, (W - dw) / 2, (H - dh) / 2, dw, dh));
       };
       img.src = src;
     } else {
@@ -236,13 +238,10 @@ export default function ParticleMark({
     }
 
     return () => { cancelled = true; cancelAnimationFrame(rafRef.current); };
-  }, [src, text, font, width, height, count, drift, grain, speed, focusSweep, sheen, crop, padding]);
+  }, [src, text, font, crop, width, height, grit, swell, wisps, sheen, speed, padding]);
 
   return (
-    <canvas
-      ref={canvasRef}
-      className={className}
-      style={{ display: 'block', width: '100%', height: 'auto', ...style }}
-    />
+    <canvas ref={canvasRef} className={className}
+      style={{ display: 'block', width: '100%', height: 'auto', ...style }} />
   );
 }

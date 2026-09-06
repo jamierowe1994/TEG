@@ -20,11 +20,11 @@ function Slider({ label, value, set, min, max, step }) {
 }
 
 export default function Lab() {
-  const [drift, setDrift] = useState(5.2);
-  const [grain, setGrain] = useState(0.0075);
-  const [count, setCount] = useState(90000);
-  const [speed, setSpeed] = useState(0.22);
-  const [sheen, setSheen] = useState(0.75);
+  const [grit, setGrit] = useState(0.42);
+  const [swell, setSwell] = useState(0.5);
+  const [wisps, setWisps] = useState(5000);
+  const [sheen, setSheen] = useState(0.62);
+  const [speed, setSpeed] = useState(0.5);
   const [hot, setHot] = useState(false);
 
   return (
@@ -34,10 +34,9 @@ export default function Lab() {
         The mark, made of static
       </h1>
       <p className="mt-4 max-w-xl text-white/45 text-sm leading-relaxed">
-        No metal shader anywhere in this. Every point is white and additive, so
-        the shape is drawn purely by where they crowd and where they thin. The
-        shading comes from treating a blurred copy of the logo as a dome and
-        lighting it from the top left.
+        A solid shaded body, with hard fine static multiplied over the top and
+        wisps of smoke coming off the silhouette. The body swells and the light
+        swings, so the shadow inside the shape creeps in and out.
       </p>
 
       {/* ---- the logo ---- */}
@@ -46,20 +45,16 @@ export default function Lab() {
           src="/teg-logo-white.png"
           width={1100}
           height={560}
-          count={count}
-          drift={drift}
-          grain={grain}
-          speed={speed}
-          sheen={sheen}
+          grit={grit} swell={swell} wisps={wisps} sheen={sheen} speed={speed}
         />
       </div>
 
       <div className="mt-6 flex flex-col gap-3">
-        <Slider label="Drift" value={drift} set={setDrift} min={0} max={16} step={0.2} />
-        <Slider label="Grain" value={grain} set={setGrain} min={0.002} max={0.03} step={0.0005} />
-        <Slider label="Density" value={count} set={setCount} min={20000} max={200000} step={5000} />
-        <Slider label="Speed" value={speed} set={setSpeed} min={0} max={1} step={0.02} />
-        <Slider label="Sheen" value={sheen} set={setSheen} min={0} max={1} step={0.05} />
+        <Slider label="Static" value={grit} set={setGrit} min={0} max={0.85} step={0.01} />
+        <Slider label="Swell" value={swell} set={setSwell} min={0} max={1.4} step={0.05} />
+        <Slider label="Smoke" value={wisps} set={setWisps} min={0} max={16000} step={500} />
+        <Slider label="Sheen" value={sheen} set={setSheen} min={0} max={1} step={0.02} />
+        <Slider label="Speed" value={speed} set={setSpeed} min={0} max={1.6} step={0.05} />
       </div>
 
       {/* ---- the monogram on its own ---- */}
@@ -78,11 +73,7 @@ export default function Lab() {
           crop={[0, 0, 0.31, 1]}
           width={760}
           height={620}
-          count={count}
-          drift={drift}
-          grain={grain}
-          speed={speed}
-          sheen={sheen}
+          grit={grit} swell={swell} wisps={wisps} sheen={sheen} speed={speed}
           padding={0.12}
         />
       </div>
@@ -105,8 +96,8 @@ export default function Lab() {
             <ParticleMark
               text="Let's talk"
               font="600 64px Inter, system-ui, sans-serif"
-              width={480} height={150} count={16000}
-              drift={drift * 0.5} grain={grain * 2.2} speed={speed} padding={0.16}
+              width={480} height={150}
+              grit={grit} swell={swell * 0.6} wisps={900} sheen={sheen} speed={speed} padding={0.16}
             />
           </div>
           <p className="mt-3 text-[0.6rem] tracking-[0.18em] uppercase text-white/30">Always on</p>
@@ -129,8 +120,8 @@ export default function Lab() {
                 <ParticleMark
                   text="Let's talk"
                   font="600 64px Inter, system-ui, sans-serif"
-                  width={480} height={150} count={16000}
-                  drift={9} grain={grain * 2.2} speed={0.5} padding={0.16}
+                  width={480} height={150}
+                  grit={grit} swell={0.9} wisps={2200} sheen={sheen} speed={1.1} padding={0.16}
                 />
               </span>
             )}
