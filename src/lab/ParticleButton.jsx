@@ -1,22 +1,28 @@
 import React, { useEffect, useRef, useState } from 'react';
 
 // "Let's talk" written in particles. Hover and every particle leaves on its
-// OWN orbit - its own centre, radius, speed and direction - so the crowd
-// scatters rather than the word spinning. They stream out past the edge of
-// the button, then whip back into formation as "Let's go".
+// own orbit, streams past the edge of the button, then finds its way back as
+// "Let's go". Leave and it travels back.
 //
-// The first version rotated everything about one shared centre, which is a
-// twirl filter, not a swarm. Independent orbits are the whole difference.
+// Two things that matter and are easy to get wrong:
 //
-// Fast particles draw as hairline streaks (previous position to current),
-// slow ones as points, so the scatter reads as motion and the settled word
-// reads as type.
+// 1. Each particle runs on its OWN clock - it departs at its own moment and
+//    arrives at its own moment, and BOTH its scatter and its travel between
+//    the two words are driven by that same clock. An earlier version drove
+//    the scatter per-particle but the word-to-word travel globally, so every
+//    particle finished on the same frame and the word snapped into place.
+//    Staggered arrivals are what make it flick together instead.
+//
+// 2. Orbits are centred near each particle's own letter. Centre them all on
+//    the button and you get a twirl; scatter the centres across the canvas
+//    and you get a firework.
 
 const DPR = 2;
-const PAD = 54;   // room outside the button for particles to fly into
+const PAD = 54;        // room outside the button for particles to fly into
+const COLS = 52;       // density buckets across the face, for the light flecks
 
-const easeInOutQuint = (p) =>
-  p < 0.5 ? 16 * p ** 5 : 1 - Math.pow(-2 * p + 2, 5) / 2;
+const easeInOutCubic = (u) =>
+  u < 0.5 ? 4 * u * u * u : 1 - Math.pow(-2 * u + 2, 3) / 2;
 
 function samplePoints(w, h, font, str, want, offX, offY, boxW, boxH) {
   const c = document.createElement('canvas');
@@ -35,7 +41,7 @@ function samplePoints(w, h, font, str, want, offX, offY, boxW, boxH) {
   const out = [];
   const stride = hits.length / want;
   for (let i = 0; i < want; i++) out.push(hits[Math.min(hits.length - 1, Math.floor(i * stride))]);
-  out.sort((a, b) => a[0] - b[0]);   // left to right in both words, so they correspond
+  out.sort((a, b) => a[0] - b[0]);
   return out;
 }
 
@@ -47,6 +53,7 @@ export default function ParticleButton({
   font = '600 26px Inter, system-ui, sans-serif',
   points = 2400,
   grain = 0.1,
+  flecks = 1,
   onClick,
   className = '',
 }) {
@@ -57,9 +64,9 @@ export default function ParticleButton({
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-    const IW = width * DPR, IH = height * DPR;        // the button face
+    const IW = width * DPR, IH = height * DPR;
     const P = PAD * DPR;
-    const W = IW + P * 2, H = IH + P * 2;             // canvas, with room around
+    const W = IW + P * 2, H = IH + P * 2;
     canvas.width = W; canvas.height = H;
     const ctx = canvas.getContext('2d');
 
@@ -68,26 +75,29 @@ export default function ParticleButton({
     const B = samplePoints(W, H, scaled, active, points, P, P, IW, IH);
     const n = Math.min(A.length, B.length);
 
-    // every particle gets its own little world to orbit in
     const ox = new Float32Array(n), oy = new Float32Array(n);
     const orad = new Float32Array(n), ospd = new Float32Array(n), oph = new Float32Array(n);
     const shine = new Float32Array(n);
-    const lead = new Float32Array(n);   // how early this one breaks formation
+    const lead = new Float32Array(n);    // when this one lets go
+    const span = new Float32Array(n);    // and how long its whole journey takes
+    const shape = new Float32Array(n);   // the curve of its own scatter
     for (let i = 0; i < n; i++) {
-      // each orbit sits near the particle's OWN letter, not in the middle of
-      // the button. Scattering the centres across the whole canvas made every
-      // particle bolt outward from one point, which reads as an explosion.
       ox[i] = A[i][0] + (Math.random() - 0.5) * 74 * DPR;
       oy[i] = A[i][1] + (Math.random() - 0.5) * 52 * DPR;
       orad[i] = (5 + Math.random() * 30) * DPR;
       ospd[i] = (Math.random() < 0.5 ? -1 : 1) * (0.9 + Math.random() * 3.8);
       oph[i] = Math.random() * Math.PI * 2;
       shine[i] = 0.5 + Math.random() * 0.5;
-      lead[i] = Math.random() * 0.4;
+      lead[i] = Math.random() * 0.3;
+      span[i] = 0.55 + Math.random() * 0.45;   // ends anywhere from 0.55 to 1.0
+      shape[i] = 0.45 + Math.random() * 0.7;
     }
 
-    const px = new Float32Array(n), py = new Float32Array(n);
-    for (let i = 0; i < n; i++) { px[i] = A[i][0]; py[i] = A[i][1]; }
+    const prevX = new Float32Array(n), prevY = new Float32Array(n);
+    for (let i = 0; i < n; i++) { prevX[i] = A[i][0]; prevY[i] = A[i][1]; }
+
+    const topD = new Float32Array(COLS), botD = new Float32Array(COLS);
+    const colW = W / COLS;
 
     let p = 0, raf = 0, last = performance.now(), announced = idle;
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -105,19 +115,19 @@ export default function ParticleButton({
       const want = p > 0.5 ? active : idle;
       if (want !== announced) { announced = want; setLabel(want); }
 
-      const mix = easeInOutQuint(p);
-
       ctx.clearRect(0, 0, W, H);
-
-      // the face: jet black, only inside the button itself
       ctx.fillStyle = '#000';
       ctx.fillRect(P, P, IW, IH);
 
+      topD.fill(0); botD.fill(0);
       const paths = Array.from({ length: BUCKETS }, () => new Path2D());
+
       for (let i = 0; i < n; i++) {
-        // each particle breaks formation on its own schedule
-        const local = Math.min(1, Math.max(0, (p - lead[i]) / (1 - lead[i])));
-        const chaos = reduced ? 0 : Math.sin(Math.PI * local) ** 0.5;
+        // one clock per particle drives BOTH the scatter and the travel, so
+        // it arrives when it stops scattering rather than on a shared frame
+        const u = Math.min(1, Math.max(0, (p - lead[i]) / span[i]));
+        const chaos = reduced ? 0 : Math.sin(Math.PI * u) ** shape[i];
+        const mix = easeInOutCubic(u);
 
         const wx = A[i][0] + (B[i][0] - A[i][0]) * mix;
         const wy = A[i][1] + (B[i][1] - A[i][1]) * mix;
@@ -131,14 +141,27 @@ export default function ParticleButton({
           y = wy + (fy - wy) * chaos;
         }
 
-        const dx = x - px[i], dy = y - py[i];
-        const sp = Math.hypot(dx, dy);
-        const b = Math.min(1, shine[i] * (1 - chaos * 0.25));
-        const k = Math.min(BUCKETS - 1, Math.round(b * (BUCKETS - 1)));
-        const path = paths[k];
+        // thin out hard once past the edge of the button
+        const outX = Math.max(0, P - x, x - (P + IW));
+        const outY = Math.max(0, P - y, y - (P + IH));
+        const out = Math.hypot(outX, outY);
+        const fade = out > 0 ? Math.exp(-out / (16 * DPR)) : 1;
 
+        // note where the crowd is heaviest as it crosses top and bottom
+        if (out > 0 && flecks > 0) {
+          const col = Math.min(COLS - 1, Math.max(0, (x / colW) | 0));
+          if (y < P) topD[col] += fade;
+          else if (y > P + IH) botD[col] += fade;
+        }
+
+        const dx = x - prevX[i], dy = y - prevY[i];
+        const sp = Math.hypot(dx, dy);
+        const b = Math.min(1, shine[i] * (1 - chaos * 0.25) * fade);
+        prevX[i] = x; prevY[i] = y;
+        if (b < 0.06) continue;
+
+        const path = paths[Math.min(BUCKETS - 1, Math.round(b * (BUCKETS - 1)))];
         if (sp > 1.2) {
-          // a hairline flick, trailing behind where it has come from
           const tail = Math.min(sp, 7 * DPR);
           path.moveTo(x - (dx / sp) * tail, y - (dy / sp) * tail);
           path.lineTo(x, y);
@@ -146,24 +169,48 @@ export default function ParticleButton({
           path.moveTo(x, y);
           path.lineTo(x + 1, y);
         }
-        px[i] = x; py[i] = y;
       }
 
       ctx.lineWidth = 1;
       ctx.lineCap = 'round';
       for (let k = 0; k < BUCKETS; k++) {
-        ctx.strokeStyle = `rgba(255,255,255,${(0.3 + (k / (BUCKETS - 1)) * 0.7).toFixed(3)})`;
+        ctx.strokeStyle = `rgba(255,255,255,${(0.28 + (k / (BUCKETS - 1)) * 0.72).toFixed(3)})`;
         ctx.stroke(paths[k]);
       }
 
-      // grain, over the face only
+      // flecks of light: where the crowd crossing the edge is heaviest, a
+      // short shot fires away from the button and fades out
+      if (flecks > 0) {
+        ctx.lineWidth = 1;
+        for (let c = 0; c < COLS; c++) {
+          for (let side = 0; side < 2; side++) {
+            const d = side === 0 ? topD[c] : botD[c];
+            if (d < 1.4) continue;
+            const x = (c + 0.5) * colW;
+            const edge = side === 0 ? P : P + IH;
+            const dir = side === 0 ? -1 : 1;
+            const len = Math.min(40 * DPR, d * 5.5 * DPR) * flecks;
+            const a = Math.min(0.6, d * 0.075) * flecks;
+            const g = ctx.createLinearGradient(x, edge, x, edge + dir * len);
+            g.addColorStop(0, `rgba(255,255,255,${a.toFixed(3)})`);
+            g.addColorStop(0.35, `rgba(255,255,255,${(a * 0.5).toFixed(3)})`);
+            g.addColorStop(1, 'rgba(255,255,255,0)');
+            ctx.strokeStyle = g;
+            ctx.beginPath();
+            ctx.moveTo(x, edge);
+            ctx.lineTo(x, edge + dir * len);
+            ctx.stroke();
+          }
+        }
+      }
+
       if (grain > 0) {
         const im = ctx.getImageData(P, P, IW, IH);
         const d = im.data;
         for (let i = 0; i < d.length; i += 4) {
           const g = (Math.random() - 0.5) * grain * 255;
-          d[i] = Math.max(0, Math.min(255, d[i] + g));
-          d[i + 1] = d[i]; d[i + 2] = d[i];
+          const v = Math.max(0, Math.min(255, d[i] + g));
+          d[i] = v; d[i + 1] = v; d[i + 2] = v;
         }
         ctx.putImageData(im, P, P);
       }
@@ -172,7 +219,7 @@ export default function ParticleButton({
     };
     raf = requestAnimationFrame(frame);
     return () => cancelAnimationFrame(raf);
-  }, [idle, active, width, height, font, points, grain]);
+  }, [idle, active, width, height, font, points, grain, flecks]);
 
   return (
     <button
@@ -187,7 +234,6 @@ export default function ParticleButton({
         hover:border-[#D6D6D6]/80 transition-colors duration-300
         focus:outline-none focus-visible:ring-2 focus-visible:ring-[#9565FF] ${className}`}
     >
-      {/* sits over the face and spills past it, so particles can leave */}
       <canvas
         ref={canvasRef}
         aria-hidden
