@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X, ArrowUpRight, Handshake, BookOpen, Briefcase } from 'lucide-react';
-import ParticleButton from '../components/ParticleButton';
+import GlowButton from '../components/GlowButton';
 import { TEG_LOGO, TEG_LOGO_WHITE } from './brands';
 import { EASE } from './motion';
 
@@ -116,7 +116,10 @@ export default function ExperienceNav({ dark = false }) {
         initial={{ y: -64, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.9, ease: EASE, delay: 0.15 }}
-        className="absolute top-0 inset-x-0 z-50 bg-transparent"
+        // overflow-x is clipped so the CTA's bloom can't push the page wider;
+        // clip (not hidden) leaves the vertical alone, so the icon tooltips
+        // still hang below the bar
+        className="absolute top-0 inset-x-0 z-50 bg-transparent overflow-x-clip"
       >
         <nav className="mx-auto max-w-[1480px] px-5 md:px-12 h-24 md:h-28 flex items-center justify-between">
           <Link to="/" aria-label="The Experts Group — home" className="shrink-0">
@@ -126,15 +129,16 @@ export default function ExperienceNav({ dark = false }) {
           <IconNav dark={dark} />
 
           <div className="flex items-center gap-3">
-            {/* jet black face, light grey rim; the label is particles that
-                scatter and reform as "Let's go" on hover */}
-            <ParticleButton
+            {/* dark glass on a deep glow, with a patch of mist that follows
+                the cursor round the rim */}
+            <GlowButton
               href="mailto:hello@theexpertsgroup.co.uk"
               width={158}
               height={46}
-              font="600 15px Inter, system-ui, sans-serif"
-              className="hidden md:inline-block"
-            />
+              className="hidden md:inline-flex"
+            >
+              Let&rsquo;s talk
+            </GlowButton>
             <button
               onClick={() => setOpen(true)}
               aria-label="Open menu"
