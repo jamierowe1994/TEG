@@ -126,7 +126,6 @@ function Tile({ tile, index, onOpen }) {
       viewport={{ once: true, margin: '-10%' }}
       transition={{ duration: 0.8, ease: EASE, delay: index * 0.09 }}
       whileHover="hover"
-      whileFocus="hover"
       aria-haspopup="dialog"
       aria-label={`${tile.head}. Open for more`}
       className="group relative text-left rounded-2xl p-7 md:p-8 min-h-[380px] md:min-h-[440px]
