@@ -16,7 +16,7 @@ function Slider({ label, value, set, min, max, step }) {
 
 export default function Lab() {
   const [points, setPoints] = useState(4600);
-  const [grain, setGrain] = useState(0.3);
+  const [grain, setGrain] = useState(0);
   const [flecks, setFlecks] = useState(0.4);
 
   return (

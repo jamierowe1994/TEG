@@ -21,7 +21,7 @@ const CHAPTERS = [
     lines: ['Where', 'it all', 'started'],
     left: ['One person,', 'one idea'],
     right: ['Sean Newman,', 'founder'],
-    video: '/media/fc-aerial-preview.mp4',
+    video: '/media/fc-aerial-loop.mp4',
     poster: '/media/fc-aerial-poster.jpg',
     lede: 'It all started here.',
     body: [
@@ -253,7 +253,7 @@ export default function About() {
           <motion.div
             animate={{ y: isOpen ? '36vh' : '0vh' }}
             transition={SWAP}
-            className="absolute inset-x-0 top-1/2 -translate-y-1/2 z-20 px-6 md:px-10
+            className="absolute inset-x-0 bottom-[13vh] md:bottom-auto md:top-1/2 md:-translate-y-1/2 z-20 px-6 md:px-10
               flex items-center justify-between pointer-events-none"
           >
             <div className="flex items-center gap-6 md:gap-12">

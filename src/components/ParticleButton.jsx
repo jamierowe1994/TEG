@@ -52,7 +52,7 @@ export default function ParticleButton({
   height = 54,
   font = '600 26px Inter, system-ui, sans-serif',
   points = 4600,
-  grain = 0.3,
+  grain = 0,        // static is off; the pass is still here behind the prop
   flecks = 0.4,
   href,
   onClick,
@@ -246,8 +246,8 @@ export default function ParticleButton({
     onFocus: () => { hoverRef.current = true; },
     onBlur: () => { hoverRef.current = false; },
     style: { width, height },
-    className: `relative inline-block rounded-xl bg-white/[0.06] border border-[#D6D6D6]/45
-      hover:border-[#D6D6D6]/80 transition-colors duration-300
+    className: `relative inline-block rounded-xl bg-white/[0.06]
+      hover:bg-white/[0.09] transition-colors duration-300
       focus:outline-none focus-visible:ring-2 focus-visible:ring-[#9565FF] ${className}`,
   };
 
