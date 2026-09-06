@@ -89,7 +89,12 @@ export default function ParticleButton({
       oph[i] = Math.random() * Math.PI * 2;
       shine[i] = 0.5 + Math.random() * 0.5;
       lead[i] = Math.random() * 0.3;
-      span[i] = 0.55 + Math.random() * 0.45;   // ends anywhere from 0.55 to 1.0
+      // the span MUST fit in what is left after the lead, or a particle that
+      // departs late and travels slowly never reaches u = 1 - it sits at
+      // partial chaos orbiting forever, even once the hover has settled.
+      // Scaling by (1 - lead) guarantees every particle finishes; the factor
+      // only decides how early it gets there, which is the stagger.
+      span[i] = (1 - lead[i]) * (0.5 + Math.random() * 0.5);
       shape[i] = 0.45 + Math.random() * 0.7;
     }
 
