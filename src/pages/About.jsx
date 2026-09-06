@@ -101,7 +101,7 @@ function Hero() {
           loop
           playsInline
           className="absolute inset-0 w-full h-full object-cover"
-          style={{ filter: 'grayscale(1) brightness(0.22) contrast(1.2)' }}
+          style={{ filter: 'grayscale(1) brightness(0.34) contrast(1.15)' }}
         />
         <div className="relative" style={{ backgroundColor: CANVAS, mixBlendMode: 'screen' }}>
           <Display text="OUR VISION" />
