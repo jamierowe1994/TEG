@@ -7,6 +7,7 @@ import SiteFooter from '../home/SiteFooter';
 import useLenis from '../lib/useLenis';
 import { EASE } from '../experience/motion';
 import VintageFrame from '../components/VintageFrame';
+import WhatChanges from '../components/WhatChanges';
 
 // Partnership — a dark, open room. One line at the top, one photograph, then
 // each brand gets its own space to be itself. No walls of copy: the job here
@@ -179,72 +180,6 @@ function Hero() {
         >
           <ArrowDown size={16} />
         </motion.span>
-      </div>
-    </section>
-  );
-}
-
-const REASONS = [
-  {
-    n: '10',
-    head: 'Your diary is your own',
-    body: 'Work the hours that fit your life. The school run, the training run, the long lunch — you decide what the day looks like, not a rota.',
-  },
-  {
-    n: '11',
-    head: 'Nobody over your shoulder',
-    body: 'No micromanagement, no arbitrary targets, nobody asking why you left the office at three. You are trusted to run your own business.',
-  },
-  {
-    n: '12',
-    head: 'Do what you are good at',
-    body: 'Compliance, marketing, technology and the back-office sit with us. Your day goes on the work only you can do.',
-  },
-  {
-    n: '13',
-    head: 'Start without betting the house',
-    body: 'A low set-up cost and no premises to fund. The step into running your own business is a smaller one than most people expect.',
-  },
-];
-
-function Reasons() {
-  return (
-    <section className="relative bg-[#111111] pt-[14vh] pb-[4vh] px-6 md:px-16">
-      <div className="max-w-[1500px] mx-auto">
-        <motion.h2
-          initial={{ opacity: 0, y: 26 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-15%' }}
-          transition={{ duration: 0.9, ease: EASE }}
-          className="font-black-display font-extrabold uppercase tracking-tight text-white
-            text-[2.2rem] md:text-[3.6rem] leading-[1] max-w-[14em]"
-        >
-          What actually changes
-        </motion.h2>
-
-        <div className="mt-[4.5vh] grid grid-cols-1 md:grid-cols-2">
-          {REASONS.map((r, i) => (
-            <motion.div
-              key={r.n}
-              initial={{ opacity: 0, y: 34 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: '-12%' }}
-              transition={{ duration: 0.8, ease: EASE, delay: (i % 2) * 0.12 }}
-              className={`py-10 md:py-14 md:px-12 first:pt-0 md:first:pt-14
-                border-t border-white/10
-                ${i % 2 === 0 ? 'md:border-r md:pl-0' : ''}
-                ${i < 2 ? 'md:border-t-0' : ''}`}
-            >
-              <span className="text-[0.6rem] tracking-[0.28em] text-white/30">{r.n}</span>
-              <h3 className="mt-5 font-sans font-light tracking-[-0.02em] text-white text-[1.8rem] md:text-[2.4rem] leading-[1.1]">
-                {r.head}
-              </h3>
-              <p className="mt-4 text-white/55 font-light text-base leading-[1.7] max-w-[30em]">
-                {r.body}
-              </p>
-            </motion.div>
-          ))}
-        </div>
       </div>
     </section>
   );
@@ -496,7 +431,7 @@ export default function Partnership() {
     <div className="bg-[#111111] text-white min-h-screen overflow-x-clip">
       <ExperienceNav dark />
       <Hero />
-      <Reasons />
+      <WhatChanges />
       <VisionLed />
       <BrandArc />
       <Closer />
