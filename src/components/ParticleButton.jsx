@@ -19,7 +19,6 @@ import React, { useEffect, useRef, useState } from 'react';
 
 const DPR = 2;
 const PAD = 54;        // room outside the button for particles to fly into
-const COLS = 52;       // density buckets across the face, for the light flecks
 
 const easeInOutCubic = (u) =>
   u < 0.5 ? 4 * u * u * u : 1 - Math.pow(-2 * u + 2, 3) / 2;
@@ -47,13 +46,14 @@ function samplePoints(w, h, font, str, want, offX, offY, boxW, boxH) {
 
 export default function ParticleButton({
   idle = "Let's talk",
-  active = "Let's go",
+  active = "Say hello",
   width = 240,
   height = 54,
   font = '600 26px Inter, system-ui, sans-serif',
   points = 4600,
   grain = 0,        // static is off; the pass is still here behind the prop
-  flecks = 0.4,
+  tint = '214, 214, 214',   // off-white, matching the nav icons
+  flashes = 3,
   href,
   onClick,
   className = '',
@@ -83,9 +83,14 @@ export default function ParticleButton({
     const span = new Float32Array(n);    // and how long its whole journey takes
     const shape = new Float32Array(n);   // the curve of its own scatter
     for (let i = 0; i < n; i++) {
-      ox[i] = A[i][0] + (Math.random() - 0.5) * 74 * DPR;
-      oy[i] = A[i][1] + (Math.random() - 0.5) * 52 * DPR;
-      orad[i] = (5 + Math.random() * 30) * DPR;
+      // the swarm stays inside the button now, so each orbit is placed and
+      // then sized to whatever room it has left before the nearest edge -
+      // clamping positions per frame would just pile particles on the walls
+      const m = 5 * DPR;
+      ox[i] = Math.min(P + IW - m, Math.max(P + m, A[i][0] + (Math.random() - 0.5) * 46 * DPR));
+      oy[i] = Math.min(P + IH - m, Math.max(P + m, A[i][1] + (Math.random() - 0.5) * 20 * DPR));
+      const room = Math.min(ox[i] - P, P + IW - ox[i], oy[i] - P, P + IH - oy[i]) - m;
+      orad[i] = Math.max(2, Math.min((4 + Math.random() * 22) * DPR, room));
       ospd[i] = (Math.random() < 0.5 ? -1 : 1) * (0.9 + Math.random() * 3.8);
       oph[i] = Math.random() * Math.PI * 2;
       shine[i] = 0.5 + Math.random() * 0.5;
@@ -102,8 +107,19 @@ export default function ParticleButton({
     const prevX = new Float32Array(n), prevY = new Float32Array(n);
     for (let i = 0; i < n; i++) { prevX[i] = A[i][0]; prevY[i] = A[i][1]; }
 
-    const topD = new Float32Array(COLS), botD = new Float32Array(COLS);
-    const colW = W / COLS;
+    // a couple of soft flashes that bloom while the word is changing. Each
+    // peaks at its own point in the crossing, so they read as light behind
+    // the box catching the movement rather than a timed effect.
+    const FLASH = Array.from({ length: Math.max(0, flashes) }, (_, i) => {
+      const spread = flashes > 1 ? i / (flashes - 1) : 0.5;
+      return {
+        x: P + IW * (0.18 + 0.64 * spread) + (Math.random() - 0.5) * IW * 0.12,
+        y: P + IH * (0.5 + (Math.random() - 0.5) * 0.45),
+        at: 0.28 + 0.44 * spread,
+        r: IH * (1.15 + Math.random() * 0.75),
+        peak: 0.16 + Math.random() * 0.12,
+      };
+    });
 
     let p = 0, raf = 0, last = performance.now(), announced = idle;
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -126,7 +142,20 @@ export default function ParticleButton({
       // sits behind the header show through the same way
       ctx.clearRect(0, 0, W, H);
 
-      topD.fill(0); botD.fill(0);
+      // flashes go down first, so the particles read as lit from behind
+      for (let f = 0; f < FLASH.length; f++) {
+        const fl = FLASH[f];
+        const d = (p - fl.at) / 0.13;
+        const a = Math.exp(-d * d) * fl.peak;
+        if (a < 0.004) continue;
+        const g = ctx.createRadialGradient(fl.x, fl.y, 0, fl.x, fl.y, fl.r);
+        g.addColorStop(0, `rgba(${tint},${a.toFixed(3)})`);
+        g.addColorStop(0.45, `rgba(${tint},${(a * 0.34).toFixed(3)})`);
+        g.addColorStop(1, `rgba(${tint},0)`);
+        ctx.fillStyle = g;
+        ctx.fillRect(fl.x - fl.r, fl.y - fl.r, fl.r * 2, fl.r * 2);
+      }
+
       const paths = Array.from({ length: BUCKETS }, () => new Path2D());
 
       for (let i = 0; i < n; i++) {
@@ -148,22 +177,9 @@ export default function ParticleButton({
           y = wy + (fy - wy) * chaos;
         }
 
-        // thin out hard once past the edge of the button
-        const outX = Math.max(0, P - x, x - (P + IW));
-        const outY = Math.max(0, P - y, y - (P + IH));
-        const out = Math.hypot(outX, outY);
-        const fade = out > 0 ? Math.exp(-out / (16 * DPR)) : 1;
-
-        // note where the crowd is heaviest as it crosses top and bottom
-        if (out > 0 && flecks > 0) {
-          const col = Math.min(COLS - 1, Math.max(0, (x / colW) | 0));
-          if (y < P) topD[col] += fade;
-          else if (y > P + IH) botD[col] += fade;
-        }
-
         const dx = x - prevX[i], dy = y - prevY[i];
         const sp = Math.hypot(dx, dy);
-        const b = Math.min(1, shine[i] * (1 - chaos * 0.25) * fade);
+        const b = Math.min(1, shine[i] * (1 - chaos * 0.25));
         prevX[i] = x; prevY[i] = y;
         if (b < 0.06) continue;
 
@@ -181,38 +197,10 @@ export default function ParticleButton({
       ctx.lineWidth = 1;
       ctx.lineCap = 'round';
       for (let k = 0; k < BUCKETS; k++) {
-        ctx.strokeStyle = `rgba(255,255,255,${(0.28 + (k / (BUCKETS - 1)) * 0.72).toFixed(3)})`;
+        ctx.strokeStyle = `rgba(${tint},${(0.28 + (k / (BUCKETS - 1)) * 0.72).toFixed(3)})`;
         ctx.stroke(paths[k]);
       }
 
-      // flecks of light: where the crowd crossing the edge is heaviest, a
-      // short shot fires away from the button and fades out
-      if (flecks > 0) {
-        ctx.lineWidth = 1;
-        for (let c = 0; c < COLS; c++) {
-          for (let side = 0; side < 2; side++) {
-            const d = side === 0 ? topD[c] : botD[c];
-            if (d < 1.4) continue;
-            const x = (c + 0.5) * colW;
-            const edge = side === 0 ? P : P + IH;
-            const dir = side === 0 ? -1 : 1;
-            const len = Math.min(40 * DPR, d * 5.5 * DPR) * flecks;
-            const a = Math.min(0.6, d * 0.075) * flecks;
-            const g = ctx.createLinearGradient(x, edge, x, edge + dir * len);
-            g.addColorStop(0, `rgba(255,255,255,${a.toFixed(3)})`);
-            g.addColorStop(0.35, `rgba(255,255,255,${(a * 0.5).toFixed(3)})`);
-            g.addColorStop(1, 'rgba(255,255,255,0)');
-            ctx.strokeStyle = g;
-            ctx.beginPath();
-            ctx.moveTo(x, edge);
-            ctx.lineTo(x, edge + dir * len);
-            ctx.stroke();
-          }
-        }
-      }
-
-      // grain over the face. With a transparent face it has to lay itself
-      // down as faint specks rather than nudging pixels that aren't there.
       if (grain > 0) {
         const im = ctx.getImageData(P, P, IW, IH);
         const d = im.data;
@@ -234,7 +222,7 @@ export default function ParticleButton({
     };
     raf = requestAnimationFrame(frame);
     return () => cancelAnimationFrame(raf);
-  }, [idle, active, width, height, font, points, grain, flecks]);
+  }, [idle, active, width, height, font, points, grain, tint, flashes]);
 
   // a mailto or a route wants to stay a real link - middle click, right
   // click and open-in-new-tab all break if it becomes a button

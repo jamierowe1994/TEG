@@ -175,12 +175,9 @@ export default function About() {
     return () => window.removeEventListener('keydown', onKey);
   }, []);
 
-  // the title block: the same motion on the knockout and its white twin,
-  // so the one fades into the other without moving
-  const titleMotion = {
-    animate: { scale: isOpen ? 0.55 : 1, y: isOpen ? '-4vh' : '0vh' },
-    transition: SWAP,
-  };
+  // the title block never moves: the knockout and its white twin sit on
+  // exactly the same pixels, so one simply fades into the other
+  const titleMotion = {};
   const titleWidth = 'w-[88vw] md:w-[60vw] max-w-[900px]';
 
   return (
@@ -222,6 +219,7 @@ export default function About() {
 
             {/* a veil so the word still reads once the film is the room */}
             <motion.span
+              initial={{ opacity: 0 }}
               animate={{ opacity: isOpen ? 1 : 0 }}
               transition={{ duration: 0.9, ease: EASE }}
               className="absolute inset-0 bg-gradient-to-b from-black/65 via-black/25 to-black/75"
@@ -272,6 +270,7 @@ export default function About() {
 
           {/* the title's white twin — takes over once the wall is gone */}
           <motion.div
+            initial={{ opacity: 0 }}
             animate={{ opacity: isOpen ? 1 : 0 }}
             transition={{ duration: 0.9, ease: EASE }}
             className="absolute inset-0 z-30 flex items-center justify-center pointer-events-none"
@@ -279,6 +278,7 @@ export default function About() {
             <motion.div {...titleMotion} className={titleWidth}>
               <TitleBlock chapter={chapter} fill="#E3D7FF" />
               <motion.p
+                initial={{ opacity: 0 }}
                 animate={{ opacity: isOpen ? 1 : 0 }}
                 transition={{ duration: 0.7, ease: EASE, delay: isOpen ? 0.7 : 0 }}
                 className="mt-8 font-script text-[#E3D7FF] text-[8vw] md:text-[4.4vw] text-center"

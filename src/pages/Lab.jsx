@@ -17,7 +17,7 @@ function Slider({ label, value, set, min, max, step }) {
 export default function Lab() {
   const [points, setPoints] = useState(4600);
   const [grain, setGrain] = useState(0);
-  const [flecks, setFlecks] = useState(0.4);
+  const [flashes, setFlashes] = useState(3);
 
   return (
     <div className="bg-black text-white min-h-screen px-6 md:px-12 py-16">
@@ -27,27 +27,27 @@ export default function Lab() {
       </h1>
       <p className="mt-4 max-w-2xl text-white/45 text-sm leading-relaxed">
         Hover it. The particles break formation, swirl, and whip back together
-        as &ldquo;Let&rsquo;s go&rdquo;. Come off it and they travel back. Jet
+        as &ldquo;Say hello&rdquo;. Come off it and they travel back. Jet
         black face, light grey rim so it holds its own against the background.
       </p>
 
       <div className="mt-14 flex flex-wrap items-center gap-14">
-        <ParticleButton points={points} grain={grain} flecks={flecks} />
-        <ParticleButton points={points} grain={grain} flecks={flecks} width={300} height={64}
+        <ParticleButton points={points} grain={grain} flashes={flashes} />
+        <ParticleButton points={points} grain={grain} flashes={flashes} width={300} height={64}
           font="600 30px Inter, system-ui, sans-serif" />
       </div>
 
       <div className="mt-14 flex flex-col gap-3">
         <Slider label="Particles" value={points} set={setPoints} min={400} max={9000} step={100} />
         <Slider label="Grain" value={grain} set={setGrain} min={0} max={0.35} step={0.01} />
-        <Slider label="Flecks" value={flecks} set={setFlecks} min={0} max={2.5} step={0.1} />
+        <Slider label="Flashes" value={flashes} set={setFlashes} min={0} max={6} step={1} />
       </div>
 
       <div className="mt-20 border-t border-white/10 pt-10">
         <p className="text-[0.6rem] tracking-[0.2em] uppercase text-white/30">In place</p>
         <div className="mt-5 flex items-center justify-between max-w-[1100px] rounded-2xl bg-black px-6 py-5">
           <span className="text-white/40 text-sm">nav, right hand side</span>
-          <ParticleButton points={points} grain={grain} flecks={flecks} />
+          <ParticleButton points={points} grain={grain} flashes={flashes} />
         </div>
       </div>
 
