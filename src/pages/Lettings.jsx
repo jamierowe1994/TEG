@@ -146,7 +146,7 @@ function Hero() {
   const radius = useTransform(scrollYProgress, [0, 0.7], ['0rem', '2.5rem']);
 
   return (
-    <section ref={ref} className="relative h-screen overflow-hidden bg-[#0d0c0f]">
+    <section ref={ref} className="relative h-screen overflow-hidden bg-[#111111]">
       <motion.div style={{ scale, borderRadius: radius }} className="absolute inset-0 overflow-hidden">
         <video
           src="/media/md-susan.mp4"
@@ -234,7 +234,7 @@ function Hero() {
 
 function Loves() {
   return (
-    <section className="bg-[#0d0c0f] py-24 md:py-32 px-6 md:px-12">
+    <section className="bg-[#111111] py-24 md:py-32 px-6 md:px-12">
       <div className="max-w-[1300px] mx-auto">
         <motion.h2
           initial={{ opacity: 0, y: 26 }}
@@ -257,7 +257,7 @@ function Loves() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: '-10%' }}
               transition={{ duration: 0.6, ease: EASE, delay: i * 0.08 }}
-              className="bg-[#0d0c0f] p-8 md:p-10 flex items-start gap-5"
+              className="bg-[#111111] p-8 md:p-10 flex items-start gap-5"
             >
               <span className="text-[0.62rem] tracking-[0.22em] mt-1.5 shrink-0" style={{ color: RED }}>
                 {String(i + 1).padStart(2, '0')}
@@ -313,9 +313,9 @@ function Who() {
 
 function FounderQuote() {
   return (
-    <section className="relative py-28 md:py-40 px-6 md:px-12 overflow-hidden bg-[#0d0c0f]">
+    <section className="relative py-28 md:py-40 px-6 md:px-12 overflow-hidden bg-[#111111]">
       <img src="/media/eass-18.jpg" alt="" className="absolute inset-0 w-full h-full object-cover grayscale opacity-25" />
-      <div className="absolute inset-0 bg-gradient-to-b from-[#0d0c0f] via-[#0d0c0f]/70 to-[#0d0c0f]" />
+      <div className="absolute inset-0 bg-gradient-to-b from-[#111111] via-[#111111]/70 to-[#111111]" />
       <motion.blockquote
         initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -387,7 +387,7 @@ function Steps() {
   const line = useTransform(scrollYProgress, [0, 1], ['0%', '100%']);
 
   return (
-    <section ref={ref} className="bg-[#0d0c0f] py-24 md:py-32 px-6 md:px-12">
+    <section ref={ref} className="bg-[#111111] py-24 md:py-32 px-6 md:px-12">
       <div className="max-w-[1000px] mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 26 }}
@@ -426,7 +426,7 @@ function Steps() {
             >
               <span
                 className="absolute -left-10 md:-left-16 top-1 w-4 h-4 md:w-6 md:h-6 rounded-full border-2 flex items-center justify-center"
-                style={{ borderColor: RED, backgroundColor: '#0d0c0f' }}
+                style={{ borderColor: RED, backgroundColor: '#111111' }}
               />
               <p className="text-[0.6rem] tracking-[0.22em] text-white/35">
                 Step {String(i + 1).padStart(2, '0')}
@@ -481,7 +481,7 @@ function GivesYou() {
 
 function Susan() {
   return (
-    <section className="bg-[#0d0c0f] py-24 md:py-32 px-6 md:px-12">
+    <section className="bg-[#111111] py-24 md:py-32 px-6 md:px-12">
       <div className="max-w-[1300px] mx-auto grid grid-cols-1 md:grid-cols-[0.85fr,1.15fr] gap-10 md:gap-16 items-center">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -589,7 +589,7 @@ function Voices() {
 function Faqs() {
   const [open, setOpen] = useState(0);
   return (
-    <section className="bg-[#0d0c0f] py-24 md:py-32 px-6 md:px-12">
+    <section className="bg-[#111111] py-24 md:py-32 px-6 md:px-12">
       <div className="max-w-[900px] mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 26 }}
@@ -674,9 +674,9 @@ function Values() {
 
 function Closer() {
   return (
-    <section className="relative py-28 md:py-40 px-6 md:px-12 overflow-hidden bg-[#0d0c0f]">
+    <section className="relative py-28 md:py-40 px-6 md:px-12 overflow-hidden bg-[#111111]">
       <img src="/media/tle-4.jpg" alt="" className="absolute inset-0 w-full h-full object-cover grayscale opacity-30" />
-      <div className="absolute inset-0 bg-gradient-to-b from-[#0d0c0f]/85 via-[#0d0c0f]/70 to-[#0d0c0f]" />
+      <div className="absolute inset-0 bg-gradient-to-b from-[#111111]/85 via-[#111111]/70 to-[#111111]" />
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -710,7 +710,7 @@ function Closer() {
 export default function Lettings() {
   useLenis();
   return (
-    <div className="bg-[#0d0c0f] text-white min-h-screen overflow-x-clip">
+    <div className="bg-[#111111] text-white min-h-screen overflow-x-clip">
       <ExperienceNav dark />
       <Hero />
       <Loves />

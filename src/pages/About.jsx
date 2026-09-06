@@ -130,7 +130,7 @@ export default function About() {
   const titleSize = Math.min(13, 90 / (chapter.title.length * 0.6));
 
   return (
-    <div className="bg-[#0d0c0f] text-white min-h-screen overflow-x-clip">
+    <div className="bg-[#111111] text-white min-h-screen overflow-x-clip">
       <ExperienceNav dark />
 
       <section ref={ref} style={{ height: `${CHAPTERS.length * 100}vh` }} className="relative">
@@ -261,7 +261,7 @@ export default function About() {
             {/* the opened frame shows through here */}
             <div className="h-screen pointer-events-none" />
 
-            <div className="relative bg-[#0d0c0f] px-5 md:px-10 pt-20 pb-24">
+            <div className="relative bg-[#111111] px-5 md:px-10 pt-20 pb-24">
               <div className="max-w-[900px] mx-auto space-y-5">
                 {chapter.body.map((para, i) => (
                   <p key={i} className="text-white/70 font-light text-base md:text-lg leading-relaxed">

@@ -26,7 +26,7 @@ export default function Home() {
   });
   // once the dark span starts it holds — the carousel rolls over the top
   // of the video wall, so there's no colour flip to see on the way out
-  const pageBg = useTransform(brandsProgress, [0.03, 0.11], ['#F1F1F1', '#0d0c0f']);
+  const pageBg = useTransform(brandsProgress, [0.03, 0.11], ['#F1F1F1', '#111111']);
 
   return (
     <motion.div style={{ backgroundColor: pageBg }} className="text-foreground min-h-screen overflow-x-clip">

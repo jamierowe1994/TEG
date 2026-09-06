@@ -109,7 +109,7 @@ const BRANDS = [
 
 function Hero() {
   return (
-    <section className="relative bg-[#0d0c0f] pt-[16vh]">
+    <section className="relative bg-[#111111] pt-[16vh]">
       <div className="px-6 text-center">
         <h1 className="font-black-display font-extrabold uppercase tracking-tight text-white text-[2.6rem] md:text-[4.6rem] leading-[0.98]">
           <span className="block overflow-hidden">
@@ -209,7 +209,7 @@ const REASONS = [
 
 function Reasons() {
   return (
-    <section className="relative bg-[#0d0c0f] pt-[14vh] pb-[4vh] px-6 md:px-16">
+    <section className="relative bg-[#111111] pt-[14vh] pb-[4vh] px-6 md:px-16">
       <div className="max-w-[1500px] mx-auto">
         <motion.h2
           initial={{ opacity: 0, y: 26 }}
@@ -261,7 +261,7 @@ function VisionLed() {
   });
 
   return (
-    <section className="relative bg-[#0d0c0f] min-h-screen flex flex-col justify-between
+    <section className="relative bg-[#111111] min-h-screen flex flex-col justify-between
       px-6 md:px-12 py-[12vh] overflow-hidden">
       {/* top left, and the small print opposite it */}
       <div className="flex items-start justify-between gap-8">
@@ -360,7 +360,7 @@ function BrandArc() {
   const origin = 50 * (1 - FRAME.zoom);
 
   return (
-    <section className="relative bg-[#0d0c0f] h-screen flex items-center overflow-hidden">
+    <section className="relative bg-[#111111] h-screen flex items-center overflow-hidden">
       <div
         className="flex w-full items-center px-[3.5vw] md:px-[4vw]"
         style={{ perspective: `${CURVE.depth}px`, transformStyle: 'preserve-3d' }}
@@ -453,7 +453,7 @@ function BrandArc() {
 
 function Closer() {
   return (
-    <section className="relative bg-[#0d0c0f] py-[18vh] px-6 md:px-16">
+    <section className="relative bg-[#111111] py-[18vh] px-6 md:px-16">
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -493,7 +493,7 @@ function Closer() {
 export default function Partnership() {
   useLenis();
   return (
-    <div className="bg-[#0d0c0f] text-white min-h-screen overflow-x-clip">
+    <div className="bg-[#111111] text-white min-h-screen overflow-x-clip">
       <ExperienceNav dark />
       <Hero />
       <Reasons />

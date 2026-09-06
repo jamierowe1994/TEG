@@ -11,7 +11,7 @@ import { motion, useScroll, useTransform, useInView, animate } from 'framer-moti
 const SLIDES = [
   {
     key: 'stock',
-    bg: '#0d0c0f',
+    bg: '#111111',
     fg: '#ffffff',
     accent: '#9565FF',
     pre: 'Our agents have helped sell over',

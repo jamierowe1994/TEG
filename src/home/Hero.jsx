@@ -65,7 +65,7 @@ export default function Hero() {
 
   if (reduced) {
     return (
-      <section className="relative h-screen overflow-hidden bg-[#0d0c0f] text-white">
+      <section className="relative h-screen overflow-hidden bg-[#111111] text-white">
         <video src={FILM} poster={POSTER} autoPlay muted loop playsInline className="absolute inset-0 w-full h-full object-cover grayscale" />
         <div className="absolute inset-0 bg-black/60" />
         <HeroCopy />
@@ -76,7 +76,7 @@ export default function Hero() {
   return (
     <section
       ref={sectionRef}
-      className="relative h-screen overflow-hidden bg-[#0d0c0f] text-white"
+      className="relative h-screen overflow-hidden bg-[#111111] text-white"
       onMouseMove={onMove}
       onMouseLeave={onLeave}
     >

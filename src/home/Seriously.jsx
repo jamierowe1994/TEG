@@ -9,7 +9,7 @@ import { X, ArrowLeft } from 'lucide-react';
 
 const COLS = 8;
 const ROWS = 3;
-const PAGE_BG = '#0d0c0f';
+const PAGE_BG = '#111111';
 
 const THINGS = [
   {
@@ -196,7 +196,7 @@ export default function Seriously() {
           viewport={{ once: true, margin: '-8%' }}
           transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
           ref={panelRef}
-          className="relative mx-3 md:mx-8 flex-1 rounded-lg overflow-hidden bg-[#0d0c0f]"
+          className="relative mx-3 md:mx-8 flex-1 rounded-lg overflow-hidden bg-[#111111]"
         >
           {THINGS.map((t) => (
             <video
