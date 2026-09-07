@@ -56,9 +56,10 @@ export default function SiteFooter({ dark = false }) {
         <div className="flex flex-col justify-between gap-10 sm:flex-row sm:gap-14">
           <div className="max-w-xs">
             <img src={t.logo} alt="The Experts Group" className="h-14 w-auto" />
-            <div className="mt-5 flex items-center gap-4">
+            {/* 40px: the assets are 120px, so this stays pixel-sharp up to 3x */}
+            <div className="mt-6 flex items-center gap-5">
               {SOCIAL_KEYS.map((key) => (
-                <SocialGif key={key} platform={key} tone={t.socialTone} size={22} />
+                <SocialGif key={key} platform={key} tone={t.socialTone} size={40} />
               ))}
             </div>
           </div>

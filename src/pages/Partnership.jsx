@@ -160,7 +160,7 @@ function Hero() {
         initial={{ opacity: 0, y: 60 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 1.2, ease: EASE, delay: 0.5 }}
-        className="mt-[7vh] px-6 md:px-28 lg:px-40"
+        className="mt-[7vh] px-6 md:px-16 lg:px-24 xl:px-32"
       >
         <VintageFrame
           src="/media/vintage.jpg"
@@ -171,7 +171,7 @@ function Hero() {
         />
       </motion.div>
 
-      <div className="flex items-center justify-between px-6 md:px-28 lg:px-40 pt-5">
+      <div className="flex items-center justify-between px-6 md:px-16 lg:px-24 xl:px-32 pt-5">
         <p className="text-[0.6rem] tracking-[0.25em] uppercase text-white/35">Partnership</p>
         <motion.span
           animate={{ y: [0, 6, 0] }}
@@ -197,7 +197,7 @@ function VisionLed() {
 
   return (
     <section className="relative bg-[#111111] min-h-screen flex flex-col justify-between
-      px-6 md:px-12 py-[12vh] overflow-hidden">
+      px-6 md:px-16 lg:px-24 xl:px-32 py-[12vh] overflow-hidden">
       {/* top left, and the small print opposite it */}
       <div className="flex items-start justify-between gap-8">
         <motion.h2
@@ -388,7 +388,7 @@ function BrandArc() {
 
 function Closer() {
   return (
-    <section className="relative bg-[#111111] py-[18vh] px-6 md:px-16">
+    <section className="relative bg-[#111111] py-[18vh] px-6 md:px-16 lg:px-24 xl:px-32">
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}

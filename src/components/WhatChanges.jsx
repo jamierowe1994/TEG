@@ -327,7 +327,7 @@ export default function WhatChanges() {
   }, [open]);
 
   return (
-    <section className="relative bg-[#111111] pt-[14vh] pb-[6vh] px-6 md:px-16">
+    <section className="relative bg-[#111111] pt-[14vh] pb-[6vh] px-6 md:px-16 lg:px-24 xl:px-32">
       <div className="max-w-[1500px] mx-auto">
         <motion.p
           initial={{ opacity: 0, y: 14 }}
