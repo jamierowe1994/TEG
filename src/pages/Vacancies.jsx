@@ -189,19 +189,10 @@ function Hero() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1.1, ease: EASE, delay: 0.1 }}
         >
-          <InkLine text="YOUR NEXT MOVE" fill={PURPLE} weight={800} stretch="normal" />
+          <InkLine text="YOUR NEXT MOVE" gradient={['#6A3BF7', PURPLE, '#C9B6FF', '#E3D7FF']} weight={800} stretch="normal" />
         </motion.div>
 
-        <div className="mt-6 md:mt-8 flex items-start justify-between gap-8">
-          <motion.img
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.9, ease: EASE, delay: 0.5 }}
-            src="/media/tre-1.jpg"
-            alt=""
-            className="w-20 h-20 md:w-32 md:h-32 rounded-2xl object-cover grayscale shrink-0"
-            style={{ objectPosition: '68% 32%' }}
-          />
+        <div className="mt-6 md:mt-8 flex items-start justify-end">
           <motion.p
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}

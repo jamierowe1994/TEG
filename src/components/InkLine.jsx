@@ -1,4 +1,4 @@
-import React, { useLayoutEffect, useState } from 'react';
+import React, { useLayoutEffect, useMemo, useState } from 'react';
 
 // One line of display type that fills its container edge to edge. The ink
 // of the letters is measured on a canvas (not the advance width, which
@@ -24,7 +24,10 @@ function measureInk(text, weight, stretch) {
   };
 }
 
-export default function InkLine({ text, fill = '#131313', weight = 900, stretch = 'normal', className = '' }) {
+// `gradient`: optional list of colour stops; the letters fill with a diagonal
+// sweep from the first to the last instead of a flat colour.
+export default function InkLine({ text, fill = '#131313', gradient, weight = 900, stretch = 'normal', className = '' }) {
+  const gid = useMemo(() => `ink-${Math.random().toString(36).slice(2, 8)}`, []);
   const [box, setBox] = useState(null);
   useLayoutEffect(() => {
     const measure = () => {
@@ -42,10 +45,19 @@ export default function InkLine({ text, fill = '#131313', weight = 900, stretch 
       className={`block w-full h-auto overflow-visible ${className}`}
       aria-hidden="true"
     >
+      {gradient && (
+        <defs>
+          <linearGradient id={gid} x1="0" y1="0.15" x2="1" y2="1">
+            {gradient.map((c, i) => (
+              <stop key={c} offset={`${(i / (gradient.length - 1)) * 100}%`} stopColor={c} />
+            ))}
+          </linearGradient>
+        </defs>
+      )}
       <text
         x="0"
         y={BASELINE}
-        fill={fill}
+        fill={gradient ? `url(#${gid})` : fill}
         className="font-black-display"
         style={{ fontSize: SIZE, fontWeight: weight, fontStretch: stretch }}
       >

@@ -68,7 +68,7 @@ function SideButton({ side, top, height }) {
   );
 }
 
-function Phone({ scale, width, sheetY, wordsOpacity, wordsY, wordsScale }) {
+function Phone({ scale, width, sheetY }) {
   return (
     <motion.div
       // drawn at 2x and scaled about its centre, so pull it up by the
@@ -158,25 +158,10 @@ function Phone({ scale, width, sheetY, wordsOpacity, wordsY, wordsScale }) {
           <div className="absolute bottom-[14px] left-1/2 -translate-x-1/2 w-[220px] h-[8px] rounded-full bg-white/85" />
         </div>
 
-        {/* the sheet: rises over the reel as the phone grows, and carries the
-            next page's words, which zoom up once the sheet has landed */}
-        <motion.div
-          style={{ y: sheetY }}
-          className="absolute inset-0 rounded-t-[72px] bg-white flex items-center justify-center px-16 text-center"
-        >
-          <motion.div style={{ opacity: wordsOpacity, y: wordsY, scale: wordsScale }} className="w-[460px] shrink-0">
-            <p className="font-black-display font-extrabold uppercase tracking-tight text-[#131313] text-[58px] leading-[0.95] whitespace-nowrap">
-              Your name
-              <br />
-              above
-              <br />
-              the door.
-            </p>
-            <p className="mt-6 text-[22px] leading-[1.5] text-[#131313]/55">
-              Nine brands, one group behind every one of them. Pick the one that fits the work you already do.
-            </p>
-          </motion.div>
-        </motion.div>
+        {/* the sheet: rises over the reel as the phone grows. The words that
+            ride on it are drawn outside the phone, in real pixels, so they
+            never blur as the phone scales */}
+        <motion.div style={{ y: sheetY }} className="absolute inset-0 rounded-t-[72px] bg-white" />
       </div>
     </motion.div>
   );
@@ -215,10 +200,36 @@ function ZoomIntro() {
   const scale = useTransform(p, [0.42, 0.62], [0.5, tall]);
   const wordsOpacity = useTransform(p, [0.48, 0.62], [0, 1]);
   const wordsY = useTransform(p, [0.46, 0.66], [80, 0]);
+  // where the sheet is, as a fraction of the screen still to climb
+  const sheetFrac = useTransform(p, [0.42, 0.62], [1, 0]);
   // 4. a zoom into the words, the phone holding its shape
   const wordsScale = useTransform(p, [0.62, 0.7, 0.86], [0.9, 1, 1.22]);
   // 5. then outward: the screen widens until the phone's edges leave the page
   const width = useTransform(p, [0.7, 0.86], [PHONE_W, wide]);
+  // the crisp words: clipped to the screen's rectangle, riding the sheet,
+  // sized in real pixels from the phone's scale so they are never rasterised
+  // small. Everything derives straight from the scroll progress, one input each.
+  const SCREEN_H = PHONE_H - 44;
+  const at = (v, ks, vs) => {
+    if (v <= ks[0]) return vs[0];
+    for (let i = 1; i < ks.length; i++) {
+      if (v <= ks[i]) return vs[i - 1] + ((v - ks[i - 1]) / (ks[i] - ks[i - 1])) * (vs[i] - vs[i - 1]);
+    }
+    return vs[vs.length - 1];
+  };
+  const scaleAt = (v) => at(v, [0.42, 0.62], [0.5, tall]);
+  const wsAt = (v) => at(v, [0.62, 0.7, 0.86], [0.9, 1, 1.22]);
+  const widthAt = (v) => at(v, [0.7, 0.86], [PHONE_W, wide]);
+  const sheetAt = (v) => at(v, [0.42, 0.62], [1, 0]);
+  const wordsYAt = (v) => at(v, [0.46, 0.66], [80, 0]);
+  const clipW = useTransform(p, (v) => (widthAt(v) - 44) * scaleAt(v));
+  const clipH = useTransform(p, (v) => SCREEN_H * scaleAt(v));
+  const clipR = useTransform(p, (v) => 76 * scaleAt(v));
+  const overlayY = useTransform(p, (v) => (sheetAt(v) * SCREEN_H + wordsYAt(v)) * scaleAt(v));
+  const titleSize = useTransform(p, (v) => `${58 * scaleAt(v) * wsAt(v)}px`);
+  const subSize = useTransform(p, (v) => `${22 * scaleAt(v) * wsAt(v)}px`);
+  const blockW = useTransform(p, (v) => 460 * scaleAt(v) * wsAt(v));
+  const gap = useTransform(p, (v) => `${24 * scaleAt(v) * wsAt(v)}px`);
   const room = useTransform(p, [0.84, 0.9], [INK, '#FFFFFF']);
   const hint = useTransform(p, [0, 0.05, 0.26, 0.32], [0, 1, 1, 0]);
 
@@ -245,18 +256,33 @@ function ZoomIntro() {
           <div className="relative h-full max-w-[1200px] mx-auto">
             <motion.div style={{ y: phoneY }} className="absolute inset-0 flex items-start justify-center">
               <motion.div style={{ y: centreShift }}>
-                <Phone
-                  scale={scale}
-                  width={width}
-                  sheetY={sheetY}
-                  wordsOpacity={wordsOpacity}
-                  wordsY={wordsY}
-                  wordsScale={wordsScale}
-                />
+                <Phone scale={scale} width={width} sheetY={sheetY} />
               </motion.div>
             </motion.div>
           </div>
         </div>
+
+        {/* the words, outside the phone: clipped to its screen and riding the sheet */}
+        <motion.div
+          style={{ width: clipW, height: clipH, borderRadius: clipR }}
+          className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 overflow-hidden flex items-center justify-center pointer-events-none"
+        >
+          <motion.div style={{ y: overlayY, opacity: wordsOpacity, width: blockW }} className="text-center shrink-0">
+            <motion.p
+              style={{ fontSize: titleSize }}
+              className="font-black-display font-extrabold uppercase tracking-tight text-[#131313] leading-[0.95] whitespace-nowrap"
+            >
+              Your name
+              <br />
+              above
+              <br />
+              the door.
+            </motion.p>
+            <motion.p style={{ fontSize: subSize, marginTop: gap }} className="leading-[1.5] text-[#131313]/55">
+              Nine brands, one group behind every one of them. Pick the one that fits the work you already do.
+            </motion.p>
+          </motion.div>
+        </motion.div>
 
         <motion.p
           style={{ opacity: hint }}
@@ -282,27 +308,9 @@ function BrandFloat({ brands }) {
   brands.forEach((b, i) => lanes[i % 3].push(b));
 
   return (
-    <section ref={ref} className={`relative z-10 ${PAD} pt-[6vh] pb-[18vh] -mt-[34vh]`} style={{ backgroundColor: '#FFFFFF', color: '#131313' }}>
+    <section ref={ref} className={`relative z-10 ${PAD} pt-[10vh] pb-[18vh] -mt-[30vh]`} style={{ backgroundColor: '#FFFFFF', color: '#131313' }}>
       <div className="max-w-[1200px] mx-auto">
-        <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-10%' }}
-          transition={{ duration: 0.9, ease: EASE }}
-          className="flex flex-col md:flex-row md:items-end md:justify-between gap-6"
-        >
-          <h2 className="font-black-display font-extrabold uppercase tracking-tight text-[2.4rem] md:text-[4.4rem] leading-[0.95]">
-            Nine brands.
-            <br />
-            One group.
-          </h2>
-          <p className="text-sm md:text-base text-[#131313]/60 max-w-[26em] leading-[1.6] md:text-right">
-            Pick the brand that fits the work you already do. Each one has its
-            own page, its own people, and its own way of doing things.
-          </p>
-        </motion.div>
-
-        <div className="mt-14 md:mt-20 grid grid-cols-1 md:grid-cols-3 gap-5 md:gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-5 md:gap-6">
           {lanes.map((lane, c) => (
             <motion.div key={c} style={{ y: cols[c] }} className="space-y-5 md:space-y-6 will-change-transform">
               {lane.map((b) => (
