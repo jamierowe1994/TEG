@@ -8,6 +8,7 @@ import useLenis from '../lib/useLenis';
 import { EASE } from '../experience/motion';
 import VintageFrame from '../components/VintageFrame';
 import WhatChanges from '../components/WhatChanges';
+import BrandZoom from '../components/BrandZoom';
 
 // Partnership — a dark, open room. One line at the top, one photograph, then
 // each brand gets its own space to be itself. No walls of copy: the job here
@@ -433,7 +434,7 @@ export default function Partnership() {
       <Hero />
       <WhatChanges />
       <VisionLed />
-      <BrandArc />
+      <BrandZoom brands={BRANDS} />
       <Closer />
       <SiteFooter dark />
     </div>
