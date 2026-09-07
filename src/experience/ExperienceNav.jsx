@@ -116,10 +116,7 @@ export default function ExperienceNav({ dark = false }) {
         initial={{ y: -64, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.9, ease: EASE, delay: 0.15 }}
-        // overflow-x is clipped so the CTA's bloom can't push the page wider;
-        // clip (not hidden) leaves the vertical alone, so the icon tooltips
-        // still hang below the bar
-        className="absolute top-0 inset-x-0 z-50 bg-transparent overflow-x-clip"
+        className="absolute top-0 inset-x-0 z-50 bg-transparent"
       >
         <nav className="mx-auto max-w-[1480px] px-5 md:px-12 h-24 md:h-28 flex items-center justify-between">
           <Link to="/" aria-label="The Experts Group — home" className="shrink-0">

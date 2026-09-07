@@ -186,6 +186,13 @@
   .animate-marquee { animation: none; }
   html { scroll-behavior: auto; }
 }
+/* The nav CTA's bloom spills past the right edge of the screen. Clipping
+   it on the header drew a hard line where the light hit the header's edge,
+   so the clip lives on the root instead - the only edge where a cut can't
+   be seen is the edge of the viewport. clip, not hidden: vertical scrolling
+   is untouched and nothing becomes a scroll container. */
+html { overflow-x: clip; }
+
 /* tiny stars on the glow button */
 @keyframes twinkle {
   0%, 100% { transform: scale(1); filter: brightness(1); }
