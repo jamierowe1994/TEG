@@ -724,7 +724,7 @@ export default function Lettings() {
       <Faqs />
       <Values />
       <Closer />
-      <SiteFooter />
+      <SiteFooter dark />
     </div>
   );
 }

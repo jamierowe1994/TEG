@@ -435,7 +435,7 @@ export default function Partnership() {
       <VisionLed />
       <BrandArc />
       <Closer />
-      <SiteFooter />
+      <SiteFooter dark />
     </div>
   );
 }

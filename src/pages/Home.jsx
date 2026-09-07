@@ -39,7 +39,7 @@ export default function Home() {
       </div>
       <BrandCarousel />
       <FinalCta />
-      <SiteFooter />
+      <SiteFooter dark />
     </motion.div>
   );
 }

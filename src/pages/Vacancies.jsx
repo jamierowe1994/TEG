@@ -168,7 +168,7 @@ function Hand() {
       initial={{ opacity: 0, y: 80 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 1.2, ease: EASE, delay: 0.45 }}
-      className="absolute left-1/2 bottom-0 z-10 w-[70vw] sm:w-[44vw] md:w-[30vw] max-w-[500px] pointer-events-none"
+      className="absolute left-1/2 -bottom-[6vw] md:-bottom-[3.5vw] z-10 w-[70vw] sm:w-[44vw] md:w-[30vw] max-w-[500px] pointer-events-none"
       style={{ x: '-50%' }}
     >
       <div className="relative">
@@ -306,7 +306,7 @@ export default function Vacancies() {
     <div className="min-h-screen overflow-x-clip bg-[#111111]">
       <ExperienceNav dark />
       <Hero />
-      <SiteFooter />
+      <SiteFooter dark />
     </div>
   );
 }
