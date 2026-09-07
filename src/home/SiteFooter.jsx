@@ -1,13 +1,12 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import ICONS, { SocialIcon } from './SocialIcons';
+import SocialGif, { SOCIAL_KEYS } from './SocialGif';
 
 // The group footer — ported from the TEG Paid Ads platform: rounded card on
 // white, logo + socials in the brand purple, link columns, legal row, and
 // the giant cropped wordmark running off the bottom edge.
 // Social hrefs are placeholders until marketing supplies the real URLs.
-
-const SOCIALS = ['Meta / Facebook', 'Instagram', 'LinkedIn', 'YouTube', 'TikTok'];
+// Facebook, Instagram and LinkedIn only - YouTube and TikTok dropped.
 
 function backToTop() {
   if (window.__lenis) window.__lenis.scrollTo(0);
@@ -29,7 +28,7 @@ export default function SiteFooter({ dark = false }) {
         rule: 'border-white/10',
         legal: 'text-white/35',
         logo: '/teg-logo-white.png',
-        social: 'text-[#9565FF]',
+        socialTone: 'white',
       }
     : {
         page: 'bg-background',
@@ -41,7 +40,7 @@ export default function SiteFooter({ dark = false }) {
         rule: 'border-black/10',
         legal: 'text-black/35',
         logo: '/teg-logo.png',
-        social: 'text-[#4D1D81]',
+        socialTone: 'black',
       };
 
   return (
@@ -57,20 +56,10 @@ export default function SiteFooter({ dark = false }) {
         <div className="flex flex-col justify-between gap-10 sm:flex-row sm:gap-14">
           <div className="max-w-xs">
             <img src={t.logo} alt="The Experts Group" className="h-14 w-auto" />
-            <div className={`mt-5 flex items-center gap-4 ${t.social}`}>
-              {SOCIALS.map((name) => {
-                const icon = ICONS.find((i) => i.name === name);
-                return (
-                  <a
-                    key={name}
-                    href="#"
-                    aria-label={name}
-                    className="transition hover:-translate-y-0.5 hover:text-[#9565FF]"
-                  >
-                    <SocialIcon icon={icon} className="h-5 w-5" />
-                  </a>
-                );
-              })}
+            <div className="mt-5 flex items-center gap-4">
+              {SOCIAL_KEYS.map((key) => (
+                <SocialGif key={key} platform={key} tone={t.socialTone} size={22} />
+              ))}
             </div>
           </div>
           <div className="flex gap-12 pr-0 sm:gap-16 sm:pr-20">

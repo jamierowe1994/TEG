@@ -244,58 +244,122 @@ function Hero() {
   );
 }
 
+// "OTE £60,000 to £100,000+" → { from: '£60k', to: '£100k+' }
+function ote(salary) {
+  const nums = salary.match(/£[\d,]+\+?/g) || [];
+  const k = (n) => n.replace(/,000/, 'k');
+  return { from: k(nums[0] || ''), to: k(nums[1] || nums[0] || '') };
+}
+
+// the row floods with the brand colour on hover, so the ink has to know
+// whether that colour is light or dark
+function inkFor(hex) {
+  const n = parseInt(hex.slice(1), 16);
+  const [r, g, b] = [n >> 16, (n >> 8) & 255, n & 255].map((c) => c / 255);
+  const lum = 0.2126 * r + 0.7152 * g + 0.0722 * b;
+  return lum > 0.5 ? '#131313' : '#FFFFFF';
+}
+
+// the opening question of each role, used as its hook
+const hook = (v) => v.intro.split('?')[0] + '?';
+
+function RoleRow({ v, i }) {
+  const pay = ote(v.salary);
+  return (
+    <motion.li
+      initial={{ opacity: 0, y: 18 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: '-8%' }}
+      transition={{ duration: 0.7, ease: EASE, delay: (i % 3) * 0.06 }}
+      className="border-t border-[#131313]/12"
+    >
+      <Link
+        to={`/vacancies/${v.id}`}
+        className="group relative block -mx-4 md:-mx-8 my-1.5 px-4 md:px-8 py-7 md:py-9 rounded-[1.4rem] md:rounded-[1.8rem]
+          transition-colors duration-500 hover:bg-[var(--acc)] hover:text-[var(--ink)]"
+        style={{ '--acc': v.accent, '--ink': inkFor(v.accent) }}
+      >
+        <div className="grid grid-cols-12 gap-x-4 md:gap-x-6 items-start">
+          {/* number and brand */}
+          <div className="col-span-12 md:col-span-3 flex md:flex-col gap-3 md:gap-2 items-baseline md:items-start">
+            <span className="font-black-display font-extrabold text-[0.8rem] tracking-[0.02em] opacity-40">
+              {String(i + 1).padStart(2, '0')}
+            </span>
+            <span className="flex items-center gap-2.5 text-[0.62rem] tracking-[0.18em] uppercase opacity-60">
+              <span
+                className="w-2 h-2 rounded-full shrink-0 transition-colors group-hover:bg-[var(--ink)]"
+                style={{ backgroundColor: v.accent }}
+              />
+              {v.brand}
+            </span>
+          </div>
+
+          {/* the role and its question */}
+          <div className="col-span-12 md:col-span-6 mt-3 md:mt-0">
+            <h3 className="font-sans font-normal tracking-[-0.025em] text-[1.6rem] md:text-[2.1rem] leading-[1.08]">
+              {v.role}
+            </h3>
+            <p className="mt-3 text-[0.9rem] md:text-[0.95rem] font-light leading-[1.6] opacity-60 max-w-[34em]">
+              {hook(v)}
+            </p>
+          </div>
+
+          {/* what it pays, big */}
+          <div className="col-span-9 md:col-span-2 mt-5 md:mt-0 md:text-right">
+            <span className="block font-black-display font-extrabold tracking-[-0.03em] text-[2rem] md:text-[2.3rem] leading-none">
+              {pay.to}
+            </span>
+            <span className="mt-1.5 block text-[0.62rem] tracking-[0.16em] uppercase opacity-55">
+              OTE from {pay.from}
+            </span>
+          </div>
+
+          <div className="col-span-3 md:col-span-1 mt-5 md:mt-0 flex justify-end">
+            <span
+              className="grid place-items-center w-11 h-11 rounded-full border border-current/25
+                transition-all duration-500 group-hover:bg-[var(--ink)] group-hover:text-[var(--acc)] group-hover:border-transparent
+                group-hover:rotate-45"
+            >
+              <ArrowUpRight size={18} />
+            </span>
+          </div>
+        </div>
+      </Link>
+    </motion.li>
+  );
+}
+
 function Roles() {
   return (
     <div className="px-6 md:px-14 pb-14 md:pb-20">
-      <div className="flex items-end justify-between border-b border-[#131313]/15 pb-5">
+      <div className="flex items-end justify-between pb-4">
         <p className="type-label" style={{ color: PURPLE }}>Open roles</p>
         <p className="text-[0.62rem] tracking-[0.2em] uppercase text-[#131313]/45">
-          {VACANCIES.length} partner roles
+          {VACANCIES.length} partner roles, nationwide
         </p>
       </div>
 
-      <ul>
+      <ul className="border-b border-[#131313]/12">
         {VACANCIES.map((v, i) => (
-          <motion.li
-            key={v.id}
-            initial={{ opacity: 0, y: 18 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: '-8%' }}
-            transition={{ duration: 0.7, ease: EASE, delay: (i % 3) * 0.06 }}
-            className="border-b border-[#131313]/15"
-          >
-            <Link
-              to={`/vacancies/${v.id}`}
-              className="group flex flex-col md:flex-row md:items-center gap-y-2 md:gap-x-6 py-7 md:py-9"
-            >
-              <span className="md:w-[24%] shrink-0 flex items-center gap-3 text-[0.62rem] tracking-[0.18em] uppercase text-[#131313]/55">
-                <span className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: v.accent }} />
-                {v.brand}
-              </span>
-              <span className="md:flex-1 min-w-0 font-sans font-normal tracking-[-0.02em] text-[1.35rem] md:text-[1.5rem] lg:text-[1.9rem] leading-[1.15]">
-                {v.role}
-              </span>
-              <span className="shrink-0 text-sm text-[#131313]/60 whitespace-nowrap">
-                {v.salary}
-              </span>
-              <span className="hidden md:grid shrink-0 place-items-center w-10 h-10 rounded-full border border-[#131313]/20
-                transition-colors group-hover:bg-[#131313] group-hover:text-white group-hover:border-[#131313]">
-                <ArrowUpRight size={16} />
-              </span>
-            </Link>
-          </motion.li>
+          <RoleRow key={v.id} v={v} i={i} />
         ))}
       </ul>
 
-      <p className="mt-10 text-sm text-[#131313]/55 max-w-[38em] leading-[1.7]">
-        Every role here is a partner role: you run your own business under the
-        brand, and the group handles the technology, compliance, marketing and
-        back-office. Not sure which brand fits? Write to{' '}
-        <a href="mailto:hello@theexpertsgroup.co.uk" className="underline underline-offset-4">
-          hello@theexpertsgroup.co.uk
-        </a>{' '}
-        and we will point you at the right person.
-      </p>
+      <div className="mt-12 md:mt-16 grid grid-cols-12 gap-6 items-end">
+        <p className="col-span-12 md:col-span-7 text-sm text-[#131313]/55 leading-[1.7]">
+          Every role here is a partner role: you run your own business under
+          the brand, and the group handles the technology, compliance,
+          marketing and back-office.
+        </p>
+        <div className="col-span-12 md:col-span-5 md:text-right">
+          <a
+            href="mailto:hello@theexpertsgroup.co.uk?subject=Which%20brand%20fits%20me"
+            className="inline-flex items-center gap-2 rounded-full bg-[#131313] text-white px-6 py-3.5 text-sm font-semibold hover:opacity-85 transition-opacity"
+          >
+            Not sure which brand fits? Ask us <ArrowUpRight size={15} />
+          </a>
+        </div>
+      </div>
     </div>
   );
 }
