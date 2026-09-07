@@ -17,7 +17,7 @@ import { EASE } from './motion';
 const LINKS = [
   { label: 'Partnership', to: '/partnership', Icon: Handshake },
   { label: 'About', to: '/about', Icon: BookOpen },
-  { label: 'Vacancies', to: '/vacancies', Icon: Briefcase, soon: true },
+  { label: 'Vacancies', to: '/vacancies', Icon: Briefcase },
 ];
 
 function IconNav({ dark }) {

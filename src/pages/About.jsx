@@ -1,9 +1,10 @@
-import React, { useLayoutEffect, useState } from 'react';
+import React from 'react';
 import { motion } from 'framer-motion';
 import ExperienceNav from '../experience/ExperienceNav';
 import SiteFooter from '../home/SiteFooter';
 import useLenis from '../lib/useLenis';
 import { EASE } from '../experience/motion';
+import InkLine from '../components/InkLine';
 
 // About — a light, monochrome editorial page. One enormous condensed line
 // across the top with a black-and-white film barely showing through the
@@ -52,51 +53,6 @@ const CHAPTERS = [
   },
 ];
 
-// One line of condensed type that fills its container edge to edge. The
-// ink of the letters is measured (not the advance width, which carries the
-// glyphs' side bearings) so the first and last letter sit flush with the
-// page margin, exactly where the photographs and labels start and stop.
-const DISPLAY_FONT = '900 extra-condensed 200px Archivo';
-
-function measureInk(text) {
-  const ctx = document.createElement('canvas').getContext('2d');
-  ctx.font = DISPLAY_FONT;
-  if ('fontStretch' in ctx) ctx.fontStretch = 'extra-condensed';
-  const m = ctx.measureText(text);
-  if (!m.actualBoundingBoxRight) return null;
-  return {
-    x: -m.actualBoundingBoxLeft,
-    w: m.actualBoundingBoxLeft + m.actualBoundingBoxRight,
-    y: 150 - m.actualBoundingBoxAscent,
-    h: m.actualBoundingBoxAscent + m.actualBoundingBoxDescent,
-  };
-}
-
-function Display({ text, fill = INK, className = '' }) {
-  const [box, setBox] = useState(null);
-  useLayoutEffect(() => {
-    const measure = () => {
-      const b = measureInk(text);
-      if (b) setBox(b);
-    };
-    measure();
-    document.fonts?.load(DISPLAY_FONT).then(measure);
-    document.fonts?.ready.then(measure);
-  }, [text]);
-  const b = box || { x: 0, y: 6, w: 1000, h: 144 };
-  return (
-    <svg
-      viewBox={`${b.x} ${b.y} ${b.w} ${b.h}`}
-      className={`block w-full h-auto overflow-visible ${className}`}
-      aria-hidden="true"
-    >
-      <text x="0" y="150" fill={fill} className="font-black-display" style={{ fontSize: 200, ...CONDENSED }}>
-        {text}
-      </text>
-    </svg>
-  );
-}
-
 // The title with the film inside it. Screen blends the light wall over the
 // film so it only survives inside the black letters; darken then pins the
 // wall to the exact canvas grey.
@@ -121,7 +77,7 @@ function Hero() {
           style={{ filter: 'grayscale(1) brightness(0.34) contrast(1.15)' }}
         />
         <div className="relative" style={{ backgroundColor: CANVAS, mixBlendMode: 'screen' }}>
-          <Display text="OUR STORY" />
+          <InkLine text="OUR STORY" fill={INK} stretch="extra-condensed" />
         </div>
         <div className="absolute -inset-px pointer-events-none" style={{ backgroundColor: CANVAS, mixBlendMode: 'darken' }} />
       </motion.div>
@@ -196,7 +152,7 @@ function Chapter({ chapter, index }) {
 
       {chapter.since && (
         <motion.div {...rise(0.1)} className="mt-[-2vw] md:mt-[-6vw] md:ml-[22%] relative -z-0 pointer-events-none">
-          <Display text={chapter.since} fill={FADE} />
+          <InkLine text={chapter.since} fill={FADE} stretch="extra-condensed" />
         </motion.div>
       )}
     </section>
