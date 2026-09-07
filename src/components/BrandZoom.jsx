@@ -1,7 +1,7 @@
-import React, { useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, useScroll, useTransform } from 'framer-motion';
-import { ArrowUpRight } from 'lucide-react';
+import { ArrowUpRight, Heart, MessageCircle, Bookmark, Send, Wifi, Signal, BatteryFull, Home, Search, PlusSquare, Clapperboard, UserRound, Camera } from 'lucide-react';
 import { EASE } from '../experience/motion';
 
 // Find your brand — a phone rises into the room with what the group
@@ -33,9 +33,7 @@ function Panel({ title, items, tone, style, align = 'left' }) {
   return (
     <motion.div
       style={style}
-      className={`absolute top-1/2 w-[300px] rounded-[1.6rem] border border-white/10 bg-white/[0.05] p-6 ${
-        align === 'left' ? 'left-0' : 'right-0'
-      }`}
+      className={`absolute top-1/2 w-[300px] ${align === 'left' ? 'left-0 lg:-left-[6vw]' : 'right-0 lg:-right-[6vw] text-right'}`}
     >
       <p className="text-[0.62rem] tracking-[0.22em] uppercase text-white/55">{title}</p>
       <div className={`mt-4 flex flex-wrap gap-2 ${align === 'right' ? 'justify-end' : ''}`}>
@@ -47,51 +45,185 @@ function Panel({ title, items, tone, style, align = 'left' }) {
   );
 }
 
-// the phone: a silver frame, a thin black bezel, and a white screen that
-// says one thing. It only ever scales.
-function Phone({ scale }) {
+// The phone is drawn at twice its resting size and scaled down to rest, so
+// there is real detail to enlarge when it zooms. Silver body with antenna
+// lines and buttons, a thin black bezel, the Dynamic Island, a status bar,
+// and a film playing behind a reel's worth of buttons.
+const PHONE_W = 600;
+const PHONE_H = 1240;
+
+function SideButton({ side, top, height }) {
+  return (
+    <div
+      className="absolute w-[7px] rounded-[3px]"
+      style={{
+        [side]: -6,
+        top,
+        height,
+        background: side === 'left'
+          ? 'linear-gradient(90deg, #8f8f96, #d8d8dc)'
+          : 'linear-gradient(90deg, #d8d8dc, #8f8f96)',
+      }}
+    />
+  );
+}
+
+function Phone({ scale, width, sheetY, wordsOpacity, wordsY, wordsScale }) {
   return (
     <motion.div
-      style={{ scale }}
-      className="relative w-[272px] h-[560px] md:w-[300px] md:h-[620px] origin-center will-change-transform"
+      // drawn at 2x and scaled about its centre, so pull it up by the
+      // quarter-height the centre origin would otherwise push it down
+      style={{ scale, width, height: PHONE_H, marginTop: -PHONE_H / 4 }}
+      className="relative origin-center"
     >
+      {/* the body */}
       <div
-        className="absolute inset-0 rounded-[46px] shadow-[0_40px_120px_-30px_rgba(0,0,0,0.85)]"
-        style={{ background: 'linear-gradient(160deg, #f2f2f4 0%, #c9c9ce 45%, #a9a9af 100%)' }}
+        className="absolute inset-0 rounded-[96px] shadow-[0_60px_160px_-40px_rgba(0,0,0,0.9)]"
+        style={{ background: 'linear-gradient(160deg, #f4f4f6 0%, #cfcfd4 40%, #a6a6ad 100%)' }}
       />
-      <div className="absolute inset-[4px] rounded-[42px] bg-[#0b0b0c]" />
-      <div className="absolute inset-[10px] rounded-[36px] overflow-hidden bg-white flex items-center justify-center">
-        <p className="font-black-display font-extrabold uppercase tracking-tight text-[#131313] text-[18px] md:text-[20px] leading-[0.95] text-center">
-          The
-          <br />
-          Experts
-          <br />
-          Group
-        </p>
+      {/* antenna lines in the band */}
+      {[[0, 150], [0, 1060], [PHONE_W - 5, 150], [PHONE_W - 5, 1060]].map(([x, y], i) => (
+        <span key={i} className="absolute w-[5px] h-[6px] bg-[#6f6f76]/60" style={{ left: x, top: y }} />
+      ))}
+      {[[130, 0], [430, 0], [130, PHONE_H - 5], [430, PHONE_H - 5]].map(([x, y], i) => (
+        <span key={i} className="absolute w-[6px] h-[5px] bg-[#6f6f76]/60" style={{ left: x, top: y }} />
+      ))}
+      <SideButton side="left" top={210} height={44} />
+      <SideButton side="left" top={300} height={92} />
+      <SideButton side="left" top={420} height={92} />
+      <SideButton side="right" top={330} height={150} />
+
+      {/* bezel and screen */}
+      <div className="absolute inset-[9px] rounded-[88px] bg-[#0a0a0b]" />
+      <div className="absolute inset-[22px] rounded-[76px] overflow-hidden bg-black text-white">
+        <video
+          src="/media/film-awards-reel.mp4"
+          autoPlay
+          muted
+          loop
+          playsInline
+          className="absolute inset-0 w-full h-full object-cover"
+        />
+        <div className="absolute inset-x-0 bottom-0 h-[46%] bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
+        <div className="absolute inset-x-0 top-0 h-[18%] bg-gradient-to-b from-black/55 to-transparent" />
+
+        {/* the island and the status bar */}
+        <div className="absolute top-[26px] left-1/2 -translate-x-1/2 w-[186px] h-[54px] rounded-full bg-black" />
+        <div className="absolute top-[34px] left-[56px] text-[30px] font-semibold tracking-[-0.02em]">9:41</div>
+        <div className="absolute top-[36px] right-[52px] flex items-center gap-2">
+          <Signal size={30} strokeWidth={2.4} />
+          <Wifi size={30} strokeWidth={2.4} />
+          <BatteryFull size={34} strokeWidth={2.2} />
+        </div>
+
+        {/* the reel's chrome */}
+        <div className="absolute top-[118px] inset-x-[46px] flex items-center justify-between">
+          <span className="text-[38px] font-semibold tracking-[-0.02em]">Reels</span>
+          <Camera size={40} strokeWidth={2} />
+        </div>
+
+        <div className="absolute right-[36px] bottom-[250px] flex flex-col items-center gap-[38px]">
+          {[[Heart, '12.4k'], [MessageCircle, '318'], [Bookmark, ''], [Send, '']].map(([Icon, n]) => (
+            <div key={n || Icon.displayName} className="flex flex-col items-center gap-1 drop-shadow-[0_2px_8px_rgba(0,0,0,0.6)]">
+              <Icon size={54} strokeWidth={2} />
+              {n && <span className="text-[22px] font-medium">{n}</span>}
+            </div>
+          ))}
+        </div>
+
+        <div className="absolute left-[44px] right-[140px] bottom-[232px]">
+          <div className="flex items-center gap-4">
+            <span className="w-[68px] h-[68px] shrink-0 rounded-full grid place-items-center text-[19px] tracking-[0.02em] font-black-display font-extrabold" style={{ backgroundColor: PURPLE }}>
+              TEG
+            </span>
+            <span className="text-[26px] font-semibold">theexpertsgroup</span>
+            <span className="rounded-lg border border-white/60 px-4 py-1.5 text-[22px] font-medium">Follow</span>
+          </div>
+          <p className="mt-4 text-[24px] leading-[1.35] text-white/90">
+            Success Day 2026. Nine brands, one room, and everyone running their own business.
+          </p>
+          <p className="mt-3 text-[20px] text-white/70">
+            <span className="mr-2">&#9835;</span>The Experts Group · Original audio
+          </p>
+        </div>
+
+        <div className="absolute inset-x-0 bottom-0 h-[150px] border-t border-white/15 bg-black/75">
+          <div className="flex items-center justify-around px-6 pt-8 text-white/90">
+            <Home size={42} strokeWidth={2} />
+            <Search size={42} strokeWidth={2} />
+            <PlusSquare size={42} strokeWidth={2} />
+            <Clapperboard size={42} strokeWidth={2} className="text-white" />
+            <UserRound size={42} strokeWidth={2} />
+          </div>
+          <div className="absolute bottom-[14px] left-1/2 -translate-x-1/2 w-[220px] h-[8px] rounded-full bg-white/85" />
+        </div>
+
+        {/* the sheet: rises over the reel as the phone grows, and carries the
+            next page's words, which zoom up once the sheet has landed */}
+        <motion.div
+          style={{ y: sheetY }}
+          className="absolute inset-0 rounded-t-[72px] bg-white flex items-center justify-center px-16 text-center"
+        >
+          <motion.div style={{ opacity: wordsOpacity, y: wordsY, scale: wordsScale }} className="w-[460px] shrink-0">
+            <p className="font-black-display font-extrabold uppercase tracking-tight text-[#131313] text-[58px] leading-[0.95] whitespace-nowrap">
+              Your name
+              <br />
+              above
+              <br />
+              the door.
+            </p>
+            <p className="mt-6 text-[22px] leading-[1.5] text-[#131313]/55">
+              Nine brands, one group behind every one of them. Pick the one that fits the work you already do.
+            </p>
+          </motion.div>
+        </motion.div>
       </div>
     </motion.div>
   );
 }
 
+function useViewport() {
+  const [v, setV] = useState(() => ({ w: window.innerWidth, h: window.innerHeight }));
+  useEffect(() => {
+    const on = () => setV({ w: window.innerWidth, h: window.innerHeight });
+    window.addEventListener('resize', on);
+    return () => window.removeEventListener('resize', on);
+  }, []);
+  return v;
+}
+
 function ZoomIntro() {
   const ref = useRef(null);
+  const { w: vw, h: vh } = useViewport();
   const { scrollYProgress: p } = useScroll({ target: ref, offset: ['start start', 'end end'] });
 
-  // the title arrives and stays; the phone climbs to sit under it and stays
-  const titleOpacity = useTransform(p, [0, 0.06], [0, 1]);
-  const titleY = useTransform(p, [0, 0.1], [40, 0]);
-  const phoneY = useTransform(p, [0, 0.26], ['78vh', '28vh']);
-  // the two panels rise up past the phone; as they cross its middle, the zoom begins
-  const panelY = useTransform(p, [0.24, 0.62], ['70vh', '-90vh']);
-  const panelOpacity = useTransform(p, [0.24, 0.3, 0.56, 0.62], [0, 1, 1, 0]);
-  const scale = useTransform(p, [0.42, 0.9], [1, 11]);
-  const hint = useTransform(p, [0, 0.05, 0.22, 0.28], [0, 1, 1, 0]);
-  // once the screen has swallowed the room, the room itself goes white so
-  // there is no seam where the pinned screen hands over to the next section
-  const room = useTransform(p, [0.86, 0.92], [INK, '#FFFFFF']);
+  // the uniform scale at which the phone fills the page's height (bezels just off-screen)
+  const tall = vh / 820;
+  // the unscaled width the phone needs so its screen spans the page
+  const wide = (vw + 60) / tall;
+  const rest = 0.34 * vh + PHONE_H / 4; // where the phone's centre sits at rest
+
+  // 1. title in, phone climbs to rest beneath it, and the two hold together for a beat
+  const titleOpacity = useTransform(p, [0, 0.05, 0.3, 0.38], [0, 1, 1, 0]);
+  const titleY = useTransform(p, [0, 0.08, 0.3, 0.4], [40, 0, 0, -0.4 * vh]);
+  const phoneY = useTransform(p, [0, 0.16], ['85vh', '34vh']);
+  // 2. title leaves, phone moves to the centre of the page
+  const centreShift = useTransform(p, [0.3, 0.42], [0, 0.5 * vh - rest]);
+  // 3. pills rise past while the sheet climbs inside the screen and the phone
+  //    grows at the same rate until it fills the page's height
+  const sheetY = useTransform(p, [0.42, 0.62], ['100%', '0%']);
+  const scale = useTransform(p, [0.42, 0.62], [0.5, tall]);
+  const wordsOpacity = useTransform(p, [0.48, 0.62], [0, 1]);
+  const wordsY = useTransform(p, [0.46, 0.66], [80, 0]);
+  // 4. a zoom into the words, the phone holding its shape
+  const wordsScale = useTransform(p, [0.62, 0.7, 0.86], [0.9, 1, 1.22]);
+  // 5. then outward: the screen widens until the phone's edges leave the page
+  const width = useTransform(p, [0.7, 0.86], [PHONE_W, wide]);
+  const room = useTransform(p, [0.84, 0.9], [INK, '#FFFFFF']);
+  const hint = useTransform(p, [0, 0.05, 0.26, 0.32], [0, 1, 1, 0]);
 
   return (
-    <section ref={ref} className="relative h-[360vh]">
+    <section ref={ref} className="relative h-[320vh]">
       <motion.div style={{ backgroundColor: room }} className="sticky top-0 h-screen overflow-hidden">
         {/* the title */}
         <motion.div
@@ -108,22 +240,27 @@ function ZoomIntro() {
           </p>
         </motion.div>
 
-        {/* the room: the phone in the middle, the panels rising either side */}
+        {/* the room: just the phone, in the middle */}
         <div className={`absolute inset-0 ${PAD}`}>
           <div className="relative h-full max-w-[1200px] mx-auto">
-            <div className="hidden md:block">
-              <Panel title="What we carry" items={CARRY} tone style={{ y: panelY, opacity: panelOpacity }} />
-              <Panel title="What you keep" items={KEEP} align="right" style={{ y: panelY, opacity: panelOpacity }} />
-            </div>
             <motion.div style={{ y: phoneY }} className="absolute inset-0 flex items-start justify-center">
-              <Phone scale={scale} />
+              <motion.div style={{ y: centreShift }}>
+                <Phone
+                  scale={scale}
+                  width={width}
+                  sheetY={sheetY}
+                  wordsOpacity={wordsOpacity}
+                  wordsY={wordsY}
+                  wordsScale={wordsScale}
+                />
+              </motion.div>
             </motion.div>
           </div>
         </div>
 
         <motion.p
           style={{ opacity: hint }}
-          className="absolute bottom-[5vh] inset-x-0 text-center text-[0.62rem] tracking-[0.22em] uppercase text-white/40"
+          className={`absolute bottom-[5vh] left-0 ${PAD} text-[0.62rem] tracking-[0.22em] uppercase text-white/40`}
         >
           Keep scrolling
         </motion.p>
@@ -145,7 +282,7 @@ function BrandFloat({ brands }) {
   brands.forEach((b, i) => lanes[i % 3].push(b));
 
   return (
-    <section ref={ref} className={`${PAD} pt-[8vh] pb-[18vh]`} style={{ backgroundColor: '#FFFFFF', color: '#131313' }}>
+    <section ref={ref} className={`relative z-10 ${PAD} pt-[6vh] pb-[18vh] -mt-[34vh]`} style={{ backgroundColor: '#FFFFFF', color: '#131313' }}>
       <div className="max-w-[1200px] mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 24 }}
